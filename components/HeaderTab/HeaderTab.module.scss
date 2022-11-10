@@ -1,0 +1,15 @@
+@use 'styles/_macros' as *;
+
+.headerTab {
+  width: 160px;
+  height: $header-height;
+  display: flex;
+  justify-content: center;
+}
+
+.indicator {
+  width: 160px;
+  position: absolute;
+  top: $header-height - 3px;
+  border-radius: 3px 3px 0 0;
+}

@@ -1,11 +1,49 @@
+@use 'styles/_macros' as *;
+
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
 }
 
+html {
+  background-color: #f0f2f5;
+}
+
 body,
-button {
+button,
+input {
   color: #333;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+}
+
+#__next {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  main {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: $header-height;
+    padding: 16px;
+  }
+}
+
+a {
+  text-decoration: none;
+}
+
+.centerVertically {
+  display: flex;
+  align-items: center;
+}
+
+.indicator {
+  background: $main-color;
+  height: 3px;
 }
