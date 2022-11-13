@@ -37,11 +37,15 @@
   outline: none;
 }
 
+.nav {
+  position: absolute;
+  left: calc(50% - 320px);
+  top: 0;
+}
+
 .tabFlex {
   display: flex;
   align-items: center;
-  position: absolute;
-  left: calc(50% - 320px);
 }
 
 .flex2 {

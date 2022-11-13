@@ -26,32 +26,34 @@ export default function Header() {
 
   return (
     <header className={styles.header}>
-      <div className={styles.tabFlex}>
-        <HeaderTab
-          pathname='/'
-          iconPath='/home-icon.svg'
-          activeIconPath='/home-icon-active.svg'
-          alt='ana sayfa'
-        />
-        <HeaderTab
-          pathname='/etkinlikler'
-          iconPath='/events-icon.svg'
-          activeIconPath='/events-icon-active.svg'
-          alt='etkinlikler'
-        />
-        <HeaderTab
-          pathname='/topluluklar'
-          iconPath='/communities-icon.svg'
-          activeIconPath='/communities-icon-active.svg'
-          alt='topluluklar'
-        />
-        <HeaderTab
-          pathname='/askida-proje'
-          iconPath='/project-ideas-icon.svg'
-          activeIconPath='/project-ideas-icon-active.svg'
-          alt='askıda proje'
-        />
-      </div>
+      <nav className={styles.nav}>
+        <ul className={styles.tabFlex}>
+          <HeaderTab
+            pathname='/'
+            iconPath='/home-icon.svg'
+            activeIconPath='/home-icon-active.svg'
+            alt='ana sayfa'
+          />
+          <HeaderTab
+            pathname='/etkinlikler'
+            iconPath='/events-icon.svg'
+            activeIconPath='/events-icon-active.svg'
+            alt='etkinlikler'
+          />
+          <HeaderTab
+            pathname='/topluluklar'
+            iconPath='/communities-icon.svg'
+            activeIconPath='/communities-icon-active.svg'
+            alt='topluluklar'
+          />
+          <HeaderTab
+            pathname='/askida-proje'
+            iconPath='/project-ideas-icon.svg'
+            activeIconPath='/project-ideas-icon-active.svg'
+            alt='askıda proje'
+          />
+        </ul>
+      </nav>
       <div className={styles.flex1}>
         <h1>
           <Link className={styles.logo} href='/'>

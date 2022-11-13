@@ -14,14 +14,18 @@ export default function HeaderTab({ pathname, iconPath, activeIconPath, alt }) {
   }, [router.pathname]);
 
   return (
-    <Link className={clsx('centerVertically', styles.headerTab)} href={pathname}>
-      <Image
-        src={currentPathname === pathname ? activeIconPath : iconPath}
-        width='100%'
-        height='24px'
-        alt={alt}
-      />
-      {currentPathname === pathname && <div className={clsx('indicator', styles.indicator)}></div>}
-    </Link>
+    <li>
+      <Link className={clsx('centerVertically', styles.headerTab)} href={pathname}>
+        <Image
+          src={currentPathname === pathname ? activeIconPath : iconPath}
+          width='100%'
+          height='24px'
+          alt={alt}
+        />
+        {currentPathname === pathname && (
+          <div className={clsx('indicator', styles.indicator)}></div>
+        )}
+      </Link>
+    </li>
   );
 }
