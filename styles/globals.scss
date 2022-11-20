@@ -38,6 +38,24 @@ a {
   text-decoration: none;
   color: $main-color;
   font-weight: 500;
+
+  &:hover {
+    color: $main-color-lighter;
+  }
+}
+
+button {
+  background-color: $main-color;
+  font-weight: 500;
+  color: white;
+  border: none;
+  border-radius: $border-radius-big;
+  padding: 3px 13px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $main-color-darker;
+  }
 }
 
 .centerVertically {

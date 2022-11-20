@@ -1,6 +1,9 @@
 import styles from './CommunitiesPage.module.scss';
 import { Link, ListSidebar, Tabs } from 'components';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import clsx from 'clsx';
+import { nanoid } from 'nanoid';
 
 const dummyCommunity = {
   name: 'GTÜ Bilgisayar Topluluğu',
@@ -8,6 +11,7 @@ const dummyCommunity = {
   bannerSrc: '/images/banner1.png',
   description:
     'Community description. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
+  isFollowed: false,
 };
 
 const dummyTeam = {
@@ -16,6 +20,7 @@ const dummyTeam = {
   bannerSrc: '/images/banner2.png',
   description:
     'Community description. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
+  isFollowed: false,
 };
 
 const mainCommunitiesList = Array(9).fill(<MainListElement data={dummyCommunity} />);
@@ -25,6 +30,12 @@ const mainTeamsList = Array(9).fill(<MainListElement data={dummyTeam} />);
 const followedTeamsList = Array(4).fill(<FollowedListElement data={dummyTeam} />);
 
 function MainListElement({ data }) {
+  const [isFollowed, setIsFollowed] = useState(data.isFollowed);
+
+  function onFollowClicked() {
+    setIsFollowed((oldIsFollowed) => !oldIsFollowed);
+  }
+
   return (
     <li className={styles.mainListElement}>
       <div className={styles.banner} style={{ backgroundImage: `url(${data.bannerSrc})` }}></div>
@@ -32,10 +43,10 @@ function MainListElement({ data }) {
       <h2>{data.name}</h2>
       <p>{data.description}</p>
       <div className={styles.buttons}>
-        <button className={styles.followBtn}>Takip Et</button>
-        <Link className={styles.profileLink} href='#'>
-          Profile Git {'>'}
-        </Link>
+        <button onClick={onFollowClicked} className={clsx(isFollowed && styles.followed)}>
+          {isFollowed ? 'Takipten Çık' : 'Takip Et'}
+        </button>
+        <Link href='#'>Profile Git {'>'}</Link>
       </div>
     </li>
   );

@@ -75,18 +75,12 @@
     justify-content: space-around;
     align-items: center;
 
-    .followBtn {
-      background-color: #e4e6eb;
-      font-weight: 500;
-      color: #65676b;
-      border: 1px solid #65676b;
-      border-radius: $border-radius-big;
-      width: 88px;
-      height: 32px;
-      cursor: pointer;
-    }
+    .followed {
+      background-color: $red;
 
-    .profileLink {
+      &:hover {
+        background-color: $red-darker;
+      }
     }
   }
 }
