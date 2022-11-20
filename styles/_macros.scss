@@ -1,2 +1,12 @@
 $header-height: 64px;
 $main-color: #544673;
+$border-radius-big: 10px;
+$border-radius-small: 5px;
+$box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.25);
+$post-width: 640px;
+
+@mixin panel {
+  background-color: white;
+  box-shadow: $box-shadow;
+  border-radius: $border-radius-big;
+}

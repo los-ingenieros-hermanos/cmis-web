@@ -1,8 +1,10 @@
 import '../styles/globals.scss';
-import { Header } from 'components';
 import Head from 'next/head';
+import { Header } from 'components';
 
 function MyApp({ Component, pageProps }) {
+  const rightSidebarContent = pageProps['rightSidebarContent'];
+
   return (
     <>
       <Head>

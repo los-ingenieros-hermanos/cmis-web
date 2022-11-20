@@ -5,12 +5,13 @@
   height: $header-height;
   background-color: white;
   position: fixed;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.25);
+  box-shadow: $box-shadow;
   display: flex;
   padding-left: 16px;
   padding-right: 16px;
   align-items: center;
   justify-content: space-between;
+  z-index: 10;
 }
 
 .flex1 {
@@ -55,7 +56,7 @@
 }
 
 .loginBtn {
-  background: #e4e6eb;
+  background-color: #e4e6eb;
   font-weight: 500;
   color: #65676b;
   border: 1px solid #65676b;

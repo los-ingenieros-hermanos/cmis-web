@@ -1,0 +1,108 @@
+@use 'styles/_macros' as *;
+
+.tabsAndMainList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 640px;
+}
+
+.mainList {
+  @include panel;
+  display: flex;
+  padding: 16px;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+
+.mainListElement {
+  @include panel;
+  width: 296px;
+  height: 296px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+
+  .banner {
+    width: 100%;
+    height: 80px;
+    border-radius: $border-radius-big;
+    background-position: center;
+    background-size: cover;
+  }
+
+  .pfp {
+    width: 44px;
+    height: 44px;
+    position: absolute;
+    top: 64px;
+    border: 2px solid white;
+    border-radius: 20px;
+    background-position: center;
+    background-size: cover;
+  }
+
+  h2 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 16px;
+    text-align: center;
+    width: 100%;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  p {
+    font-size: 14px;
+    text-align: center;
+    width: 100%;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+  }
+
+  .buttons {
+    margin-top: auto;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+    .followBtn {
+      background-color: #e4e6eb;
+      font-weight: 500;
+      color: #65676b;
+      border: 1px solid #65676b;
+      border-radius: $border-radius-big;
+      width: 88px;
+      height: 32px;
+      cursor: pointer;
+    }
+
+    .profileLink {
+    }
+  }
+}
+
+.followedListElement {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  a {
+    color: #333;
+    font-weight: 500;
+    max-height: 40px;
+  }
+
+  img {
+    border-radius: 20px;
+  }
+}

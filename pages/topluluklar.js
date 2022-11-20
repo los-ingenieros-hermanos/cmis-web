@@ -1,3 +1,5 @@
+import { CommunitiesPage } from 'components';
+
 export default function Communities() {
-  return <h2>Topluluklar</h2>;
+  return <CommunitiesPage pageName='topluluklar' />;
 }

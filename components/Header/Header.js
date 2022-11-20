@@ -29,27 +29,27 @@ export default function Header() {
       <nav className={styles.nav}>
         <ul className={styles.tabFlex}>
           <HeaderTab
-            pathname='/'
-            iconPath='/home-icon.svg'
-            activeIconPath='/home-icon-active.svg'
+            pathnames={['/']}
+            iconPath='/icons/home-icon.svg'
+            activeIconPath='/icons/home-icon-active.svg'
             alt='ana sayfa'
           />
           <HeaderTab
-            pathname='/etkinlikler'
-            iconPath='/events-icon.svg'
-            activeIconPath='/events-icon-active.svg'
+            pathnames={['/etkinlikler']}
+            iconPath='/icons/events-icon.svg'
+            activeIconPath='/icons/events-icon-active.svg'
             alt='etkinlikler'
           />
           <HeaderTab
-            pathname='/topluluklar'
-            iconPath='/communities-icon.svg'
-            activeIconPath='/communities-icon-active.svg'
+            pathnames={['/topluluklar', '/takimlar']}
+            iconPath='/icons/communities-icon.svg'
+            activeIconPath='/icons/communities-icon-active.svg'
             alt='topluluklar'
           />
           <HeaderTab
-            pathname='/askida-proje'
-            iconPath='/project-ideas-icon.svg'
-            activeIconPath='/project-ideas-icon-active.svg'
+            pathnames={['/askida-proje']}
+            iconPath='/icons/project-ideas-icon.svg'
+            activeIconPath='/icons/project-ideas-icon-active.svg'
             alt='askıda proje'
           />
         </ul>
@@ -78,16 +78,16 @@ export default function Header() {
               className={clsx(styles.bookmarksBtn, 'centerVertically')}
               onClick={onBookmarksClicked}
             >
-              <Image src='/bookmarks-icon.svg' width='40px' height='40px' alt='bookmarks' />
+              <Image src='/icons/bookmarks-icon.svg' width='40px' height='40px' alt='bookmarks' />
             </button>
             <button className={clsx(styles.dmBtn, 'centerVertically')} onClick={onDmClicked}>
-              <Image src='/dm-icon.svg' width='40px' height='40px' alt='dm' />
+              <Image src='/icons/dm-icon.svg' width='40px' height='40px' alt='dm' />
             </button>
             <button
               className={clsx(styles.profileBtn, 'centerVertically')}
               onClick={onProfileClicked}
             >
-              <Image src='/profile-image.png' width='40px' height='40px' alt='dm' />
+              <Image src='/images/profile-image.png' width='40px' height='40px' alt='dm' />
             </button>
           </>
         )}

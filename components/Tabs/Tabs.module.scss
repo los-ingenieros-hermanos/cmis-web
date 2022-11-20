@@ -1,0 +1,18 @@
+@use 'styles/_macros' as *;
+
+.tabs {
+  @include panel;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  a {
+    color: #333b;
+    font-weight: 500;
+  }
+
+  .active {
+    color: #333;
+    text-decoration: underline;
+  }
+}

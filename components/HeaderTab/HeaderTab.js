@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 
-export default function HeaderTab({ pathname, iconPath, activeIconPath, alt }) {
+export default function HeaderTab({ pathnames, iconPath, activeIconPath, alt }) {
   const router = useRouter();
   const [currentPathname, setCurrentPathname] = useState('/');
 
@@ -15,14 +15,14 @@ export default function HeaderTab({ pathname, iconPath, activeIconPath, alt }) {
 
   return (
     <li>
-      <Link className={clsx('centerVertically', styles.headerTab)} href={pathname}>
+      <Link className={clsx('centerVertically', styles.headerTab)} href={pathnames[0]}>
         <Image
-          src={currentPathname === pathname ? activeIconPath : iconPath}
+          src={pathnames.includes(currentPathname) ? activeIconPath : iconPath}
           width='100%'
           height='24px'
           alt={alt}
         />
-        {currentPathname === pathname && (
+        {pathnames.includes(currentPathname) && (
           <div className={clsx('indicator', styles.indicator)}></div>
         )}
       </Link>

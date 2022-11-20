@@ -36,6 +36,8 @@ input {
 
 a {
   text-decoration: none;
+  color: $main-color;
+  font-weight: 500;
 }
 
 .centerVertically {
@@ -44,7 +46,7 @@ a {
 }
 
 .indicator {
-  background: $main-color;
+  background-color: $main-color;
   height: 3px;
 }
 

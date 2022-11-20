@@ -8,6 +8,10 @@ const nextConfig = {
         source: `/${encodeURIComponent('askıda-proje')}`,
         destination: '/askida-proje',
       },
+      {
+        source: `/${encodeURIComponent('takımlar')}`,
+        destination: '/takimlar',
+      },
     ];
   },
 };
