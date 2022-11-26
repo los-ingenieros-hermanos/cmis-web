@@ -5,6 +5,10 @@
   height: $header-height;
   display: flex;
   justify-content: center;
+
+  img {
+    height: 24px;
+  }
 }
 
 .indicator {

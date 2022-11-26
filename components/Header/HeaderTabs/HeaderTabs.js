@@ -1,6 +1,5 @@
-import styles from './HeaderTab.module.scss';
+import styles from './HeaderTabs.module.scss';
 import { Link } from 'components';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import clsx from 'clsx';
@@ -13,18 +12,17 @@ export default function HeaderTab({ pathnames, iconPath, activeIconPath, alt }) 
     setCurrentPathname(router.pathname);
   }, [router.pathname]);
 
+  function isActive() {
+    return pathnames.includes('/')
+      ? currentPathname === '/'
+      : pathnames.some((pathname) => currentPathname.includes(pathname));
+  }
+
   return (
     <li>
       <Link className={clsx('centerVertically', styles.headerTab)} href={pathnames[0]}>
-        <Image
-          src={pathnames.includes(currentPathname) ? activeIconPath : iconPath}
-          width='100%'
-          height='24px'
-          alt={alt}
-        />
-        {pathnames.includes(currentPathname) && (
-          <div className={clsx('indicator', styles.indicator)}></div>
-        )}
+        <img src={isActive() ? activeIconPath : iconPath} alt={alt} />
+        {isActive() && <div className={clsx('indicator', styles.indicator)}></div>}
       </Link>
     </li>
   );

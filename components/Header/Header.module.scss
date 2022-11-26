@@ -27,7 +27,7 @@
 }
 
 .searchBar {
-  background: url('/search-icon.svg') no-repeat 16px center;
+  background: url('/icons/search-icon.svg') no-repeat 16px center;
   padding-left: 52px;
   padding-right: 16px;
   width: 300px;
@@ -53,6 +53,12 @@
   display: flex;
   align-items: center;
   gap: 16px;
+
+  img {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+  }
 }
 
 .loginBtn {

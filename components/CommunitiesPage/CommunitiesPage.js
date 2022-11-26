@@ -1,27 +1,35 @@
 import styles from './CommunitiesPage.module.scss';
-import { Link, ListSidebar, Tabs } from 'components';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { Link, Tabs } from 'components';
+import { useState } from 'react';
 import clsx from 'clsx';
-import { nanoid } from 'nanoid';
 
 const dummyCommunity = {
+  type: 'topluluklar',
+  id: 'xRTtShHBupaYOvugN0Bvp',
   name: 'GTÜ Bilgisayar Topluluğu',
   pfpSrc: '/images/pfp1.png',
   bannerSrc: '/images/banner1.png',
+  bannerBgColor: '#000000',
   description:
     'Community description. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
   isFollowed: false,
 };
 
 const dummyTeam = {
+  type: 'takimlar',
+  id: 'Jz4rdsWpk2xZYan86a6kW',
   name: 'Doğa Takımı',
   pfpSrc: '/images/pfp4.png',
   bannerSrc: '/images/banner2.png',
+  bannerBgColor: '#1d5525',
   description:
     'Community description. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
   isFollowed: false,
 };
+
+function getHref(data) {
+  return `/${data.type}/${data.id}`;
+}
 
 const mainCommunitiesList = Array(9).fill(<MainListElement data={dummyCommunity} />);
 const followedCommunitiesList = Array(4).fill(<FollowedListElement data={dummyCommunity} />);
@@ -38,15 +46,18 @@ function MainListElement({ data }) {
 
   return (
     <li className={styles.mainListElement}>
-      <div className={styles.banner} style={{ backgroundImage: `url(${data.bannerSrc})` }}></div>
-      <div className={styles.pfp} style={{ backgroundImage: `url(${data.pfpSrc})` }}></div>
+      <img className={styles.banner} src={data.bannerSrc} alt='banner' />
+      <img className={styles.pfp} src={data.pfpSrc} alt='profile picture' />
       <h2>{data.name}</h2>
       <p>{data.description}</p>
       <div className={styles.buttons}>
-        <button onClick={onFollowClicked} className={clsx(isFollowed && styles.followed)}>
+        <button
+          onClick={onFollowClicked}
+          className={clsx('mainButton', isFollowed && 'mainButtonNegative')}
+        >
           {isFollowed ? 'Takipten Çık' : 'Takip Et'}
         </button>
-        <Link href='#'>Profile Git {'>'}</Link>
+        <Link href={getHref(data)}>Profile Git {'>'}</Link>
       </div>
     </li>
   );
@@ -55,10 +66,10 @@ function MainListElement({ data }) {
 function FollowedListElement({ data }) {
   return (
     <li className={styles.followedListElement}>
-      <Link href='#'>
-        <Image src={data.pfpSrc} width='40px' height='40px' alt='profile picture' />
+      <Link href={getHref(data)}>
+        <img src={data.pfpSrc} alt='profile picture' />
       </Link>
-      <Link href='#'>{data.name}</Link>
+      <Link href={getHref(data)}>{data.name}</Link>
     </li>
   );
 }
@@ -71,15 +82,17 @@ export default function CommunitiesPage({ pageName }) {
       <Tabs
         height={40}
         tabs={[
-          { name: 'Topluluklar', url: '/topluluklar', active: isCommunities },
-          { name: 'Takımlar', url: '/takımlar', active: !isCommunities },
+          { name: 'Topluluklar', url: '/topluluklar' },
+          { name: 'Takımlar', url: '/takımlar' },
         ]}
       />
-      <ul className={styles.mainList}>{isCommunities ? mainCommunitiesList : mainTeamsList}</ul>
-      <ListSidebar
-        title='Takip Ettiklerim'
-        items={isCommunities ? followedCommunitiesList : followedTeamsList}
-      />
+      <ul className={styles.mainList}>
+        {isCommunities ? mainCommunitiesList : mainTeamsList}
+        <div className={styles.followedPanel}>
+          <h2 className={styles.followedTitle}>Takip Ettiklerim</h2>
+          {isCommunities ? followedCommunitiesList : followedTeamsList}
+        </div>
+      </ul>
     </div>
   );
 }

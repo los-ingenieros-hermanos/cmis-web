@@ -7,7 +7,7 @@
 }
 
 html {
-  background-color: #f0f2f5;
+  background-color: $bg-color;
 }
 
 body,
@@ -30,7 +30,6 @@ input {
     align-items: center;
     width: 100%;
     margin-top: $header-height;
-    padding: 16px;
   }
 }
 
@@ -44,17 +43,25 @@ a {
   }
 }
 
-button {
+.mainButton {
   background-color: $main-color;
   font-weight: 500;
   color: white;
   border: none;
-  border-radius: $border-radius-big;
-  padding: 3px 13px;
+  border-radius: $border-radius;
+  padding: 3px 12px;
   cursor: pointer;
 
   &:hover {
     background-color: $main-color-darker;
+  }
+}
+
+.mainButtonNegative {
+  background-color: $red;
+
+  &:hover {
+    background-color: $red-darker;
   }
 }
 
@@ -70,4 +77,8 @@ button {
 
 li {
   list-style: none;
+}
+
+.bold {
+  font-weight: 500;
 }

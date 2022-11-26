@@ -1,0 +1,84 @@
+@use 'styles/_macros' as *;
+
+.page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin-top: -48px;
+  }
+}
+
+.bannerBg {
+  width: 100%;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.banner {
+  height: 200px;
+}
+
+.pfp {
+  width: 120px;
+  height: 120px;
+  border: 4px solid $bg-color;
+  border-radius: 50%;
+  position: relative;
+  bottom: 62px;
+}
+
+.content {
+  position: relative;
+  width: 640px;
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.infoPanel {
+  @include panel;
+  width: 400px;
+  position: absolute;
+  left: calc(100% + 16px);
+  top: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+
+  .btnFlex {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .tagsFlex {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+}
+
+.tag {
+  background-color: #f0f0f0;
+  padding: 2px 8px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  border-radius: 4px;
+  color: #333;
+  font-weight: 400;
+
+  &:hover {
+    color: #000;
+  }
+}

@@ -3,8 +3,6 @@ import Head from 'next/head';
 import { Header } from 'components';
 
 function MyApp({ Component, pageProps }) {
-  const rightSidebarContent = pageProps['rightSidebarContent'];
-
   return (
     <>
       <Head>
