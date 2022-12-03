@@ -3,9 +3,11 @@
 $header-height: 64px;
 $bg-color: #f0f2f5;
 $main-color: #544673;
+$light-purple: #D0D2F2;
+$blue: #2964D9;
+$green: #61AD6C;
 $main-color-darker: color.scale($main-color, $lightness: -15%);
 $main-color-lighter: color.scale($main-color, $lightness: 15%);
-$light-purple: #d0d2f2;
 $red: #bf1515;
 $red-darker: color.scale($red, $lightness: -9%);
 $border-radius: 8px;
