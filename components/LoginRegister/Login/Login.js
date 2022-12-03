@@ -41,7 +41,6 @@ function Login({ setIsLoggedIn }) {
       
       <div className={styles.welcome}>
         <p className={styles.logo}>cmis</p> <p>hesabı ile giriş yapın</p>
-
       </div>
 
       <input type={"text"} placeholder={"kullanıcı adı"} onChange={handleChange}/>
