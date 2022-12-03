@@ -1,8 +1,72 @@
-<svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M5 5H7.5V3.74994H17.5V5H20V3.74994H22.5V7.50003H2.5V3.74994H5V5ZM2.5 10V22.4999H22.5V10H2.5ZM7.5 1.24993H17.5V0H20V1.24993H22.5C23.8807 1.24993 25 2.36921 25 3.74993V22.4999C25 23.8806 23.8807 24.9999 22.5 24.9999H2.5C1.11929 24.9999 0 23.8806 0 22.4999V3.74993C0 2.36921 1.11929 1.24993 2.5 1.24993H5V0H7.5V1.24993Z" fill="#65676B"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M8.75 15H6.25V12.5H8.75V15Z" fill="#65676B"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M13.75 15H11.25V12.5H13.75V15Z" fill="#65676B"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M18.75 15H16.25V12.5H18.75V15Z" fill="#65676B"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M8.75 20H6.25V17.5H8.75V20Z" fill="#65676B"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M13.75 20H11.25V17.5H13.75V20Z" fill="#65676B"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="25"
+   height="25"
+   viewBox="0 0 25 25"
+   fill="none"
+   version="1.1"
+   id="svg7445"
+   sodipodi:docname="events-icon.svg"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs7449" />
+  <sodipodi:namedview
+     id="namedview7447"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="33.16"
+     inkscape:cx="7.7352232"
+     inkscape:cy="13.510253"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7445" />
+  <path
+     fill-rule="evenodd"
+     clip-rule="evenodd"
+     d="M5 5H7.5V3.74994H17.5V5H20V3.74994H22.5V7.50003H2.5V3.74994H5V5ZM2.5 10V22.4999H22.5V10H2.5ZM7.5 1.24993H17.5V0H20V1.24993H22.5C23.8807 1.24993 25 2.36921 25 3.74993V22.4999C25 23.8806 23.8807 24.9999 22.5 24.9999H2.5C1.11929 24.9999 0 23.8806 0 22.4999V3.74993C0 2.36921 1.11929 1.24993 2.5 1.24993H5V0H7.5V1.24993Z"
+     fill="#65676B"
+     id="path7433" />
+  <path
+     fill-rule="evenodd"
+     clip-rule="evenodd"
+     d="M8.75 15H6.25V12.5H8.75V15Z"
+     fill="#65676B"
+     id="path7435" />
+  <path
+     fill-rule="evenodd"
+     clip-rule="evenodd"
+     d="M13.75 15H11.25V12.5H13.75V15Z"
+     fill="#65676B"
+     id="path7437" />
+  <path
+     fill-rule="evenodd"
+     clip-rule="evenodd"
+     d="M18.75 15H16.25V12.5H18.75V15Z"
+     fill="#65676B"
+     id="path7439" />
+  <path
+     fill-rule="evenodd"
+     clip-rule="evenodd"
+     d="M8.75 20H6.25V17.5H8.75V20Z"
+     fill="#65676B"
+     id="path7441" />
+  <path
+     fill-rule="evenodd"
+     clip-rule="evenodd"
+     d="M13.75 20H11.25V17.5H13.75V20Z"
+     fill="#65676B"
+     id="path7443" />
 </svg>

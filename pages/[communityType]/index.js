@@ -1,7 +1,9 @@
-import styles from './CommunitiesPage.module.scss';
+import styles from 'styles/Communities.module.scss';
 import { Link, Tabs } from 'components';
-import { useState } from 'react';
+import Custom404 from 'pages/404';
+import { useEffect, useState } from 'react';
 import clsx from 'clsx';
+import { useRouter } from 'next/router';
 
 const dummyCommunity = {
   type: 'topluluklar',
@@ -74,23 +76,36 @@ function FollowedListElement({ data }) {
   );
 }
 
-export default function CommunitiesPage({ pageName }) {
-  const isCommunities = pageName === 'topluluklar';
+export default function Communities() {
+  const router = useRouter();
+  const [communityType, setCommunityType] = useState('');
 
-  return (
+  useEffect(() => {
+    if (router.query.communityType === 'topluluklar') {
+      setCommunityType('topluluklar');
+    } else if (router.query.communityType === 'takimlar') {
+      setCommunityType('takimlar');
+    } else {
+      setCommunityType('other');
+    }
+  }, [router.query.communityType]);
+
+  return communityType === 'other' ? (
+    <Custom404 />
+  ) : (
     <div className={styles.tabsAndMainList}>
       <Tabs
         height={40}
         tabs={[
           { name: 'Topluluklar', url: '/topluluklar' },
-          { name: 'Takımlar', url: '/takımlar' },
+          { name: 'Takımlar', url: '/takimlar' },
         ]}
       />
       <ul className={styles.mainList}>
-        {isCommunities ? mainCommunitiesList : mainTeamsList}
+        {communityType === 'topluluklar' ? mainCommunitiesList : mainTeamsList}
         <div className={styles.followedPanel}>
           <h2 className={styles.followedTitle}>Takip Ettiklerim</h2>
-          {isCommunities ? followedCommunitiesList : followedTeamsList}
+          {communityType === 'topluluklar' ? followedCommunitiesList : followedTeamsList}
         </div>
       </ul>
     </div>

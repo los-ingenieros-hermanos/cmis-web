@@ -1,12 +1,10 @@
 import styles from './CommunityProfilePage.module.scss';
-import { Tabs, Link } from 'components';
+import { Tabs, Link, Post } from 'components';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 
-const isManager = true;
-
-const dummyCommunity = {
+export const dummyCommunity = {
   id: 'xRTtShHBupaYOvugN0Bvp',
   name: 'GTÜ Bilgisayar Topluluğu',
   pfpSrc: '/images/pfp1.png',
@@ -21,7 +19,7 @@ const dummyCommunity = {
   isMember: false,
 };
 
-const dummyTeam = {
+export const dummyTeam = {
   id: 'Jz4rdsWpk2xZYan86a6kW',
   name: 'Doğa Takımı',
   pfpSrc: '/images/pfp4.png',
@@ -35,6 +33,8 @@ const dummyTeam = {
   isFollowed: false,
   isMember: false,
 };
+
+const isManager = true;
 
 function Tag({ children }) {
   return (
@@ -59,17 +59,10 @@ export default function CommunityProfilePage({ children }) {
   }, [router.query.id]);
 
   useEffect(() => {
-    setProfilePath(() => {
-      let newProfilePath = router.asPath;
-      newProfilePath = newProfilePath.replace(`/${encodeURIComponent('gönderiler')}`, '');
-      newProfilePath = newProfilePath.replace('/gonderiler', '');
-      newProfilePath = newProfilePath.replace(`/${encodeURIComponent('yaklaşan-etkinlikler')}`, '');
-      newProfilePath = newProfilePath.replace('/yaklasan-etkinlikler', '');
-      newProfilePath = newProfilePath.replace(`/${encodeURIComponent('yönetim')}`, '');
-      newProfilePath = newProfilePath.replace('/yonetim', '');
-      return newProfilePath;
-    });
-  }, [router.asPath]);
+    setProfilePath(`/${router.query.communityType}/${router.query.id}`);
+  }, [router.query.communityType, router.query.id]);
+
+  function onEditClicked() {}
 
   function onFollowClicked() {
     setData((oldData) => {
@@ -111,34 +104,43 @@ export default function CommunityProfilePage({ children }) {
         <img src={data.bannerSrc} className={styles.banner} alt='banner' />
       </div>
       <img src={data.pfpSrc} className={styles.pfp} alt='profile picture' />
-      <h1>{data ? data.name : 'Community'}</h1>
+      <h1>{data.name ?? 'Community'}</h1>
       <div className={styles.content}>
         <Tabs
           height={40}
           tabs={[
-            { name: 'Gönderiler', url: `${profilePath}/gönderiler` },
-            { name: 'Yaklaşan Etkinlikler', url: `${profilePath}/yaklaşan-etkinlikler` },
-            isManager ? { name: 'Yönetim', url: `${profilePath}/yönetim` } : undefined,
-          ]}
+            { name: 'Gönderiler', url: `${profilePath}/gonderiler` },
+            { name: 'Yaklaşan Etkinlikler', url: `${profilePath}/yaklasan-etkinlikler` },
+            isManager ? { name: 'Yönetim', url: `${profilePath}/yonetim` } : undefined,
+          ].filter(Boolean)}
         />
         {children}
         <div className={styles.infoPanel}>
-          <div className={styles.btnFlex}>
-            <button
-              className={clsx('mainButton', data.isFollowed && 'mainButtonNegative')}
-              onClick={onFollowClicked}
-            >
-              {data.isFollowed ? 'Takibi Bırak' : 'Takip Et'}
+          {isManager && (
+            <button className={styles.editBtn} onClick={onEditClicked}>
+              <img src='/icons/edit-icon.svg' alt='düzenle' />
             </button>
+          )}
+          <div className={styles.btnFlex}>
+            {!isManager && (
+              <button
+                className={clsx('mainButton', data.isFollowed && 'mainButtonNegative')}
+                onClick={onFollowClicked}
+              >
+                {data.isFollowed ? 'Takibi Bırak' : 'Takip Et'}
+              </button>
+            )}
             <p className='bold'>{data.followerCount} Takipçi</p>
           </div>
           <div className={styles.btnFlex}>
-            <button
-              className={clsx('mainButton', data.isMember && 'mainButtonNegative')}
-              onClick={onApplyClicked}
-            >
-              {data.isMember ? 'Üyelikten Çık' : 'Üye ol'}
-            </button>
+            {!isManager && (
+              <button
+                className={clsx('mainButton', data.isMember && 'mainButtonNegative')}
+                onClick={onApplyClicked}
+              >
+                {data.isMember ? 'Üyelikten Çık' : 'Üye ol'}
+              </button>
+            )}
             <p className='bold'>{data.memberCount} Üye</p>
           </div>
           <p>{data.description}</p>
@@ -146,9 +148,11 @@ export default function CommunityProfilePage({ children }) {
             <p className='bold'>Etiketler:</p>
             {data.tags && data.tags.map((tag) => <Tag key={tag}>{tag}</Tag>)}
           </div>
-          <button className='mainButton' onClick={onSendMessageClicked}>
-            Mesaj Gönder
-          </button>
+          {!isManager && (
+            <button className='mainButton' onClick={onSendMessageClicked}>
+              Mesaj Gönder
+            </button>
+          )}
         </div>
       </div>
     </div>

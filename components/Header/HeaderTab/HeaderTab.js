@@ -1,22 +1,17 @@
-import styles from './HeaderTabs.module.scss';
+import styles from './HeaderTab.module.scss';
 import { Link } from 'components';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import clsx from 'clsx';
 
 export default function HeaderTab({ pathnames, iconPath, activeIconPath, alt }) {
   const router = useRouter();
-  const [currentPathname, setCurrentPathname] = useState('/');
 
-  useEffect(() => {
-    setCurrentPathname(router.pathname);
-  }, [router.pathname]);
-
-  function isActive() {
+  const isActive = useCallback(() => {
     return pathnames.includes('/')
-      ? currentPathname === '/'
-      : pathnames.some((pathname) => currentPathname.includes(pathname));
-  }
+      ? router.asPath === '/'
+      : pathnames.some((pathname) => router.asPath.startsWith(pathname));
+  }, [pathnames, router.asPath]);
 
   return (
     <li>

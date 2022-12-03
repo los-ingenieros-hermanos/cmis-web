@@ -38,6 +38,7 @@
   position: relative;
   width: 640px;
   margin-top: 32px;
+  margin-bottom: 16px;
   display: flex;
   flex-direction: column;
 }
@@ -53,6 +54,14 @@
   align-items: flex-start;
   gap: 16px;
   padding: 16px;
+
+  .editBtn {
+    background: none;
+    border: none;
+    position: absolute;
+    right: 16px;
+    cursor: pointer;
+  }
 
   .btnFlex {
     display: flex;

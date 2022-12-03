@@ -1,9 +1,6 @@
 export { default as Header } from './Header/Header';
 export { default as Link } from './Link/Link';
-export { default as HeaderTabs } from './Header/HeaderTabs/HeaderTabs';
+export { default as HeaderTab } from './Header/HeaderTab/HeaderTab';
 export { default as Tabs } from './Tabs/Tabs';
-export { default as CommunitiesPage } from './CommunitiesPage/CommunitiesPage';
 export { default as CommunityProfilePage } from './ComunityProfilePage/CommunityProfilePage';
-export { default as PostsPage } from './ComunityProfilePage/PostsPage/PostsPage';
-export { default as UpcomingEventsPage } from './ComunityProfilePage/UpcomingEventsPage/UpcomingEventsPage';
-export { default as ManagementPage } from './ComunityProfilePage/ManagementPage/ManagementPage';
+export { default as Post } from './Post/Post';

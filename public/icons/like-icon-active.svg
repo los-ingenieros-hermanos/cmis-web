@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="20"
+   height="20"
+   viewBox="0 0 20 20"
+   fill="none"
+   version="1.1"
+   id="svg12"
+   sodipodi:docname="like-icon-active.svg"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs16" />
+  <sodipodi:namedview
+     id="namedview14"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="29.309576"
+     inkscape:cx="7.932561"
+     inkscape:cy="10.747341"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg12" />
+  <path
+     fill-rule="evenodd"
+     clip-rule="evenodd"
+     d="m 20,9.9991 c 0,-1.68248 -1.1304,-3 -3,-3 H 13.927 L 13.9548,6.92337 C 13.9826,6.8482 14.0609,6.64173 14.137,6.44121 l 10e-5,-2.7e-4 4e-4,-9.3e-4 C 14.2046,6.26299 14.2699,6.09083 14.2971,6.018 14.4872,5.50766 14.626,5.09646 14.7382,4.68923 14.9079,4.07373 15,3.51921 15,2.9991 15,1.52709 14.0919,0.612818 12.7483,0.221586 12.1423,0.0451276 11.6148,-9.92379e-4 11,-9.00269e-4 H 10.5205 L 10.2203,0.372984 C 9.88113,0.795334 9.21501,1.55651 8.44703,2.43407 l -2e-5,3e-5 C 7.03026,4.05302 5.2669,6.068 4.57035,7.0825 4.38961,7.02882 4.19817,6.99999 4,6.99999 H 2 c -1.10457,0 -2,0.89543 -2,2 V 18 c 0,1.1046 0.89543,2 2,2 h 2 c 0.68712,0 1.29331,-0.3465 1.65337,-0.8743 0.30337,0.1962 0.64185,0.3599 1.00975,0.4916 0.84232,0.3014 1.67773,0.3939 2.37128,0.3812 L 16,19.9991 c 2.7551,0 4,-4.0564 4,-10 z m -7.7267,-4.28368 -2e-4,4.5e-4 c -3.3e-5,1.607e-4 2.54e-4,-6.05e-4 2e-4,-4.5e-4 z"
+     fill="black"
+     id="path10"
+     style="fill:#333333;fill-opacity:1;stroke:none;stroke-opacity:1"
+     sodipodi:nodetypes="ssccsccccssccccccssssssccccsccc" />
+</svg>

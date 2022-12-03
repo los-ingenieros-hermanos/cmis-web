@@ -2,7 +2,7 @@ import styles from './Header.module.scss';
 import { Link } from 'components';
 import clsx from 'clsx';
 import { useState } from 'react';
-import { HeaderTabs } from 'components';
+import { HeaderTab } from 'components';
 
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -27,25 +27,25 @@ export default function Header() {
     <header className={styles.header}>
       <nav className={styles.nav}>
         <ul className={styles.tabFlex}>
-          <HeaderTabs
+          <HeaderTab
             pathnames={['/']}
             iconPath='/icons/home-icon.svg'
             activeIconPath='/icons/home-icon-active.svg'
             alt='ana sayfa'
           />
-          <HeaderTabs
-            pathnames={['/etkinlikler']}
+          <HeaderTab
+            pathnames={['/yaklasan-etkinlikler']}
             iconPath='/icons/events-icon.svg'
             activeIconPath='/icons/events-icon-active.svg'
             alt='etkinlikler'
           />
-          <HeaderTabs
+          <HeaderTab
             pathnames={['/topluluklar', '/takimlar']}
             iconPath='/icons/communities-icon.svg'
             activeIconPath='/icons/communities-icon-active.svg'
             alt='topluluklar'
           />
-          <HeaderTabs
+          <HeaderTab
             pathnames={['/askida-proje']}
             iconPath='/icons/project-ideas-icon.svg'
             activeIconPath='/icons/project-ideas-icon-active.svg'

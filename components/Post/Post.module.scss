@@ -1,0 +1,134 @@
+@use 'styles/_macros' as *;
+
+.post {
+  @include panel;
+  display: flex;
+  flex-direction: column;
+  width: 640px;
+  margin-top: 16px;
+  padding: 16px;
+}
+
+.flex1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  img {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.flex2 {
+  display: flex;
+  position: relative;
+  top: -1px;
+  flex-direction: column;
+
+  a {
+    color: #333;
+  }
+}
+
+.flex3 {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  gap: 4px;
+
+  .highlight {
+    display: flex;
+    align-items: center;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 4px;
+    background-color: $light-purple;
+  }
+
+  img {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.middot {
+  font-weight: 600;
+}
+
+.content {
+  position: relative;
+  margin-top: 8px;
+  overflow: hidden;
+  margin-bottom: auto;
+
+  h2 {
+    font-weight: 500;
+    font-size: 20px;
+  }
+}
+
+.contentClickable {
+  background: linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(0, 0, 0, 0) 40%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.divider {
+  background-color: #333;
+  width: 100%;
+  height: 1px;
+  margin-top: 8px;
+}
+
+.flex4 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    height: 20px;
+  }
+
+  img {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.btnFlex {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bottomText {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.eventDate {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: $main-color;
+  padding: 2px 8px;
+  border-radius: $border-radius;
+  color: white;
+  font-size: 14px;
+
+  img {
+    width: 16px;
+    height: 16px;
+  }
+}

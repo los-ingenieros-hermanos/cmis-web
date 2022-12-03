@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="300"
+   height="300"
+   viewBox="0 0 79.374998 79.375005"
+   version="1.1"
+   id="svg27519"
+   sodipodi:docname="attend-icon.svg"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   inkscape:export-filename="attend-icon2.svg"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview6"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="2.9540685"
+     inkscape:cx="134.22167"
+     inkscape:cy="163.50332"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs27516" />
+  <g
+     id="layer1"
+     transform="matrix(1.0561706,0,0,1.0561706,-55.749805,-98.535142)">
+    <path
+       id="path28057"
+       style="fill:#333333;fill-opacity:1;stroke-width:0.233143"
+       d="m 79.224319,93.294722 3.94e-4,26.439028 H 52.784848 v 22.26997 h 26.439471 v 26.43902 h 22.269541 v -26.43902 h 26.43945 V 119.73375 H 101.49386 V 93.294722 Z m 6.32049,6.251268 h 9.697767 v 26.43949 h 26.439014 v 9.68774 H 95.242566 V 162.0972 H 85.539792 V 135.67276 H 59.108519 v -9.69641 h 26.438112 z"
+       sodipodi:nodetypes="cccccccccccccccccccccccccc" />
+  </g>
+</svg>

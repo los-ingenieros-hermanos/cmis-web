@@ -1,8 +1,0 @@
-@use 'styles/_macros' as *;
-
-.posts {
-  @include panel;
-  position: relative;
-  height: 500px;
-  margin-top: 16px;
-}
