@@ -34,7 +34,7 @@ export const dummyTeam = {
   isMember: false,
 };
 
-const isManager = true;
+const isManager = false;
 
 function Tag({ children }) {
   return (
@@ -138,7 +138,7 @@ export default function CommunityProfilePage({ children }) {
                 className={clsx('mainButton', data.isMember && 'mainButtonNegative')}
                 onClick={onApplyClicked}
               >
-                {data.isMember ? 'Üyelikten Çık' : 'Üye ol'}
+                {data.isMember ? 'Üyelikten Çık' : 'Üye Ol'}
               </button>
             )}
             <p className='bold'>{data.memberCount} Üye</p>

@@ -86,6 +86,8 @@ export const dummyTeamPosts = [
   },
 ];
 
+const isManager = false;
+
 export default function Posts() {
   const router = useRouter();
 
@@ -95,13 +97,15 @@ export default function Posts() {
 
   return (
     <CommunityProfilePage>
-      <button
-        className='mainButton'
-        onClick={onNewPostClicked}
-        style={{ marginTop: '16px', height: '40px', fontSize: '18px' }}
-      >
-        Yeni gönderi
-      </button>
+      {isManager && (
+        <button
+          className='mainButton'
+          onClick={onNewPostClicked}
+          style={{ marginTop: '16px', height: '40px', fontSize: '18px' }}
+        >
+          Yeni Gönderi
+        </button>
+      )}
       <Post
         postData={
           router.query.communityType === 'topluluklar' ? dummyCommunityPosts[0] : dummyTeamPosts[0]
