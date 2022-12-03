@@ -3,17 +3,34 @@ import { Link } from 'components';
 import clsx from 'clsx';
 import { useState } from 'react';
 import { HeaderTab } from 'components';
+import Login from 'components/LoginRegister/Login/Login';
+import Register from 'components/LoginRegister/Register/Register';
 
 export default function Header() {
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+  const [isSignedUp, setIsSignedUp] = useState(false);
+
 
   function onLogInClicked() {
-    setIsLoggedIn(true);
+    setIsLoginOpen(!isLoginOpen);
+    setIsSignUpOpen(false);
   }
 
   function onSignUpClicked() {
-    setIsLoggedIn(true);
+    setIsSignUpOpen(!isSignUpOpen);
+    setIsLoginOpen(false);
   }
+
+  
+  // Arrow function to close the login/register modal
+  const closeLoginRegister = () => {
+    setIsLoginOpen(false);
+    setIsSignUpOpen(false);
+  }
+
+  
 
   function onBookmarksClicked() {}
 
@@ -63,13 +80,21 @@ export default function Header() {
       </div>
       <div className={styles.flex2}>
         {!isLoggedIn ? (
-          <>
+            <>
             <button className={styles.loginBtn} onClick={onLogInClicked}>
               Giriş
             </button>
             <button className={styles.loginBtn} onClick={onSignUpClicked}>
               Kayıt Ol
             </button>
+            
+            {isLoginOpen ? (
+            <Login setIsLoggedIn={setIsLoggedIn} />
+            ) : null}
+
+            {isSignUpOpen ? (
+              <Register setIsSignedUp={setIsSignedUp} setIsLoggedIn={setIsLoggedIn} />
+            ) : null}
           </>
         ) : (
           <>
@@ -87,9 +112,12 @@ export default function Header() {
               onClick={onProfileClicked}
             >
               <img src='/images/pfp1.png' alt='dm' />
-            </button>
+            </button>         
           </>
         )}
+        
+
+
       </div>
     </header>
   );
