@@ -1,0 +1,134 @@
+@use 'styles/_macros' as *;
+
+
+.login {
+    @include panel;
+    box-shadow: 0 0 10px 0 rgba(0,0,0,0.3);     // Overwrite the box-shadow from _macros.scss
+    background-color: white;                    // Overwrite the background-color from _macros.scss
+    // set login to center of the page
+    position: absolute;
+    left: 35%;
+    // Move to top little bit
+    top: -5vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem 1.5rem 0.5rem 1.5rem;          // Top right bottom left
+    
+    // margin between items
+    & > * + * {
+        margin-top: 1rem;
+    }
+    width: 30%;
+    min-width: 350px;
+
+    // Center the window in the middle of the screen
+    margin: auto;
+    margin-top: 20vh;
+}
+
+.login div {
+    // display elements left to right in a row
+    display: flex;
+    
+}
+
+.banner {
+    border-bottom: 1px solid #ccc;
+    width: 100%;
+    // center items
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0rem 1.5rem 0rem;  /* top right bottom left */
+    
+}
+
+.logo {
+    // set font family aldrich
+    color: $main-color;
+    font-family: 'Aldrich', sans-serif;
+    // set font familiy to bold
+    font-weight: normal;
+}
+
+.welcome {
+    // set horizontal margin between items
+    & > * + * {
+        margin-left: 0.3rem;
+    }
+    font-size: 0.9rem;
+}
+
+.entrance {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    // set horizontal margin between items
+    width: 60%;            /* Set the width */
+
+    a {
+        text-decoration: underline;
+        color: #333;
+    }
+}
+
+.foot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    // set horizontal margin between items
+    & > * + * {
+        margin-left: 0.3rem;
+    }
+
+    a {
+        text-decoration: underline;
+        color: $blue;
+    }
+
+    // set top and bottom margin
+    margin: 3rem 0rem 1rem 0rem;  /* top right bottom left */
+}
+
+.login input {
+    width: 60%;
+    padding: 10px 10px; 
+    border: 1px solid #666;
+    border-radius: 8px;
+    
+    &:focus {
+        outline: none;
+        // inner border blurry
+        box-shadow: 0 0 10px 0 rgba(0,0,0,0.5);
+    }
+
+    &::placeholder {
+        color: #999;
+    }
+
+    &.input-error {
+        border: 2px solid $red;
+    }
+}
+
+.login button {
+    width: 50%;
+    padding: 8px; 
+    background-color: #D0D2F2;
+    border: 1px solid #D0D2F2;
+    border-radius: 8px;
+    color: #333333;
+    // ease
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+        background-color: $main-color;
+        border: 1px solid $main-color;
+        color: #ffffff;
+        cursor: pointer;
+    }
+}

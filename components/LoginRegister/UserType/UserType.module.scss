@@ -1,0 +1,43 @@
+@use 'styles/_macros' as *;
+
+.userType {
+    display: flex;    
+    width: 100%;
+
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0rem 3rem 0rem;  /* top right bottom left */
+}
+
+.userType div {
+    // Display elements vertical
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    // vertical margin between items
+    & > * + * {
+        margin-top: 0.5rem;
+    }
+}
+
+.userType div:nth-child(1) {
+    // left side
+    border-right: 1px solid #ccc;
+    max-height: 40px;
+}
+
+.userType div a {
+    cursor: pointer;
+}
+
+.userType div a:hover {
+    transition: 0.3s;
+    text-decoration: underline;
+}
+
+.userType div a.active {
+    transition: 0.3s;
+    text-decoration: underline;
+}
