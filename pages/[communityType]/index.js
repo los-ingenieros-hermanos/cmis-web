@@ -1,7 +1,7 @@
 import styles from 'styles/Communities.module.scss';
 import { Link, Tabs } from 'components';
 import Custom404 from 'pages/404';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
 

@@ -1,80 +1,117 @@
 import styles from './Register.module.scss';
 import UserType from '../UserType/UserType';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { AuthContext } from 'pages/_app';
 
-function Register({ setIsSignedUp, setIsLoggedIn }) {
-  const [userType, setUserType] = useState("student");
-  const [user, setUser] = useState({ username: "", 
-                                     name: "", 
-                                     password: "", 
-                                     confirmPassword: "" 
+function Register({ setIsLoginOpen, setIsSignUpOpen }) {
+  const [userType, setUserType] = useState('student');
+  const [user, setUser] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
   });
+  const authContext = useContext(AuthContext);
+
+  function onBackgroundClicked() {
+    setIsSignUpOpen(false);
+  }
 
   const handleChange = (e) => {
-    const {name, value} = e.target; 
-    console.log(name, value);
+    const { name, value } = e.target;
     setUser((prev) => {
-      return {...prev, [name]: value}
-    })
+      return { ...prev, [name]: value };
+    });
   };
 
-  const handleClick = () => {
+  const handleClick = async () => {
     // If any of the fields are empty, alert the user
-    if (user.username === "" || user.name === "" || user.password === "" || user.confirmPassword === "") {
-      alert("Lütfen tüm alanları doldurunuz.");
-      setIsSignedUp(false);
-    }
-    else
-    {
+    if (
+      user.firstName === '' ||
+      (userType === 'student' && user.lastName === '') ||
+      user.email === '' ||
+      user.password === '' ||
+      user.confirmPassword === ''
+    ) {
+      alert('Lütfen tüm alanları doldurunuz.');
+    } else {
       // If the passwords do not match, alert the user
       if (user.password !== user.confirmPassword) {
-        alert("Şifreler uyuşmuyor.");
-        setIsSignedUp(false);
-        setIsLoggedIn(false);
-      }
-      else
-      {
+        alert('Şifreler uyuşmuyor.');
+      } else {
         // If the passwords match, alert the user
-        alert("Kayıt başarılı.");
-        setIsSignedUp(true);
-        setIsLoggedIn(true);
+        const data = await authContext.signUp(
+          user.firstName,
+          user.lastName,
+          user.email,
+          user.password,
+          userType,
+        );
+        if (data) {
+          setIsSignUpOpen(false);
+          alert('Kayıt başarılı.');
+        } else {
+          alert('Kayıt başarısız');
+        }
       }
     }
   };
 
   return (
-    <div className={styles.register}>
-      
-      <div className={styles.banner}>
-        <p className={styles.logo}>cmis</p> <p>'e Kayıt Ol</p>
-      </div>
-      
-      <UserType userType={userType} setUserType={setUserType}/>
+    <div className={styles.background} onMouseDown={onBackgroundClicked}>
+      <div className={styles.register} onMouseDown={(e) => e.stopPropagation()}>
+        <div className={styles.banner}>
+          <p className={styles.logo}>cmis</p> <p>&apos;e Kayıt Ol</p>
+        </div>
 
-      <div className={styles.welcome}>
-         <p>Yeni bir</p>
-         <p className={styles.logo}>cmis</p> <p>hesabı oluşturun</p>
-      </div>
+        <UserType userType={userType} setUserType={setUserType} />
 
-      <input type={"text"} name='username' placeholder={"kullanıcı adı"} onChange={handleChange} />
-      
-      {userType === "student" ? 
-        <input type={"text"} name='name' placeholder={"isim ve soyisim"} onChange={handleChange}/> :
-        <input type={"text"} name='name' placeholder={"topluluk/takım adı"} onChange={handleChange} />    
-      }
-      <input type={"password"} name='password' placeholder={"şifre"} onChange={handleChange} />
-      <input type={"password"} name='confirmPassword' placeholder={"şifre tekrar"} onChange={handleChange} />
+        <div className={styles.welcome}>
+          <p>Yeni bir</p>
+          <p className={styles.logo}>cmis</p> <p>hesabı oluşturun</p>
+        </div>
 
-      <div className={styles.entrance}>
-        <button onClick={handleClick}> Kayıt Ol </button>
-      </div>
+        {userType === 'student' ? (
+          <>
+            <input type={'text'} name='firstName' placeholder={'isim'} onChange={handleChange} />
+            <input type={'text'} name='lastName' placeholder={'soy isim'} onChange={handleChange} />
+          </>
+        ) : (
+          <input
+            type={'text'}
+            name='firstName'
+            placeholder={'topluluk/takım ismi'}
+            onChange={handleChange}
+          />
+        )}
+        <input type={'text'} name='email' placeholder={'email'} onChange={handleChange} />
+        <input type={'password'} name='password' placeholder={'şifre'} onChange={handleChange} />
+        <input
+          type={'password'}
+          name='confirmPassword'
+          placeholder={'şifre tekrar'}
+          onChange={handleChange}
+        />
 
-      <div className={styles.foot}>
-        <p className={styles.logo}>cmis</p> <p>hesabınızla giris yapmak için</p> <a href="">tıklayın</a>
+        <div className={styles.entrance}>
+          <button onClick={handleClick}> Kayıt Ol </button>
+        </div>
+
+        <div className={styles.foot}>
+          <p className={styles.logo}>cmis</p> <p>hesabınızla giris yapmak için</p>{' '}
+          <a
+            onClick={() => {
+              setIsLoginOpen(true);
+              setIsSignUpOpen(false);
+            }}
+          >
+            tıklayın
+          </a>
+        </div>
       </div>
-      
     </div>
-  )
+  );
 }
 
-export default Register
+export default Register;

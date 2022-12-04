@@ -1,11 +1,12 @@
 import styles from './CommunityProfilePage.module.scss';
 import { Tabs, Link, Post } from 'components';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import clsx from 'clsx';
+import { AuthContext } from 'pages/_app';
 
 export const dummyCommunity = {
-  id: 'xRTtShHBupaYOvugN0Bvp',
+  id: '2',
   name: 'GTÜ Bilgisayar Topluluğu',
   pfpSrc: '/images/pfp1.png',
   bannerSrc: '/images/banner1.png',
@@ -13,8 +14,8 @@ export const dummyCommunity = {
   description:
     'Community description. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
   tags: ['bilim', 'teknoloji', 'sanat', 'doğa', 'elektronik', 'spor', 'denizcilik'],
-  followerCount: 1234,
-  memberCount: 123,
+  followerCount: 0,
+  memberCount: 0,
   isFollowed: false,
   isMember: false,
 };
@@ -48,10 +49,11 @@ export default function CommunityProfilePage({ children }) {
   const router = useRouter();
   const [data, setData] = useState({});
   const [profilePath, setProfilePath] = useState('');
+  const authContext = useContext(AuthContext);
 
   useEffect(() => {
     // fetch data with id from backend
-    if (router.query.id === 'xRTtShHBupaYOvugN0Bvp') {
+    if (router.query.id === '2') {
       setData({ ...dummyCommunity });
     } else if (router.query.id === 'Jz4rdsWpk2xZYan86a6kW') {
       setData({ ...dummyTeam });
@@ -68,13 +70,22 @@ export default function CommunityProfilePage({ children }) {
     setData((oldData) => {
       const newData = { ...oldData };
       newData.isFollowed = !newData.isFollowed;
+      let method;
       if (newData.isFollowed) {
-        // send follow post request
+        method = 'POST';
         newData.followerCount++;
       } else {
-        // send unfollow post request
+        method = 'DELETE';
         newData.followerCount--;
       }
+      fetch(`http://localhost:8070/api/cmis/communities/${router.query.id}/followers`, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: authContext.userData.id }),
+      });
+      console.log(JSON.stringify({ id: authContext.userData.id }));
       return newData;
     });
   }

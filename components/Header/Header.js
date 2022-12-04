@@ -1,43 +1,31 @@
 import styles from './Header.module.scss';
 import { Link } from 'components';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { HeaderTab } from 'components';
 import Login from 'components/LoginRegister/Login/Login';
 import Register from 'components/LoginRegister/Register/Register';
+import { AuthContext } from 'pages/_app';
 
 export default function Header() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
-  const [isSignedUp, setIsSignedUp] = useState(false);
-
+  const authContext = useContext(AuthContext);
 
   function onLogInClicked() {
-    setIsLoginOpen(!isLoginOpen);
-    setIsSignUpOpen(false);
+    setIsLoginOpen(true);
   }
 
   function onSignUpClicked() {
-    setIsSignUpOpen(!isSignUpOpen);
-    setIsLoginOpen(false);
+    setIsSignUpOpen(true);
   }
-
-  
-  // Arrow function to close the login/register modal
-  const closeLoginRegister = () => {
-    setIsLoginOpen(false);
-    setIsSignUpOpen(false);
-  }
-
-  
 
   function onBookmarksClicked() {}
 
   function onDmClicked() {}
 
   function onProfileClicked() {
-    setIsLoggedIn(false);
+    authContext.signOut();
   }
 
   return (
@@ -79,22 +67,22 @@ export default function Header() {
         <input className={styles.searchBar} type='text' placeholder="cmis'te ara" />
       </div>
       <div className={styles.flex2}>
-        {!isLoggedIn ? (
-            <>
+        {!authContext.isLoggedIn ? (
+          <>
             <button className={styles.loginBtn} onClick={onLogInClicked}>
               Giriş
             </button>
             <button className={styles.loginBtn} onClick={onSignUpClicked}>
               Kayıt Ol
             </button>
-            
-            {isLoginOpen ? (
-            <Login setIsLoggedIn={setIsLoggedIn} />
-            ) : null}
 
-            {isSignUpOpen ? (
-              <Register setIsSignedUp={setIsSignedUp} setIsLoggedIn={setIsLoggedIn} />
-            ) : null}
+            {isLoginOpen && (
+              <Login setIsLoginOpen={setIsLoginOpen} setIsSignUpOpen={setIsSignUpOpen} />
+            )}
+
+            {isSignUpOpen && (
+              <Register setIsLoginOpen={setIsLoginOpen} setIsSignUpOpen={setIsSignUpOpen} />
+            )}
           </>
         ) : (
           <>
@@ -112,12 +100,9 @@ export default function Header() {
               onClick={onProfileClicked}
             >
               <img src='/images/pfp1.png' alt='dm' />
-            </button>         
+            </button>
           </>
         )}
-        
-
-
       </div>
     </header>
   );
