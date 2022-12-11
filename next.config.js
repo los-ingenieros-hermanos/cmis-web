@@ -1,3 +1,5 @@
+const permanent = false;
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -7,42 +9,47 @@ const nextConfig = {
       {
         source: `/${encodeURIComponent('yaklaşan-etkinlikler')}/:path*`,
         destination: '/yaklasan-etkinlikler/:path*',
-        permanent: true,
+        permanent,
       },
       {
         source: `/${encodeURIComponent('askıda-proje')}/:path*`,
         destination: '/askida-proje/:path*',
-        permanent: true,
+        permanent,
       },
       {
         source: `/${encodeURIComponent('takımlar')}/:path*`,
         destination: '/takimlar/:path*',
-        permanent: true,
+        permanent,
       },
       {
         source: '/topluluklar/:id',
         destination: '/topluluklar/:id/gonderiler',
-        permanent: true,
+        permanent,
       },
       {
         source: '/takimlar/:id',
         destination: '/takimlar/:id/gonderiler',
-        permanent: true,
+        permanent,
       },
       {
         source: `/:base*/${encodeURIComponent('gönderiler')}/:path*`,
         destination: '/:base*/gonderiler/:path*',
-        permanent: true,
+        permanent,
       },
       {
         source: `/:base*/${encodeURIComponent('yaklaşan-etkinlikler')}/:path*`,
         destination: '/:base*/yaklasan-etkinlikler/:path*',
-        permanent: true,
+        permanent,
       },
       {
         source: `/:base*/${encodeURIComponent('yönetim')}/:path*`,
         destination: '/:base*/yonetim/:path*',
-        permanent: true,
+        permanent,
+      },
+      {
+        source: `/:base*/yonetim`,
+        destination: '/:base*/yonetim/uyeler',
+        permanent,
       },
     ];
   },

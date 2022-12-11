@@ -8,16 +8,14 @@ import Register from 'components/LoginRegister/Register/Register';
 import { AuthContext } from 'pages/_app';
 
 export default function Header() {
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const authContext = useContext(AuthContext);
 
-  function onLogInClicked() {
-    setIsLoginOpen(true);
+  function onLoginClicked() {
+    authContext.setIsLoginOpen(true);
   }
 
   function onSignUpClicked() {
-    setIsSignUpOpen(true);
+    authContext.setIsSignUpOpen(true);
   }
 
   function onBookmarksClicked() {}
@@ -69,20 +67,16 @@ export default function Header() {
       <div className={styles.flex2}>
         {!authContext.isLoggedIn ? (
           <>
-            <button className={styles.loginBtn} onClick={onLogInClicked}>
+            <button className={styles.loginBtn} onClick={onLoginClicked}>
               Giriş
             </button>
             <button className={styles.loginBtn} onClick={onSignUpClicked}>
               Kayıt Ol
             </button>
 
-            {isLoginOpen && (
-              <Login setIsLoginOpen={setIsLoginOpen} setIsSignUpOpen={setIsSignUpOpen} />
-            )}
+            {authContext.isLoginOpen && <Login />}
 
-            {isSignUpOpen && (
-              <Register setIsLoginOpen={setIsLoginOpen} setIsSignUpOpen={setIsSignUpOpen} />
-            )}
+            {authContext.isSignUpOpen && <Register />}
           </>
         ) : (
           <>

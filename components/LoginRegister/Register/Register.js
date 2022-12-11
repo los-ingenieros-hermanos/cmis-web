@@ -15,7 +15,7 @@ function Register({ setIsLoginOpen, setIsSignUpOpen }) {
   const authContext = useContext(AuthContext);
 
   function onBackgroundClicked() {
-    setIsSignUpOpen(false);
+    authContext.setIsSignUpOpen(false);
   }
 
   const handleChange = (e) => {
@@ -49,7 +49,7 @@ function Register({ setIsLoginOpen, setIsSignUpOpen }) {
           userType,
         );
         if (data) {
-          setIsSignUpOpen(false);
+          authContext.setIsSignUpOpen(false);
           alert('Kayıt başarılı.');
         } else {
           alert('Kayıt başarısız');
@@ -102,8 +102,8 @@ function Register({ setIsLoginOpen, setIsSignUpOpen }) {
           <p className={styles.logo}>cmis</p> <p>hesabınızla giris yapmak için</p>{' '}
           <a
             onClick={() => {
-              setIsLoginOpen(true);
-              setIsSignUpOpen(false);
+              authContext.setIsLoginOpen(true);
+              authContext.setIsSignUpOpen(false);
             }}
           >
             tıklayın

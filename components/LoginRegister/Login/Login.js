@@ -3,13 +3,13 @@ import UserType from '../UserType/UserType';
 import { useContext, useState } from 'react';
 import { AuthContext } from 'pages/_app';
 
-function Login({ setIsLoginOpen, setIsSignUpOpen }) {
+function Login() {
   const [user, setUser] = useState({ email: '', password: '' });
   const [userType, setUserType] = useState('student');
   const authContext = useContext(AuthContext);
 
   function onBackgroundClicked() {
-    setIsLoginOpen(false);
+    authContext.setIsLoginOpen(false);
   }
 
   const handleChange = (e) => {
@@ -23,7 +23,7 @@ function Login({ setIsLoginOpen, setIsSignUpOpen }) {
   const handleClick = async () => {
     const data = await authContext.signIn(user.email, user.password);
     if (data) {
-      setIsLoginOpen(false);
+      authContext.setIsLoginOpen(false);
       alert('Giris Basarili');
     } else {
       alert('Giris Basarisiz');
@@ -57,8 +57,8 @@ function Login({ setIsLoginOpen, setIsSignUpOpen }) {
           <p className={styles.logo}>cmis</p> <p>hesabı oluşturmak için</p>{' '}
           <a
             onClick={() => {
-              setIsLoginOpen(false);
-              setIsSignUpOpen(true);
+              authContext.setIsLoginOpen(false);
+              authContext.setIsSignUpOpen(true);
             }}
           >
             tıklayın

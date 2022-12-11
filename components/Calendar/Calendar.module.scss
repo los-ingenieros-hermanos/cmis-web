@@ -1,0 +1,47 @@
+@use 'styles/_macros' as *;
+@use 'sass:color';
+
+.calendar {
+  @include panel;
+  margin-top: 16px;
+  padding: 16px;
+
+  h2 {
+    font-weight: 500;
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+}
+
+.dayNames {
+  display: flex;
+}
+
+.dayName {
+  width: calc(608px / 7);
+  font-weight: 500;
+}
+
+.monthFlex {
+  display: flex;
+  flex-direction: column;
+}
+
+.weekFlex {
+  display: flex;
+}
+
+.day {
+  width: calc(608px / 7);
+  height: calc(608px / 7);
+  border: solid black 1px;
+}
+
+.emptyDay {
+  border: solid transparent 1px;
+  border-bottom: solid black 1px;
+}
+
+.currentDay {
+  background-color: color.adjust($main-color, $alpha: -0.5);
+}

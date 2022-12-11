@@ -4,6 +4,7 @@ import Custom404 from 'pages/404';
 import { useContext, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
+import { api } from 'pages/_app';
 
 const dummyCommunity = {
   type: 'topluluklar',
@@ -78,8 +79,18 @@ function FollowedListElement({ data }) {
 
 export default function Communities() {
   const router = useRouter();
-  const [communityType, setCommunityType] = useState('');
-
+  const [communityType, setCommunityType] = useState(''); /*
+  const [mainCommunitiesList, setMainCommunitiesList] = useState([]);
+  const [followedCommunitiesList, setFollowedCommunitiesList] = useState([]);
+  
+  useEffect(() => {
+    (async () => {
+      const res = await fetch(api('communities'));
+      const communities = res.json();
+      console.log(communities);
+    })();
+  }, []);
+*/
   useEffect(() => {
     if (router.query.communityType === 'topluluklar') {
       setCommunityType('topluluklar');
@@ -95,7 +106,8 @@ export default function Communities() {
   ) : (
     <div className={styles.tabsAndMainList}>
       <Tabs
-        height={40}
+        fontSize='20px'
+        padding='5px'
         tabs={[
           { name: 'Topluluklar', url: '/topluluklar' },
           { name: 'Takımlar', url: '/takimlar' },

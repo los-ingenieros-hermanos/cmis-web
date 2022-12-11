@@ -1,0 +1,6 @@
+@use 'styles/_macros.scss' as *;
+
+.management {
+  @include panel;
+  margin-top: 16px;
+}

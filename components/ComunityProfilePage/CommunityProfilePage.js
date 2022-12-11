@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import { AuthContext } from 'pages/_app';
 
 export const dummyCommunity = {
-  id: '2',
+  id: 'xRTtShHBupaYOvugN0Bvp',
   name: 'GTÜ Bilgisayar Topluluğu',
   pfpSrc: '/images/pfp1.png',
   bannerSrc: '/images/banner1.png',
@@ -35,7 +35,7 @@ export const dummyTeam = {
   isMember: false,
 };
 
-const isManager = false;
+const isManager = true;
 
 function Tag({ children }) {
   return (
@@ -53,7 +53,7 @@ export default function CommunityProfilePage({ children }) {
 
   useEffect(() => {
     // fetch data with id from backend
-    if (router.query.id === '2') {
+    if (router.query.id === 'xRTtShHBupaYOvugN0Bvp') {
       setData({ ...dummyCommunity });
     } else if (router.query.id === 'Jz4rdsWpk2xZYan86a6kW') {
       setData({ ...dummyTeam });
@@ -118,7 +118,8 @@ export default function CommunityProfilePage({ children }) {
       <h1>{data.name ?? 'Community'}</h1>
       <div className={styles.content}>
         <Tabs
-          height={40}
+          fontSize='20px'
+          padding='5px'
           tabs={[
             { name: 'Gönderiler', url: `${profilePath}/gonderiler` },
             { name: 'Yaklaşan Etkinlikler', url: `${profilePath}/yaklasan-etkinlikler` },
