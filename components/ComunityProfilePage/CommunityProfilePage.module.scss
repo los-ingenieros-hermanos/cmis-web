@@ -63,6 +63,18 @@
     cursor: pointer;
   }
 
+  .editConfirmationButtons {
+    position: absolute;
+    right: 16px;
+    display: flex;
+    gap: 16px;
+  }
+
+  textarea {
+    min-width: 100%;
+    max-width: 100%;
+  }
+
   .btnFlex {
     display: flex;
     gap: 16px;

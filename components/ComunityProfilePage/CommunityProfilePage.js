@@ -1,7 +1,7 @@
 import styles from './CommunityProfilePage.module.scss';
 import { Tabs, Link, Post } from 'components';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { AuthContext } from 'pages/_app';
 
@@ -50,6 +50,9 @@ export default function CommunityProfilePage({ children }) {
   const [data, setData] = useState({});
   const [profilePath, setProfilePath] = useState('');
   const authContext = useContext(AuthContext);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState({});
+  const [descriptionHeight, setDescriptionHeight] = useState();
 
   useEffect(() => {
     // fetch data with id from backend
@@ -63,8 +66,6 @@ export default function CommunityProfilePage({ children }) {
   useEffect(() => {
     setProfilePath(`/${router.query.communityType}/${router.query.id}`);
   }, [router.query.communityType, router.query.id]);
-
-  function onEditClicked() {}
 
   function onFollowClicked() {
     setData((oldData) => {
@@ -109,6 +110,24 @@ export default function CommunityProfilePage({ children }) {
     // open modal to send message
   }
 
+  useEffect(() => {
+    setIsEditing(false);
+  }, [data]);
+
+  function onEditClicked() {
+    setIsEditing(true);
+  }
+
+  function onCancelClicked() {
+    setIsEditing(false);
+  }
+
+  function onSaveClicked() {
+    setIsEditing(false);
+    // fetch put request for data
+    
+  }
+
   return (
     <div className={styles.page}>
       <div className={styles.bannerBg} style={{ backgroundColor: data.bannerBgColor }}>
@@ -128,17 +147,23 @@ export default function CommunityProfilePage({ children }) {
         />
         {children}
         <div className={styles.infoPanel}>
-          {isManager && (
+          {isManager && !isEditing ? (
             <button className={styles.editBtn} onClick={onEditClicked}>
               <img src='/icons/edit-icon.svg' alt='düzenle' />
             </button>
+          ) : (
+            <div className={styles.editConfirmationButtons}>
+              <button className='mainButton mainButtonNeutral' onClick={onCancelClicked}>
+                Vazgeç
+              </button>
+              <button className='mainButton' onClick={onSaveClicked}>
+                Kaydet
+              </button>
+            </div>
           )}
           <div className={styles.btnFlex}>
             {!isManager && (
-              <button
-                className={clsx('mainButton', data.isFollowed && 'mainButtonNegative')}
-                onClick={onFollowClicked}
-              >
+              <button className={clsx('mainButton', data.isFollowed && 'mainButtonNegative')} onClick={onFollowClicked}>
                 {data.isFollowed ? 'Takibi Bırak' : 'Takip Et'}
               </button>
             )}
@@ -146,16 +171,33 @@ export default function CommunityProfilePage({ children }) {
           </div>
           <div className={styles.btnFlex}>
             {!isManager && (
-              <button
-                className={clsx('mainButton', data.isMember && 'mainButtonNegative')}
-                onClick={onApplyClicked}
-              >
+              <button className={clsx('mainButton', data.isMember && 'mainButtonNegative')} onClick={onApplyClicked}>
                 {data.isMember ? 'Üyelikten Çık' : 'Üye Ol'}
               </button>
             )}
             <p className='bold'>{data.memberCount} Üye</p>
           </div>
-          <p>{data.description}</p>
+          {!isEditing ? (
+            <p
+              ref={(el) => {
+                if (el) {
+                  setDescriptionHeight(el.getBoundingClientRect().height);
+                }
+              }}
+            >
+              {data.description}
+            </p>
+          ) : (
+            <textarea
+              style={{ height: descriptionHeight }}
+              ref={(el) => {
+                if (el) {
+                  el.value = data.description;
+                }
+              }}
+              onChange={(e) => setEditData((oldEditData) => ({ ...oldEditData, description: e.target.value }))}
+            ></textarea>
+          )}
           <div className={styles.tagsFlex}>
             <p className='bold'>Etiketler:</p>
             {data.tags && data.tags.map((tag) => <Tag key={tag}>{tag}</Tag>)}

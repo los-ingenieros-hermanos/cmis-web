@@ -1,4 +1,5 @@
 @use 'styles/_macros' as *;
+@use 'sass:color';
 
 * {
   padding: 0;
@@ -56,6 +57,11 @@ a {
   &:hover {
     background-color: $main-color-darker;
   }
+
+  &:disabled {
+    background-color: gray;
+    cursor: default;
+  }
 }
 
 .mainButtonNegative {
@@ -63,6 +69,32 @@ a {
 
   &:hover {
     background-color: $red-darker;
+  }
+}
+
+.mainButtonNeutral {
+  background-color: #e8e8e8;
+  box-shadow: inset 0px 0px 0px 1px #666;
+  color: #666;
+
+  &:hover {
+    background-color: #f2f2f2;
+  }
+}
+
+input,
+textarea {
+  padding: 4px 8px;
+  border: 1px solid #666;
+  border-radius: $border-radius;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
+  }
+
+  &::placeholder {
+    color: #999;
   }
 }
 

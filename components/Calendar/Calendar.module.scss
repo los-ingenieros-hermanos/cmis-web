@@ -31,17 +31,52 @@
   display: flex;
 }
 
+.weekFlex:first-child {
+  .existingDay {
+    border-top: solid black 2px;
+  }
+
+  .emptyDay {
+    border-bottom: solid black 1px;
+  }
+
+  .rightBorder {
+    border-right: solid black 1px;
+  }
+}
+
+.weekFlex:last-child {
+  .existingDay {
+    border-bottom: solid black 2px;
+  }
+
+  .emptyDay {
+    border-top: solid black 1px;
+  }
+
+  .existingDay + .emptyDay {
+    border-left: solid black 1px;
+  }
+}
+
 .day {
   width: calc(608px / 7);
   height: calc(608px / 7);
+  padding-left: 4px;
+}
+
+.existingDay {
   border: solid black 1px;
 }
 
-.emptyDay {
-  border: solid transparent 1px;
-  border-bottom: solid black 1px;
+.existingDay:first-child {
+  border-left: solid black 2px;
+}
+
+.existingDay:last-child {
+  border-right: solid black 2px;
 }
 
 .currentDay {
-  background-color: color.adjust($main-color, $alpha: -0.5);
+  background-color: $light-purple;
 }

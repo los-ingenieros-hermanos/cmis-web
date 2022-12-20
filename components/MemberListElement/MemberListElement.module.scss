@@ -1,4 +1,15 @@
 .memberListElement {
   display: flex;
   gap: 8px;
+  align-items: center;
+
+  img,
+  .imageLink {
+    width: 40px;
+    height: 40px;
+  }
+
+  a {
+    color: #333;
+  }
 }
