@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { AuthContext } from 'pages/_app';
+import Login from 'components/LoginRegister/Login/Login';
 
   export const dummyCommunityPosts = [
     {
@@ -122,12 +123,36 @@ import { AuthContext } from 'pages/_app';
     );
   }
 
-  function LeftSide({ postData }) {
+  function LeftSide({ authContext }) {
     return (
         <ul className={styles.left}>
-            <p>Buraya linkler gelecek</p>
-            <p>Buraya linkler gelecek</p>
-
+            {authContext.isLoggedIn ? (
+                <li className={styles.item}>
+                  <Link href={'/profilim'}>
+                      <img src={'/icons/sidebar-profile.svg'} alt='profilim' />
+                  </Link>
+                  <Link href={'/profilim'}>Profilim</Link>
+                </li>
+            ) : (
+                <li className={styles.item} onClick={() => authContext.setIsLoginOpen(true)}>
+                  <img src={'/icons/sidebar-sign-in.svg'} alt='giris-yap' />
+                  <a>Giriş Yap</a>
+                </li>
+            )}
+            {authContext.isLoggedIn ? (
+                <li className={styles.item}>
+                  <Link href={'/kaydedilenler'}>
+                      <img src={'/icons/sidebar-bookmark.svg'} alt='kaydedilenler' />
+                  </Link>
+                  <Link href={'/profilim'}>Kaydedilenler</Link>
+                </li>
+            ) : (
+                <li className={styles.item} onClick={() => authContext.setIsSignUpOpen(true)}>
+                  <img src={'/icons/sidebar-sign-up.svg'} alt='kayit-ol' />
+                  <a>Kayıt Ol</a>
+                </li>
+            )}
+            
             {/* Bookmarks */}
             <li className={styles.item}>
               <Link href={'/yaklasan-etkinlikler'}>
@@ -159,10 +184,11 @@ import { AuthContext } from 'pages/_app';
 
 
   export default function HomePage() {
+    const authContext = useContext(AuthContext);
     return (
         <div className={styles.page}>
             <Banner />
-            <LeftSide />
+            <LeftSide authContext={authContext} />
             <Posts />
         </div>
     );
