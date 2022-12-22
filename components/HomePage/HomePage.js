@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import { AuthContext } from 'pages/_app';
 import Login from 'components/LoginRegister/Login/Login';
 
-  export const dummyCommunityPosts = [
+  const dummyCommunityPosts = [
     {
       community: {
         name: 'GTÜ Bilgisayar Topluluğu',
@@ -55,7 +55,7 @@ import Login from 'components/LoginRegister/Login/Login';
     },
   ];
   
-  export const dummyTeamPosts = [
+  const dummyTeamPosts = [
     {
       community: {
         name: 'Doğa Takımı',
@@ -91,35 +91,81 @@ import Login from 'components/LoginRegister/Login/Login';
     },
   ];
 
-    // Merge the two arrays
-    const dummyPosts = [...dummyCommunityPosts, ...dummyTeamPosts];
-    
-    // Sort the array by date
-    dummyPosts.sort((a, b) => {
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
-        return dateB - dateA;
-    });
+  // Merge the two arrays
+  const dummyPosts = [...dummyCommunityPosts, ...dummyTeamPosts];
   
-  function Banner() {
+  const dummyCommunity = {
+    type: 'topluluklar',
+    id: 'xRTtShHBupaYOvugN0Bvp',
+    name: 'GTÜ Bilgisayar Topluluğu',
+    pfpSrc: '/images/pfp1.png',
+    bannerSrc: '/images/banner1.png',
+    bannerBgColor: '#000000',
+    description:
+      'Community description. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
+    isFollowed: false,
+  };
+  
+  const dummyTeam = {
+    type: 'takimlar',
+    id: 'Jz4rdsWpk2xZYan86a6kW',
+    name: 'Doğa Takımı',
+    pfpSrc: '/images/pfp4.png',
+    bannerSrc: '/images/banner2.png',
+    bannerBgColor: '#1d5525',
+    description:
+      'Community description. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
+    isFollowed: false,
+  };
+
+  const followedTeamsOrCommunityList = Array(4).fill(<FollowedListElement data={dummyTeam} />);
+  followedTeamsOrCommunityList.push(...Array(4).fill(<FollowedListElement data={dummyCommunity} />));
+  
+
+  function Banner({ isGlobal, setIsGlobal, authContext }) {
     return (
       <div className={styles.banner}>
         <Link href={'/'}> Anasayfa </Link>
+        {authContext.isLoggedIn ? (
+          <div className={styles.dropdown}>
+          {isGlobal ? (
+              <img src="/icons/public-icon.svg" alt="public" height={20} width={20} />
+          ) : (
+              <img src="/icons/private-icon.svg" alt="private" height={20} width={20} />
+          )}
+          <img src="/icons/down-arrow.svg" alt="drop-down" />
+          <div className={styles.dropdownContent}>
+            <div className={styles.dropDownItem} onClick={() => setIsGlobal(true)}>
+              <img src="/icons/public-icon.svg" alt="public" height={14} width={14} />
+              <p>Genel</p>
+            </div>
+            <div className={styles.dropDownItem} onClick={() => setIsGlobal(false)}>
+              <img src="/icons/private-icon.svg" alt="private" height={14} width={14} />
+              <p>Takip Ettiklerim</p>
+            </div>
+          </div>
+        </div>
+        )
+        : (<></>)}
       </div>
     );
   }
 
-  function Posts() {
+  function Posts( { authContext , isGlobal } ) {
     const router = useRouter();
   
     // request id from backend and show 404 if id doesn't exist
     return (
-        <div>
+        <ul>
             {/* map the lists and pass datas to the Post componenent */}
             {dummyPosts.map((post) => (
-                <Post postData={post} />
+                <Post
+                    key={post.id}
+                    postData={post}
+                />
             ))}
-        </div>
+
+        </ul>
     );
   }
 
@@ -129,7 +175,7 @@ import Login from 'components/LoginRegister/Login/Login';
             {authContext.isLoggedIn ? (
                 <li className={styles.item}>
                   <Link href={'/profilim'}>
-                      <img src={'/icons/sidebar-profile.svg'} alt='profilim' />
+                      <img src={'/icons/sidebar-sign-in.svg'} alt='profilim' />
                   </Link>
                   <Link href={'/profilim'}>Profilim</Link>
                 </li>
@@ -182,14 +228,39 @@ import Login from 'components/LoginRegister/Login/Login';
     );
   }
 
+  function RightSide( {authContext} ) {
+    return ((authContext.isLoggedIn) ? (
+      <ul className={styles.right}>
+        <h2 className={styles.followedTitle}>Takip Ettiklerim</h2>
+        {followedTeamsOrCommunityList}
+      </ul>
+    ) : (<></>));
+  }
+
+  function FollowedListElement({ data }) {
+    return (
+      <li className={styles.followedListElement}>
+        <Link href={getHref(data)}>
+          <img src={data.pfpSrc} alt='profile picture' />
+        </Link>
+        <Link href={getHref(data)}>{data.name}</Link>
+      </li>
+    );
+  }
+
+  function getHref(data) {
+    return `/${data.type}/${data.id}`;
+  }
 
   export default function HomePage() {
     const authContext = useContext(AuthContext);
-    return (
+    const [isGlobal, setIsGlobal] = useState(true);
+      return (
         <div className={styles.page}>
-            <Banner />
+            <Banner isGlobal={isGlobal} setIsGlobal={setIsGlobal} authContext={authContext} />
             <LeftSide authContext={authContext} />
-            <Posts />
+            <Posts isGlobal={isGlobal}/>
+            <RightSide authContext={authContext} />
         </div>
     );
   }
