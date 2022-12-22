@@ -36,17 +36,25 @@ export default function Post({ postData }) {
         <div className={styles.flex2}>
           <Link href={postData.community.url || '#'}>{postData.community.name}</Link>
           <div className={styles.flex3}>
-            <div className={styles.highlight}>{postData.poster.name}</div>
-            <span className={styles.middot}>&middot;</span>
-            <div className={styles.highlight}>{postData.poster.role}</div>
-            <span className={styles.middot}>&middot;</span>
+            {postData.poster && 
+              <>
+              <div className={styles.highlight}>{postData.poster.name}</div>
+              <span className={styles.middot}>&middot;</span>
+              <div className={styles.highlight}>{postData.poster.role}</div>
+              <span className={styles.middot}>&middot;</span>
+              </>
+            }
             {postData.date}
-            <span className={styles.middot}>&middot;</span>
-            <img
-              src={postData.visibility === 'public' && '/icons/public-icon.svg'}
-              alt='visibility icon'
-              title={`${postData.visibility} post`}
-            />
+            {postData.visibility && 
+              <>
+              <span className={styles.middot}>&middot;</span>
+              <img
+                src={postData.visibility === 'public' && '/icons/public-icon.svg'}
+                alt='visibility icon'
+                title={`${postData.visibility} post`}
+              />
+              </>
+            }
           </div>
         </div>
       </div>
@@ -63,6 +71,7 @@ export default function Post({ postData }) {
         {isContentOverflown && <div className={styles.contentClickable}></div>}
         <h2>{postData.title}</h2>
         <p>{postData.content}</p>
+        {/* <img src="/images/dummy-image.png" alt="arrow down" /> */}
       </div>
       {postData.eventDetails && (
         <>
@@ -88,15 +97,19 @@ export default function Post({ postData }) {
       )}
       <div className={styles.flex4}>
         <div className={styles.btnFlex}>
-          <button className={styles.btnFlex} onClick={onLikeClicked}>
-            <img
-              src={isLiked ? '/icons/like-icon-active.svg' : '/icons/like-icon.svg'}
-              alt='beğen'
-            />
-            <span className={styles.bottomText}>Beğen</span>
-          </button>
-          <span className={styles.middot}>&middot;</span>
-          <span className={styles.bottomText}>{`${likeCount} Beğeni`}</span>
+          {postData.likeCount && 
+            <>
+            <button className={styles.btnFlex} onClick={onLikeClicked}>
+              <img
+                src={isLiked ? '/icons/like-icon-active.svg' : '/icons/like-icon.svg'}
+                alt='beğen'
+              />
+              <span className={styles.bottomText}>Beğen</span>
+              <span className={styles.middot}>&middot;</span>
+              <span className={styles.bottomText}>{`${likeCount} Beğeni`}</span>
+              </button>
+            </>
+          }
         </div>
         <button className={styles.btnFlex} onClick={onSaveClicked}>
           <img

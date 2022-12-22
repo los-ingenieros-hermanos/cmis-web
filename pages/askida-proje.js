@@ -1,3 +1,6 @@
+import ProjectIdea from "components/ProjectIdea/ProjectIdea";
 export default function ProjectIdeas() {
-  return <h2>Askıda Proje</h2>;
+  return (
+    <ProjectIdea />
+  );
 }
