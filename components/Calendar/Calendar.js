@@ -26,9 +26,7 @@ export default function Calendar({ date }) {
     dayIndex = dayIndex !== 0 ? dayIndex - 1 : 6; // Index based on monday being 0, normally sunday is 0
     for (let i = 0; i < dayIndex; i++) {
       weekElements[0].push(
-        <div
-          className={clsx(styles.day, styles.emptyDay, i === dayIndex - 1 && styles.rightBorder)}
-        ></div>,
+        <div key={i} className={clsx(styles.day, styles.emptyDay, i === dayIndex - 1 && styles.rightBorder)}></div>,
       );
     }
 
@@ -43,7 +41,10 @@ export default function Calendar({ date }) {
         startDate.getMonth() === today.getMonth() &&
         startDate.getDate() === today.getDate();
       weekElements[weekElements.length - 1].push(
-        <div className={clsx(styles.day, styles.existingDay, isDayToday && styles.currentDay)}>
+        <div
+          key={weekElements[weekElements.length - 1].length}
+          className={clsx(styles.day, styles.existingDay, isDayToday && styles.currentDay)}
+        >
           {startDate.getDate()}
         </div>,
       );
@@ -52,7 +53,7 @@ export default function Calendar({ date }) {
 
     while (weekElements[weekElements.length - 1].length < 7) {
       weekElements[weekElements.length - 1].push(
-        <div className={clsx(styles.day, styles.emptyDay)}></div>,
+        <div key={weekElements[weekElements.length - 1].length} className={clsx(styles.day, styles.emptyDay)}></div>,
       );
     }
 

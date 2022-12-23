@@ -4,7 +4,7 @@ import Custom404 from 'pages/404';
 import { useContext, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
-import { api } from 'pages/_app';
+import { api, AuthContext } from 'pages/_app';
 
 const dummyCommunity = {
   type: 'topluluklar',
@@ -31,16 +31,11 @@ const dummyTeam = {
 };
 
 function getHref(data) {
-  return `/${data.type}/${data.id}`;
+  const type = data.user.roles[0].name === 'ROLE_COMMUNITY' ? 'topluluklar' : 'takimlar';
+  return `/${type}/${data.id}`;
 }
 
-const mainCommunitiesList = Array(9).fill(<MainListElement data={dummyCommunity} />);
-const followedCommunitiesList = Array(4).fill(<FollowedListElement data={dummyCommunity} />);
-
-const mainTeamsList = Array(9).fill(<MainListElement data={dummyTeam} />);
-const followedTeamsList = Array(4).fill(<FollowedListElement data={dummyTeam} />);
-
-function MainListElement({ data }) {
+function CommunitiesListElement({ data }) {
   const [isFollowed, setIsFollowed] = useState(data.isFollowed);
 
   function onFollowClicked() {
@@ -49,15 +44,12 @@ function MainListElement({ data }) {
 
   return (
     <li className={styles.mainListElement}>
-      <img className={styles.banner} src={data.bannerSrc} alt='banner' />
-      <img className={styles.pfp} src={data.pfpSrc} alt='profile picture' />
-      <h2>{data.name}</h2>
-      <p>{data.description}</p>
+      <img className={styles.banner} src={`data:image/png;base64, ${data.banner}`} alt='banner' />
+      <img className={styles.pfp} src={`data:image/png;base64, ${data.image}`} alt='profile picture' />
+      <h2>{data.user.firstName}</h2>
+      <p>{data.info}</p>
       <div className={styles.buttons}>
-        <button
-          onClick={onFollowClicked}
-          className={clsx('mainButton', isFollowed && 'mainButtonNegative')}
-        >
+        <button onClick={onFollowClicked} className={clsx('mainButton', isFollowed && 'mainButtonNegative')}>
           {isFollowed ? 'Takipten Çık' : 'Takip Et'}
         </button>
         <Link href={getHref(data)}>Profile Git {'>'}</Link>
@@ -66,11 +58,11 @@ function MainListElement({ data }) {
   );
 }
 
-function FollowedListElement({ data }) {
+function FollowedCommunitiesListElement({ data }) {
   return (
     <li className={styles.followedListElement}>
       <Link href={getHref(data)}>
-        <img src={data.pfpSrc} alt='profile picture' />
+        <img src={`data:image/png;base64, ${data.image}`} alt='profile picture' />
       </Link>
       <Link href={getHref(data)}>{data.name}</Link>
     </li>
@@ -79,29 +71,39 @@ function FollowedListElement({ data }) {
 
 export default function Communities() {
   const router = useRouter();
-  const [communityType, setCommunityType] = useState(''); /*
-  const [mainCommunitiesList, setMainCommunitiesList] = useState([]);
+  const authContext = useContext(AuthContext);
+  const [communitiesList, setCommunitiesList] = useState([]);
   const [followedCommunitiesList, setFollowedCommunitiesList] = useState([]);
-  
+
   useEffect(() => {
     (async () => {
-      const res = await fetch(api('communities'));
-      const communities = res.json();
-      console.log(communities);
-    })();
-  }, []);
-*/
-  useEffect(() => {
-    if (router.query.communityType === 'topluluklar') {
-      setCommunityType('topluluklar');
-    } else if (router.query.communityType === 'takimlar') {
-      setCommunityType('takimlar');
-    } else {
-      setCommunityType('other');
-    }
-  }, [router.query.communityType]);
+      let mainCommunities;
+      let followedCommunities;
 
-  return communityType === 'other' ? (
+      if (router.query.communityType === 'topluluklar') {
+        // send backend topluluklar as type
+        mainCommunities = await authContext.getCommunities();
+        if (authContext.userData?.roles[0] === 'ROLE_STUDENT') {
+          followedCommunities = await authContext.getFollowedCommunities(authContext.userData.id);
+        }
+      } else if (router.query.communityType === 'takimlar') {
+        // send backend takımlar as type
+        mainCommunities = await authContext.getCommunities();
+        if (authContext.userData?.roles[0] === 'ROLE_STUDENT') {
+          followedCommunities = await authContext.getFollowedCommunities(authContext.userData.id);
+        }
+      }
+
+      setCommunitiesList(
+        mainCommunities?.map((community) => <CommunitiesListElement key={community.id} data={community} />),
+      );
+      setFollowedCommunitiesList(
+        followedCommunities?.map((community) => <FollowedCommunitiesListElement key={community.id} data={community} />),
+      );
+    })();
+  }, [authContext, router.query.communityType]);
+
+  return router.query.communityType !== 'topluluklar' && router.query.communityType !== 'takimlar' ? (
     <Custom404 />
   ) : (
     <div className={styles.tabsAndMainList}>
@@ -114,11 +116,13 @@ export default function Communities() {
         ]}
       />
       <ul className={styles.mainList}>
-        {communityType === 'topluluklar' ? mainCommunitiesList : mainTeamsList}
-        <div className={styles.followedPanel}>
-          <h2 className={styles.followedTitle}>Takip Ettiklerim</h2>
-          {communityType === 'topluluklar' ? followedCommunitiesList : followedTeamsList}
-        </div>
+        {communitiesList}
+        {authContext.userData?.roles[0] === 'ROLE_STUDENT' && (
+          <div className={styles.followedPanel}>
+            <h2 className={styles.followedTitle}>Takip Ettiklerim</h2>
+            {followedCommunitiesList}
+          </div>
+        )}
       </ul>
     </div>
   );

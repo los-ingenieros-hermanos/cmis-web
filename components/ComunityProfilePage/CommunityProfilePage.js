@@ -114,6 +114,10 @@ export default function CommunityProfilePage({ children }) {
     setIsEditing(false);
   }, [data]);
 
+  function onDescriptionTextareaChanged(e) {
+    setEditData((oldEditData) => ({ ...oldEditData, description: e.target.value }));
+  }
+
   function onEditClicked() {
     setIsEditing(true);
   }
@@ -124,8 +128,7 @@ export default function CommunityProfilePage({ children }) {
 
   function onSaveClicked() {
     setIsEditing(false);
-    // fetch put request for data
-    
+    authContext.updateCommunityData({ id: router.query.id, info: editData.description });
   }
 
   return (
@@ -195,7 +198,7 @@ export default function CommunityProfilePage({ children }) {
                   el.value = data.description;
                 }
               }}
-              onChange={(e) => setEditData((oldEditData) => ({ ...oldEditData, description: e.target.value }))}
+              onChange={onDescriptionTextareaChanged}
             ></textarea>
           )}
           <div className={styles.tagsFlex}>

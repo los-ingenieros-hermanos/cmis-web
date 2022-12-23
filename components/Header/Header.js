@@ -65,7 +65,7 @@ export default function Header() {
         <input className={styles.searchBar} type='text' placeholder="cmis'te ara" />
       </div>
       <div className={styles.flex2}>
-        {!authContext.isLoggedIn ? (
+        {!authContext.userData ? (
           <>
             <button className={styles.loginBtn} onClick={onLoginClicked}>
               Giriş
@@ -80,19 +80,13 @@ export default function Header() {
           </>
         ) : (
           <>
-            <button
-              className={clsx(styles.bookmarksBtn, 'centerVertically')}
-              onClick={onBookmarksClicked}
-            >
+            <button className={clsx(styles.bookmarksBtn, 'centerVertically')} onClick={onBookmarksClicked}>
               <img src='/icons/bookmarks-icon.svg' alt='bookmarks' />
             </button>
             <button className={clsx(styles.dmBtn, 'centerVertically')} onClick={onDmClicked}>
               <img src='/icons/dm-icon.svg' alt='dm' />
             </button>
-            <button
-              className={clsx(styles.profileBtn, 'centerVertically')}
-              onClick={onProfileClicked}
-            >
+            <button className={clsx(styles.profileBtn, 'centerVertically')} onClick={onProfileClicked}>
               <img src='/images/pfp1.png' alt='dm' />
             </button>
           </>

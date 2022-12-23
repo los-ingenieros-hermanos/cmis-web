@@ -7,7 +7,7 @@ export default function UpcomingEvents() {
     let calendars = [];
     let date = new Date();
     for (let i = 0; i < 12; i++) {
-      calendars.push(<Calendar date={new Date(date)} />);
+      calendars.push(<Calendar key={i} date={new Date(date)} />);
       date.setMonth(date.getMonth() + 1);
     }
     return calendars;
