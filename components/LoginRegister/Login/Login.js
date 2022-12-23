@@ -31,7 +31,6 @@ function Login() {
   };
 
   // Buraya UserType'a gore giris cikis yapilabilir
-
   return (
     <div className={styles.background} onMouseDown={onBackgroundClicked}>
       <div className={styles.login} onMouseDown={(e) => e.stopPropagation()}>
