@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { AuthContext } from 'pages/_app';
+import LeftMenu from 'components/LeftMenu/LeftMenu';
 
   const dummyIdeaPosts = [
     {
@@ -16,6 +17,7 @@ import { AuthContext } from 'pages/_app';
       title: 'Lorem Ipsum Post Title',
       content:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
+      likeCount: 236,
     },
     {
       community: {
@@ -27,6 +29,7 @@ import { AuthContext } from 'pages/_app';
       title: 'Lorem Ipsum Post Title',
       content:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
+      likeCount: 236,
     },
     {
       community: {
@@ -38,6 +41,7 @@ import { AuthContext } from 'pages/_app';
       title: 'Lorem Ipsum Post Title',
       content:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
+      likeCount: 236,
     },
   ];
   
@@ -85,72 +89,13 @@ import { AuthContext } from 'pages/_app';
     );
   }
 
-  function LeftSide({ authContext }) {
+  function RightSide( ) {
     return (
-        <ul className={styles.left}>
-            {authContext.isLoggedIn ? (
-                <li className={styles.item}>
-                  <Link href={'/profilim'}>
-                      <img src={'/icons/sidebar-sign-in.svg'} alt='profilim' />
-                  </Link>
-                  <Link href={'/profilim'}>Profilim</Link>
-                </li>
-            ) : (
-                <li className={styles.item} onClick={() => authContext.setIsLoginOpen(true)}>
-                  <img src={'/icons/sidebar-sign-in.svg'} alt='giris-yap' />
-                  <a>Giriş Yap</a>
-                </li>
-            )}
-            {authContext.isLoggedIn ? (
-                <li className={styles.item}>
-                  <Link href={'/kaydedilenler'}>
-                      <img src={'/icons/sidebar-bookmark.svg'} alt='kaydedilenler' />
-                  </Link>
-                  <Link href={'/profilim'}>Kaydedilenler</Link>
-                </li>
-            ) : (
-                <li className={styles.item} onClick={() => authContext.setIsSignUpOpen(true)}>
-                  <img src={'/icons/sidebar-sign-up.svg'} alt='kayit-ol' />
-                  <a>Kayıt Ol</a>
-                </li>
-            )}
-            
-            {/* Bookmarks */}
-            <li className={styles.item}>
-              <Link href={'/yaklasan-etkinlikler'}>
-                  <img src={'/icons/sidebar-events.svg'} alt='yaklasan-etkinlikler' />
-              </Link>
-              <Link href={'/yaklasan-etkinlikler'}>
-                Etkinlikler
-              </Link>
-            </li>
-            <li className={styles.item}>
-              <Link href={'/topluluklar'}>
-                  <img src={'/icons/sidebar-communities.svg'} alt='topluluklar/takimlar' />
-              </Link>
-              <Link href={'/topluluklar'}>
-                Topluluklar/Takımlar
-              </Link>
-            </li>
-            <li className={styles.item}>
-              <Link href={'/askida-proje'}>
-                  <img src={'/icons/sidebar-project-idea.svg'} alt='yaklasan-etkinlikler' />
-              </Link>
-              <Link href={'/askida-proje'}>
-                Askıda Proje
-              </Link>
-            </li>
-        </ul>
-    );
-  }
-
-  function RightSide( {authContext} ) {
-    return ((authContext.isLoggedIn) ? (
       <ul className={styles.right}>
         <h2 className={styles.followedTitle}>Askıda Projesi Olanlar</h2>
         {UserHasIdeaListElementList}
       </ul>
-    ) : (<></>));
+    );
   }
 
   function UserHasIdeaListElement({ data }) {
@@ -174,7 +119,7 @@ import { AuthContext } from 'pages/_app';
       return (
         <div className={styles.page}>
             <Banner isGlobal={isGlobal} setIsGlobal={setIsGlobal} authContext={authContext} />
-            <LeftSide authContext={authContext} />
+            <LeftMenu authContext={authContext} />
             <Posts isGlobal={isGlobal}/>
             <RightSide authContext={authContext} />
         </div>

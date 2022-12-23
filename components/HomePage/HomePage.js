@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { AuthContext } from 'pages/_app';
+import LeftMenu from 'components/LeftMenu/LeftMenu';
+
 
   const dummyCommunityPosts = [
     {
@@ -119,7 +121,6 @@ import { AuthContext } from 'pages/_app';
 
   const followedTeamsOrCommunityList = Array(4).fill(<FollowedListElement data={dummyTeam} />);
   followedTeamsOrCommunityList.push(...Array(4).fill(<FollowedListElement data={dummyCommunity} />));
-  
 
   function Banner({ isGlobal, setIsGlobal, authContext }) {
     return (
@@ -168,65 +169,6 @@ import { AuthContext } from 'pages/_app';
     );
   }
 
-  function LeftSide({ authContext }) {
-    return (
-        <ul className={styles.left}>
-            {authContext.isLoggedIn ? (
-                <li className={styles.item}>
-                  <Link href={'/profilim'}>
-                      <img src={'/icons/sidebar-sign-in.svg'} alt='profilim' />
-                  </Link>
-                  <Link href={'/profilim'}>Profilim</Link>
-                </li>
-            ) : (
-                <li className={styles.item} onClick={() => authContext.setIsLoginOpen(true)}>
-                  <img src={'/icons/sidebar-sign-in.svg'} alt='giris-yap' />
-                  <a>Giriş Yap</a>
-                </li>
-            )}
-            {authContext.isLoggedIn ? (
-                <li className={styles.item}>
-                  <Link href={'/kaydedilenler'}>
-                      <img src={'/icons/sidebar-bookmark.svg'} alt='kaydedilenler' />
-                  </Link>
-                  <Link href={'/profilim'}>Kaydedilenler</Link>
-                </li>
-            ) : (
-                <li className={styles.item} onClick={() => authContext.setIsSignUpOpen(true)}>
-                  <img src={'/icons/sidebar-sign-up.svg'} alt='kayit-ol' />
-                  <a>Kayıt Ol</a>
-                </li>
-            )}
-            
-            {/* Bookmarks */}
-            <li className={styles.item}>
-              <Link href={'/yaklasan-etkinlikler'}>
-                  <img src={'/icons/sidebar-events.svg'} alt='yaklasan-etkinlikler' />
-              </Link>
-              <Link href={'/yaklasan-etkinlikler'}>
-                Etkinlikler
-              </Link>
-            </li>
-            <li className={styles.item}>
-              <Link href={'/topluluklar'}>
-                  <img src={'/icons/sidebar-communities.svg'} alt='topluluklar/takimlar' />
-              </Link>
-              <Link href={'/topluluklar'}>
-                Topluluklar/Takımlar
-              </Link>
-            </li>
-            <li className={styles.item}>
-              <Link href={'/askida-proje'}>
-                  <img src={'/icons/sidebar-project-idea.svg'} alt='yaklasan-etkinlikler' />
-              </Link>
-              <Link href={'/askida-proje'}>
-                Askıda Proje
-              </Link>
-            </li>
-        </ul>
-    );
-  }
-
   function RightSide( {authContext} ) {
     return ((authContext.isLoggedIn) ? (
       <ul className={styles.right}>
@@ -254,10 +196,11 @@ import { AuthContext } from 'pages/_app';
   export default function HomePage() {
     const authContext = useContext(AuthContext);
     const [isGlobal, setIsGlobal] = useState(true);
+
       return (
         <div className={styles.page}>
             <Banner isGlobal={isGlobal} setIsGlobal={setIsGlobal} authContext={authContext} />
-            <LeftSide authContext={authContext} />
+            <LeftMenu authContext={authContext} />
             <Posts isGlobal={isGlobal}/>
             <RightSide authContext={authContext} />
         </div>

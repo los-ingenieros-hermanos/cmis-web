@@ -12,7 +12,7 @@ export const AuthContext = createContext();
 function MyApp({ Component, pageProps }) {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState({});
 
   const signUp = useCallback(async (firstName, lastName, email, password, role) => {
