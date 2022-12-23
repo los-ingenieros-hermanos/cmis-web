@@ -83,15 +83,11 @@ export default function Communities() {
       if (router.query.communityType === 'topluluklar') {
         // send backend topluluklar as type
         mainCommunities = await authContext.getCommunities();
-        if (authContext.userData?.roles[0] === 'ROLE_STUDENT') {
-          followedCommunities = await authContext.getFollowedCommunities(authContext.userData.id);
-        }
+        followedCommunities = await authContext.getFollowedCommunities();
       } else if (router.query.communityType === 'takimlar') {
         // send backend takımlar as type
         mainCommunities = await authContext.getCommunities();
-        if (authContext.userData?.roles[0] === 'ROLE_STUDENT') {
-          followedCommunities = await authContext.getFollowedCommunities(authContext.userData.id);
-        }
+        followedCommunities = await authContext.getFollowedCommunities();
       }
 
       setCommunitiesList(
