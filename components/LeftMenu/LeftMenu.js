@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function LeftMenu({ authContext }) {
     return (
         <ul className={styles.left}>
-            {authContext.isLoggedIn ? (
+            {authContext.signIn ? (
                 <li className={styles.item}>
                   <Link href={'/profilim'}>
                       <img src={'/icons/sidebar-sign-in.svg'} alt='profilim' />
@@ -17,7 +17,7 @@ export default function LeftMenu({ authContext }) {
                   <a>Giriş Yap</a>
                 </li>
             )}
-            {authContext.isLoggedIn ? (
+            {authContext.signIn ? (
                 <li className={styles.item}>
                   <Link href={'/kaydedilenler'}>
                       <img src={'/icons/sidebar-bookmark.svg'} alt='kaydedilenler' />
