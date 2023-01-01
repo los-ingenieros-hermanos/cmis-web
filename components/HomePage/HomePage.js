@@ -1,5 +1,5 @@
 import styles from './HomePage.module.scss';
-import { Tabs, Link, Post } from 'components';
+import { Link, Post } from 'components';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
@@ -122,24 +122,24 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
   const followedTeamsOrCommunityList = Array(4).fill(<FollowedListElement data={dummyTeam} />);
   followedTeamsOrCommunityList.push(...Array(4).fill(<FollowedListElement data={dummyCommunity} />));
 
-  function Banner({ isGlobal, setIsGlobal, authContext }) {
+  function Banner({ isGlobalContext, setisGlobalContext, authContext }) {
     return (
       <div className={styles.banner}>
         <Link href={'/'}> Anasayfa </Link>
-        {authContext.isLoggedIn ? (
+        {authContext.signIn ? (
           <div className={styles.dropdown}>
-          {isGlobal ? (
+          {isGlobalContext ? (
               <img src="/icons/public-icon.svg" alt="public" height={20} width={20} />
           ) : (
               <img src="/icons/private-icon.svg" alt="private" height={20} width={20} />
           )}
           <img src="/icons/down-arrow.svg" alt="drop-down" />
           <div className={styles.dropdownContent}>
-            <div className={styles.dropDownItem} onClick={() => setIsGlobal(true)}>
+            <div className={styles.dropDownItem} onClick={() => setisGlobalContext(true)}>
               <img src="/icons/public-icon.svg" alt="public" height={14} width={14} />
               <p>Genel</p>
             </div>
-            <div className={styles.dropDownItem} onClick={() => setIsGlobal(false)}>
+            <div className={styles.dropDownItem} onClick={() => setisGlobalContext(false)}>
               <img src="/icons/private-icon.svg" alt="private" height={14} width={14} />
               <p>Takip Ettiklerim</p>
             </div>
@@ -151,7 +151,7 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
     );
   }
 
-  function Posts( { authContext , isGlobal } ) {
+  function Posts( { authContext , isGlobalContext } ) {
     const router = useRouter();
   
     // request id from backend and show 404 if id doesn't exist
@@ -170,7 +170,7 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
   }
 
   function RightSide( {authContext} ) {
-    return ((authContext.isLoggedIn) ? (
+    return ((authContext.signIn) ? (
       <ul className={styles.right}>
         <h2 className={styles.followedTitle}>Takip Ettiklerim</h2>
         {followedTeamsOrCommunityList}
@@ -193,15 +193,16 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
     return `/${data.type}/${data.id}`;
   }
 
+
   export default function HomePage() {
     const authContext = useContext(AuthContext);
-    const [isGlobal, setIsGlobal] = useState(true);
-
+    // Is the context global or followed
+    const [isGlobalContext, setisGlobalContext] = useState(true);
       return (
         <div className={styles.page}>
-            <Banner isGlobal={isGlobal} setIsGlobal={setIsGlobal} authContext={authContext} />
+            <Banner isGlobalContext={isGlobalContext} setisGlobalContext={setisGlobalContext} authContext={authContext} />
             <LeftMenu authContext={authContext} />
-            <Posts isGlobal={isGlobal}/>
+            <Posts isGlobalContext={isGlobalContext}/>
             <RightSide authContext={authContext} />
         </div>
     );

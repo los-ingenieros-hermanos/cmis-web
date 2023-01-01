@@ -73,42 +73,12 @@
   }
 }
 
-// Side bar menu
-.left {
-    width: 400px;
-    position: absolute;
-    left: 16px;
-    top: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 5px;
-    padding: 0;
-    
-    .item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      a {
-        color: #333;
-        font-weight: 500;
-        max-height: 50px;
-      }
-    
-      img {
-        width: 50px;
-        height: 50px;
-        border-radius: 20px;
-      }
-    }
-}
 
 .right {
   @include panel;
   width: 400px;
   position: absolute;
-  right: 32px;
+  left: calc(50% + 335px);
   top: 16px;
   display: flex;
   flex-direction: column;
