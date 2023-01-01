@@ -1,5 +1,5 @@
 import styles from './HomePage.module.scss';
-import { Tabs, Link, Post } from 'components';
+import { Link, Post } from 'components';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
