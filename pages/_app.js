@@ -5,7 +5,7 @@ import '../styles/globals.scss';
 
 function api(path) {
   //return 'https://cmisservice-cmis-backend.azuremicroservices.io/api/' + path;
-  return 'http://localhost:8070/api/' + path;
+  return 'https://cmisbackend.azurewebsites.net/api/' + path;
 }
 
 async function request(method, path, body, useCredentials) {
