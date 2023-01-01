@@ -18,7 +18,9 @@ export default function Header() {
     authContext.setIsSignUpOpen(true);
   }
 
-  function onBookmarksClicked() {}
+  function onBookmarksClicked() {
+    console.log('bookmarks clicked');
+  }
 
   function onDmClicked() {}
 
@@ -80,9 +82,11 @@ export default function Header() {
           </>
         ) : (
           <>
-            <button className={clsx(styles.bookmarksBtn, 'centerVertically')} onClick={onBookmarksClicked}>
-              <img src='/icons/bookmarks-icon.svg' alt='bookmarks' />
-            </button>
+            <Link href={'/ogrenciler'}>
+              <button className={clsx(styles.bookmarksBtn, 'centerVertically')} onClick={onBookmarksClicked}>
+                <img src='/icons/bookmarks-icon.svg' alt='bookmarks' />
+              </button>
+            </Link>
             <button className={clsx(styles.dmBtn, 'centerVertically')} onClick={onDmClicked}>
               <img src='/icons/dm-icon.svg' alt='dm' />
             </button>
