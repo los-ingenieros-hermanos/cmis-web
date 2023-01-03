@@ -1,12 +1,13 @@
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { Bookmarks } from 'components/Bookmarks/Bookmarks';
 
-export default function Bookmarks() {
-  const router = useRouter();
+export default function BookmarksPage() {
 
-  useEffect(() => {
-    console.log('Student id: ' + router.query.id);
-  }, [router.query.id]);
+  // const router = useRouter();
+  // useEffect(() => {
+  //   console.log('Student id: ' + router.query.id);
+  // }, [router.query.id]);
 
-  return <div></div>;
+  return <Bookmarks />;
 }
