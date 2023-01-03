@@ -63,7 +63,7 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
   const UserHasIdeaListElementList = Array(4).fill(<UserHasIdeaListElement data={dummyUser} />);
   
 
-  function Banner({ isGlobal, setIsGlobal, authContext }) {
+  function Banner() {
     return (
       <div className={styles.banner}>
         <Link href={'/askida-proje'}> Askıda Projeler </Link>
@@ -114,14 +114,13 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
   }
 
   export default function ProjectIdea() {
-    const authContext = useContext(AuthContext);
     const [isGlobal, setIsGlobal] = useState(true);
       return (
         <div className={styles.page}>
-            <Banner isGlobal={isGlobal} setIsGlobal={setIsGlobal} authContext={authContext} />
-            <LeftMenu authContext={authContext} />
+            <Banner isGlobal={isGlobal} setIsGlobal={setIsGlobal}/>
+            <LeftMenu />
             <Posts isGlobal={isGlobal}/>
-            <RightSide authContext={authContext} />
+            <RightSide />
         </div>
     );
   }
