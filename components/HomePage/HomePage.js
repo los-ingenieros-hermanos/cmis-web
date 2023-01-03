@@ -2,7 +2,6 @@ import styles from './HomePage.module.scss';
 import { Link, Post } from 'components';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
-import clsx from 'clsx';
 import { AuthContext } from 'pages/_app';
 import LeftMenu from 'components/LeftMenu/LeftMenu';
 
@@ -126,7 +125,7 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
     return (
       <div className={styles.banner}>
         <Link href={'/'}> Anasayfa </Link>
-        {authContext.signIn ? (
+        {authContext.userData ? (
           <div className={styles.dropdown}>
           {isGlobalContext ? (
               <img src="/icons/public-icon.svg" alt="public" height={20} width={20} />
@@ -201,7 +200,7 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
       return (
         <div className={styles.page}>
             <Banner isGlobalContext={isGlobalContext} setisGlobalContext={setisGlobalContext} authContext={authContext} />
-            <LeftMenu authContext={authContext} />
+            <LeftMenu />
             <Posts isGlobalContext={isGlobalContext}/>
             <RightSide authContext={authContext} />
         </div>
