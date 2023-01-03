@@ -1,8 +1,7 @@
 import styles from './Header.module.scss';
-import { Link } from 'components';
+import { Link, HeaderTab } from 'components';
 import clsx from 'clsx';
 import { useContext, useState } from 'react';
-import { HeaderTab } from 'components';
 import Login from 'components/LoginRegister/Login/Login';
 import Register from 'components/LoginRegister/Register/Register';
 import { AuthContext } from 'pages/_app';
@@ -18,9 +17,7 @@ export default function Header() {
     authContext.setIsSignUpOpen(true);
   }
 
-  function onBookmarksClicked() {
-    console.log('bookmarks clicked');
-  }
+  function onBookmarksClicked() {}
 
   function onDmClicked() {}
 
@@ -82,7 +79,7 @@ export default function Header() {
           </>
         ) : (
           <>
-            <Link href={'/ogrenciler'}>
+            <Link href={'/ogrenciler/' + authContext.userData.id + '/kaydedilenler'}>
               <button className={clsx(styles.bookmarksBtn, 'centerVertically')} onClick={onBookmarksClicked}>
                 <img src='/icons/bookmarks-icon.svg' alt='bookmarks' />
               </button>
