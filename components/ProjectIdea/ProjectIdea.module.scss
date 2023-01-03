@@ -107,7 +107,7 @@
   @include panel;
   width: 400px;
   position: absolute;
-  right: 32px;
+  left: calc(50% + 335px);
   top: 16px;
   display: flex;
   flex-direction: column;
