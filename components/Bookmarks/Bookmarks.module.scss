@@ -1,2 +1,221 @@
 @use 'styles/_macros' as *;
 @use 'sass:color';
+
+
+.leftMenuPanel {
+    width: calc(50% - 365px);
+    top: 0;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    background-color: white;
+    // shadow
+    box-shadow: $box-shadow;
+}
+
+.content {
+    width: calc(50% + 365px);
+    margin-left: calc(50% - 365px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.banner {
+    @include panel;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: calc(50% + 365px);
+    position: relative;
+    margin: 16px 0 0 0;
+    padding: 4px 16px 4px 16px;   // top right bottom left
+    h1 {
+        color: #333;
+        font-weight: 500;
+        font-size: 20px;
+    }
+}
+
+.bookmark {
+    @include panel;
+    display: flex;
+    flex-direction: row;
+    width: calc(50% + 365px);
+    // height is contines until bookmarkContent
+    
+    position: relative;
+    
+
+    .image {
+        // Crop the image from the center and make it square
+        object-fit: cover;
+        // Set min and max size absolute 140px
+        min-width: 140px;
+        max-width: 140px;
+        min-height: 140px;
+        max-height: 140px;
+        border-radius: 10px;
+        background-color: $grey;
+        margin: 16px 0 16px 16px; // top right bottom left
+        // display: flex;
+        // justify-content: center;
+        align-items: center;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+    }
+
+    .contentflex {
+        // Set next to the image
+        margin: 16px 16px 16px 16px; // top right bottom left
+        display: flex;
+        flex-direction: column;
+
+        .textflex {
+            cursor: pointer;
+            .title {
+                h1 {
+                    color: #333;
+                    font-weight: 500;
+                    font-size: 20px;
+                }
+            }
+
+            .text {
+                // It only shows 3 lines of text and then adds three dots
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                p {
+                    color: #333;
+                    font-size: 16px;
+                }
+                &:hover {
+                    height: auto;
+                }
+            }
+            .extendedText {
+                // extended text with some transition
+                height: auto;
+            }
+        }
+    }
+
+    .fromUser {
+        display: flex;
+        flex-direction: row;
+        gap: 4px;
+        margin-top: 8px;
+
+        a {
+            color: $black;
+            font-size: 12px;
+            font-weight: 550;
+        }
+        p {
+            color: $black;
+            font-size: 12px;
+            font-weight: 300;
+        }
+    }
+
+    .buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+        margin-top: 4px;
+        
+        .button {
+            cursor: pointer;
+            background-color: $grey;
+            color: $grey-darker;
+            font-size: 14px;
+            font-weight: 300;
+            margin-top: 4px;
+            padding: 2px 16px 2px 16px; // top right bottom left  
+            max-height: 26px;
+            border-radius: 8px;
+            position: relative;
+            // border line color
+            border: 1px solid $grey;
+            box-shadow: none;
+            &:hover {
+                background-color: #D8DADF;
+            }
+        }
+
+        .buttonExpired {
+            background-color: #D8DADF;
+            color: $grey-darker;
+            font-size: 14px;
+            font-weight: 300;
+            margin-top: 4px;
+            padding: 2px 16px 2px 16px; // top right bottom left  
+            max-height: 26px;
+            border-radius: 8px;
+            // border line color
+            border: 1px solid #D8DADF;
+            box-shadow: none;
+        }
+
+        .unBookmark {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            
+            .hiddenButton {
+                cursor: pointer;
+                background-color: $grey;
+                color: $grey-darker;
+                font-size: 14px;
+                font-weight: 300;
+                margin-top: 4px;
+                padding: 2px 8px 2px 8px; // top right bottom left  
+                max-height: 26px;
+                border-radius: 8px;
+                // border line color
+                border: 1px solid $grey;
+                box-shadow: none;
+                &:hover {
+                    background-color: #D8DADF;
+                }
+            }
+            .dropdown {
+                @include panel;
+                position: absolute;
+                padding: 6px; // top right bottom left
+                z-index: 1;
+                box-shadow: 2px 2px 8px 0px rgba(0,0,0,0.2);
+                // 2 px right from current position and 2 px down from current position
+                transform: translate(90px, 40px);
+                cursor: pointer;
+                
+                .items {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 4px;
+                    padding: 4px 8px 4px 8px; // top right bottom left
+                    p {
+                        color: $grey-darker;
+                        font-size: 14px;
+                        font-weight: 300;
+                    }
+                    &:hover {
+                        background-color: #f2f2f2;
+                        border-radius: 4px;
+                    }
+                }
+            }
+        }
+    }
+}
