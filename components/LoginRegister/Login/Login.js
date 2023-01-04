@@ -1,6 +1,6 @@
 import styles from './Login.module.scss';
 import UserType from '../UserType/UserType';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { AuthContext } from 'pages/_app';
 
 function Login() {
@@ -29,6 +29,20 @@ function Login() {
       alert('Giris Basarisiz');
     }
   };
+
+  // Close modal with esc key
+  useEffect(() => {
+    const handleEsc = (event) => {
+       if (event.keyCode === 27) {
+          authContext.setIsLoginOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, []);
 
   // Buraya UserType'a gore giris cikis yapilabilir
   return (
