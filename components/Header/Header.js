@@ -1,13 +1,20 @@
-import styles from './Header.module.scss';
-import { Link, HeaderTab } from 'components';
 import clsx from 'clsx';
-import { useContext, useState } from 'react';
+import { HeaderTab, Link } from 'components';
 import Login from 'components/LoginRegister/Login/Login';
 import Register from 'components/LoginRegister/Register/Register';
 import { AuthContext } from 'pages/_app';
+import { useContext, useEffect, useState } from 'react';
+import styles from './Header.module.scss';
 
 export default function Header() {
   const authContext = useContext(AuthContext);
+  const [pfp, setPfp] = useState();
+
+  useEffect(() => {
+    (async () => {
+      setPfp(await authContext.getUserPfp());
+    })();
+  }, [authContext]);
 
   function onLoginClicked() {
     authContext.setIsLoginOpen(true);
@@ -88,7 +95,13 @@ export default function Header() {
               <img src='/icons/dm-icon.svg' alt='dm' />
             </button>
             <button className={clsx(styles.profileBtn, 'centerVertically')} onClick={onProfileClicked}>
-              <img src='/images/pfp1.png' alt='dm' />
+              <img
+                src={
+                  pfp ??
+                  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN88OjpfwAI+QOoF8YQhgAAAABJRU5ErkJggg=='
+                }
+                alt='dm'
+              />
             </button>
           </>
         )}
