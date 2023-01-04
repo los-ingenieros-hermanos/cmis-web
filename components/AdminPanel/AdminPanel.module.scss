@@ -1,0 +1,320 @@
+@use 'styles/_macros' as *;
+@use 'sass:color';
+
+.loginPage {
+    background-color: $grey-darker;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    // justify-content: center;
+    margin: calc(-1 * $header-height) 0 0 0;        // 64px is the height of the header
+
+    .logo {
+        color: $bg-color;
+        font-family: 'Aldrich', sans-serif;
+        font-weight: 400;
+        margin: 32px;
+        padding: 32px;
+        // font size is 64px
+        font-size: 4rem;
+        position: relative;
+    }
+
+    .login {
+        background-color: $bg-color;
+        width: 400px;
+        height: 400px;
+        box-shadow: $box-shadow;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        // justify-content: center;
+        gap: 16px;
+
+        .loginTitle {
+            font-size: 1rem;
+            font-weight: 500;
+            color: $black;
+            margin: 16px;
+            padding: 16px;
+        }
+
+        .loginForm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 16px;
+            gap: 16px;
+
+            .loginInput {
+                width: 100%;
+                height: 64px;
+                // box-shadow: $box-shadow;
+                display: flex;
+                flex-direction: column;
+                input {
+                    width: 100%;
+                    height: 32px;
+                    font-size: 1rem;
+                    border-radius: 0;
+                }
+            }
+
+            .loginButton {
+                width: 100%;
+                height: 32px;
+                font-size: 1rem;
+                // font-weight: 500;
+                cursor: pointer;
+                border-radius: 0;
+                color: $black;
+                background-color: $grey;
+                border: none;
+                margin: 16px;
+                border: 1px solid $black;
+                &:hover {
+                    background-color: $grey-darker;
+                    color: $bg-color;
+                    border: 1px solid $bg-color;
+                }
+                
+            }
+        }
+    }
+}
+
+.adminPanel {
+    background-color: $bg-color;
+    width: 100vw;
+    height: 100vh;
+    margin: calc(-1 * $header-height) 0 0 0;        // 64px is the height of the header
+
+    .banner {
+        background-color: $main-color;
+        width: 100%;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        padding: 0 16px;    
+        box-shadow: $box-shadow;
+
+        h1 {
+            // 44 puntos
+            font-size: 2.75rem;
+            font-weight: 400;
+            color: $bg-color;
+            margin-left: 16px;
+        }
+
+    }
+
+    .leftMenu {
+        width: calc(50% - 365px);
+        height: calc(100vh - calc($header-height));
+        background-color: #BFBFBF;
+        position: fixed;
+        top: $header-height;
+        left: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: $box-shadow;
+
+        h2 {
+            // 28 puntos
+            font-size: 1.75rem;
+            font-weight: 400;
+            color: $black;
+        }
+
+
+        .leftMenuTitle {
+            font-size: 1rem;
+            color: $black;
+            padding: 8px;
+            width: 90%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .leftMenuOptions {
+            display: flex;
+            flex-direction: column;
+            align-items: left;
+            width: 100%;
+            height: 100%;
+
+            .leftMenuOption {
+                width: 100%;
+                height: 64px;
+                display: flex;
+                align-items: center;
+                padding: 0 16px 0 16px; // top right bottom left
+                cursor: pointer;
+                color: $black;
+                &:hover {
+                    background-color: #D9D9D9;
+                }
+            }
+        }
+
+    }
+
+    .managementWindow {
+        // area of the content, where the content is displayed - the right side of the admin panel
+        width: calc(50% + 365px - 128px);
+        height: calc(100vh - calc($header-height) - 128px);
+        position: fixed;
+        top: $header-height;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 64px 64px 64px 64px;
+        border: 1px solid $grey-darker;
+        
+        input[type="checkbox"]
+        {
+            width: 24px;
+            height: 24px;
+            position: relative;
+            cursor: pointer;
+        } 
+
+        .topBar {
+            width: calc(100% - 16px);
+            height: 48px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #D9D9D9;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 0 16px 0 16px; // top right bottom left
+            margin: 8px;
+
+            input[type="search"] {
+                background: url('/icons/search-icon.svg') no-repeat 16px center;
+                background-size: 16px;
+                background-color: $grey;
+                height: 32px;
+                font-size: 1rem;
+                border-radius: 0;
+                padding: 0 16px 0 48px;
+                border: none;
+            }
+
+            .labelInput {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 8px;
+                user-select: none; /* Standard syntax */
+            }
+        }
+
+        .elementList {
+            width: calc(100% - 16px);
+            height: calc(100% - 64px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            top: 48px;
+            left: 0;
+            margin: 8px;
+            overflow-y: scroll;
+            
+            .element {
+                width: 100%;
+                min-height: 64px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 16px 0 16px; // top right bottom left
+                color: $black;
+                border-bottom: 1px solid $grey-darker;
+
+                .elementInfo {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    // disable selection of text
+                    user-select: none; /* Non-prefixed version, currently
+                                        supported by Chrome, Edge, Opera and Firefox */
+                    cursor: pointer;
+                    
+                    .pfpSrc {
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        background-color: $grey;
+                        margin-right: 8px;
+                    }
+                }
+            }
+        }
+
+        .bottomBar {
+            width: calc(100% - 16px);
+            height: 48px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            background: rgba(217, 217, 217, 0.5);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            padding: 0 16px 0 16px; // top right bottom left
+            margin: 8px;
+
+            // transparent background
+
+            .buttons {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 8px;
+                margin-left: auto;
+
+                .buttonApprove {
+                    height: 32px;
+                    border-radius: 0;
+                    color: $bg-color;
+                    background-color: $green;
+                    border: none;
+                    border: 1px solid $green;
+                    padding: 0 8px 0 8px;
+                    &:hover {
+                        background-color: color.scale($green, $lightness: -15%);
+                        color: $bg-color;
+                        border: 1px solid color.scale($green, $lightness: -15%);
+                    }
+                }
+
+                .buttonDeny {
+                    height: 32px;
+                    border-radius: 0;
+                    color: $bg-color;
+                    background-color: $red;
+                    border: none;
+                    border: 1px solid $red;
+                    padding: 0 8px 0 8px;
+                    &:hover {
+                        background-color: color.scale($red, $lightness: -15%);
+                        color: $bg-color;
+                        border: 1px solid color.scale($red, $lightness: -15%);
+                    }
+                }
+            }
+        }
+    }
+}
+
