@@ -8,11 +8,11 @@ function api(path) {
   return 'http://localhost:8070/api/' + path;
 }
 
-async function request(method, path, body, useCredentials) {
-  if (!path) {
+async function request(method, path, body, useCredentials = true) {
+  if (!path || path.includes('/undefined')) {
     return [null, null];
   }
-
+  console.log(path);
   const res = await fetch(api(path), {
     method,
     credentials: useCredentials && 'include',
@@ -46,7 +46,8 @@ function MyApp({ Component, pageProps }) {
     }
 
     getUserData();
-    setInterval(getUserData, 9000);
+    //const id = setInterval(getUserData, 9000);
+    //return () => clearInterval(id);
   }, []);
 
   function setUserData_(data) {
@@ -62,7 +63,7 @@ function MyApp({ Component, pageProps }) {
   }
 
   const signIn = useCallback(async (email, password) => {
-    const [res, data] = await request('POST', 'auth/signin', JSON.stringify({ email, password }), true);
+    const [res, data] = await request('POST', 'auth/signin', JSON.stringify({ email, password }));
     if (res.ok) {
       data.expires = new Date().getTime() + 86400000;
       setUserData_(data);
@@ -76,6 +77,7 @@ function MyApp({ Component, pageProps }) {
         'POST',
         'auth/signup',
         JSON.stringify({ firstName, lastName, email, password, role: [role] }),
+        false,
       );
       if (res.ok) {
         await signIn(email, password);
@@ -86,26 +88,31 @@ function MyApp({ Component, pageProps }) {
   );
 
   const signOut = useCallback(async () => {
-    const [res, _] = await request('POST', 'auth/signout', undefined, true);
+    const [res, _] = await request('POST', 'auth/signout');
     if (res.ok) {
       setUserData_(null);
     }
   }, []);
 
-  const getCommunities = useCallback(async () => {
-    const [_, data] = await request('GET', 'cmis/communities');
+  const getCommunities = useCallback(async (searchTerm) => {
+    let _, data;
+    if (!searchTerm) {
+      [_, data] = await request('GET', 'cmis/communities');
+    } else {
+      [_, data] = await request('GET', `cmis/communities/search?search=${searchTerm}`);
+    }
     return data;
   }, []);
 
   const getFollowedCommunities = useCallback(async () => {
     if (userData?.roles[0] === 'ROLE_STUDENT') {
-      const [_, data] = await request('GET', `cmis/students/${userData.id}/followingCommunities`, undefined, true);
+      const [_, data] = await request('GET', `cmis/students/${userData.id}/followingCommunities`);
       return data;
     }
   }, [userData]);
 
   const getCommunity = useCallback(async (communityId) => {
-    const [_, data] = await request('GET', `cmis/communities/${communityId}`, undefined, true);
+    const [_, data] = await request('GET', `cmis/communities/${communityId}`);
     return data;
   }, []);
 
@@ -116,7 +123,7 @@ function MyApp({ Component, pageProps }) {
 
   const followCommunity = useCallback(
     async (communityId) => {
-      const [_, data] = await request('POST', `cmis/students/${userData.id}/followingCommunities`, {
+      const [_, data] = await request('POST', `cmis/students/${userData.id}/followingCommunities/${communityId}`, {
         id: communityId,
       });
       return data;
@@ -149,17 +156,17 @@ function MyApp({ Component, pageProps }) {
   );
 
   const getMembers = useCallback(async () => {
-    const [_, data] = await request(`cmis/communities/${userData.id}/members`);
+    const [_, data] = await request('GET', `cmis/communities/${userData.id}/members`);
     return data;
   }, [userData]);
 
   const getMemberApplications = useCallback(async () => {
-    const [_, data] = await request(`cmis/communities/${userData.id}/membersApplications`);
+    const [_, data] = await request('GET', `cmis/communities/${userData.id}/membersApplications`);
     return data;
   }, [userData]);
 
   const getMemberApplication = useCallback(async (communityId, studentId) => {
-    const [_, data] = await request(`cmis/communities/${communityId}/membersApplications/${studentId}`);
+    const [_, data] = await request('GET', `cmis/communities/${communityId}/membersApplications/${studentId}`);
     return data;
   }, []);
 
@@ -190,7 +197,7 @@ function MyApp({ Component, pageProps }) {
   const isFollowerOfCommunity = useCallback(
     async (communityId) => {
       if (userData?.roles[0] === 'ROLE_STUDENT') {
-        const [_, data] = await request(`cmis/students/${userData.id}/isFollowerOf/${communityId}`);
+        const [_, data] = await request('GET', `cmis/students/${userData.id}/isFollowerOf/${communityId}`);
         return data;
       }
     },
@@ -200,7 +207,7 @@ function MyApp({ Component, pageProps }) {
   const isMemberOfCommunity = useCallback(
     async (communityId) => {
       if (userData?.roles[0] === 'ROLE_STUDENT') {
-        const [_, data] = await request(`cmis/students/${userData.id}/isMemberOf/${communityId}`);
+        const [_, data] = await request('GET', `cmis/students/${userData.id}/isMemberOf/${communityId}`);
         return data;
       }
     },
@@ -208,16 +215,16 @@ function MyApp({ Component, pageProps }) {
   );
 
   const getCommunityPosts = useCallback(async (communityId) => {
-    const [res, data] = await request(`cmis/communities/${communityId}/posts`);
+    const [res, data] = await request('GET', `cmis/communities/${communityId}/posts`);
     return data;
   }, []);
 
   const getUserPfp = useCallback(async () => {
     let _, data;
     if (userData?.roles[0] === 'ROLE_STUDENT') {
-      [_, data] = await request(`cmis/students/${userData.id}/image`);
+      [_, data] = await request('GET', `cmis/students/${userData.id}/image`);
     } else if (userData?.roles[0] === 'ROLE_COMMUNITY') {
-      [_, data] = await request(`cmis/communities/${userData.id}/image`);
+      [_, data] = await request('GET', `cmis/communities/${userData.id}/image`);
     }
     return data;
   }, [userData]);
