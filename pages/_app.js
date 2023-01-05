@@ -40,7 +40,7 @@ function MyApp({ Component, pageProps }) {
   const [userData, setUserData] = useState();
 
   useEffect(() => {
-      const userData_ = JSON.parse(localStorage.getItem(userData ? 'userData' : undefined));
+      const userData_ = JSON.parse(localStorage.getItem('userData'));
       if (userData_ && !isSessionExpired(userData_)) {
         setUserData_(userData_);
       } else {
@@ -49,10 +49,11 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   useEffect(() => {
-    const userData_ = JSON.parse(localStorage.getItem(userData ? 'userData' : undefined));
+    const userData_ = JSON.parse(localStorage.getItem('userData'));
     // get user with id
     if (userData_) {
       getUser(userData_.id).then(([_, data]) => {
+        console.log(data);
         if (!data){
           signOut();
         }
