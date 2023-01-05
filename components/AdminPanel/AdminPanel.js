@@ -17,9 +17,9 @@ function checkItem(e) {
 }
 
 const Input = ({type, className, placeholder, setSearch}) => {
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      setSearch(e.target.value);
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      setSearch(event.target.value);
     }
   }
   return <input type={type} className={className} placeholder={placeholder} onKeyDown={handleKeyDown} />
@@ -33,6 +33,7 @@ function Login() {
   const [password, setPassword] = useState('');
 
   async function login() {
+    if (email === '' || password === '') return alert('Lütfen tüm alanları doldurun');
     const data = await authContext.signIn(email, password);
     if (data) {
       if (data.roles[0] !== 'ROLE_ADMIN')
@@ -45,15 +46,10 @@ function Login() {
     }
   }
 
-  async function handleKeyDown(e) {
-    // if user is type enter, login, otherwise set email or password
-    if (e.key === 'Enter') {
-      await login();
-    }
-    else if (e.target.id === 'email') {
+  function handleChange(e) {
+    if (e.target.id === 'email') {
       setEmail(e.target.value);
-    }
-    else if (e.target.id === 'password') {
+    } else if (e.target.id === 'password') {
       setPassword(e.target.value);
     }
   }
@@ -74,11 +70,11 @@ function Login() {
         <div className={styles.loginForm}>
           <div className={styles.loginInput}>
             <label htmlFor={'email'}>E-Posta</label>
-            <input type={'text'} id={'email'} placeholder={'email@gtu.edu.tr'} onKeyDown={handleKeyDown} />
+            <input type={'text'} id={'email'} placeholder={'email@gtu.edu.tr'} onChange={handleChange} onKeyDown={(e) => {if (e.key === 'Enter') login()}} />
           </div>
           <div className={styles.loginInput}>
             <label htmlFor={'password'}>Şifre</label>
-            <input type={'password'} id={'password'} placeholder={'Şifrenizi girin'} onKeyDown={handleKeyDown} />
+            <input type={'password'} id={'password'} placeholder={'Şifrenizi girin'} onChange={handleChange} onKeyDown={(e) => {if (e.key === 'Enter') login()}} />
           </div>
           <button className={styles.loginButton} onClick={handleClick}>Giriş</button>
         </div>
@@ -185,8 +181,8 @@ function ManageCommunities() {
   }
 
   useEffect(() => {
-    const handleEsc = (e) => {
-       if (e.keyCode === 27) {
+    const handleEsc = (event) => {
+       if (event.keyCode === 27) {
         (async () => {
           const result = await authContext.getCommunities();
           if (result) {
@@ -637,8 +633,8 @@ function ManageApplications() {
 
   // by pressing ESC, fetch unverified communities again
   useEffect(() => {
-    const handleEsc = (e) => {
-       if (e.keyCode === 27) {
+    const handleEsc = (event) => {
+       if (event.keyCode === 27) {
         (async () => {
           const result = await authContext.getUnverifiedCommunities();
           if (result) {
