@@ -256,6 +256,13 @@
                         margin-right: 8px;
                     }
 
+                    .postImage {
+                        max-width: 80px;
+                        border-radius: 8px;
+                        margin-right: 8px;
+                        background-color: $grey;
+                    }
+
                     .info {
                         display: flex;
                         flex-direction: column;

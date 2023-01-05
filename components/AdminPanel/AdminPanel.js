@@ -1,8 +1,7 @@
 import styles from './AdminPanel.module.scss';
 import { AuthContext } from 'pages/_app';
-import { React, useContext, useEffect, useRef, useState } from 'react';
-import { Link, Post } from 'components';
-import { dummyCommunity } from 'components/ComunityProfilePage/CommunityProfilePage';
+import { React, useContext, useEffect, useState } from 'react';
+import { Link } from 'components';
 
 //  -------------- UTILS --------------
 function selectAll(e) {
@@ -142,7 +141,7 @@ function ManageCommunities() {
     } else {
       // Fetch communities that match the query
       (async () => {
-        const result = await authContext.searchCommunities(search);
+        const result = await authContext.getCommunities(search);
         if (result) {
           // sort result by id
           result.sort((a, b) => a.id - b.id);
@@ -169,10 +168,34 @@ function ManageCommunities() {
         setCommunities(communities.filter((community) => community.id !== id));
       }
     })
-    
-    // reload to window
-    // window.location.reload();
+
+    // reload to window after some time
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   }
+
+  useEffect(() => {
+    const handleEsc = (event) => {
+       if (event.keyCode === 27) {
+        (async () => {
+          const result = await authContext.getCommunities();
+          if (result) {
+            // sort result by id
+            result.sort((a, b) => a.id - b.id);
+            setCommunities(result);
+          }
+        })();
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, []);
+
+  
 
   return (
     <div className={styles.managementWindow}>
@@ -187,7 +210,7 @@ function ManageCommunities() {
         {communities.map((community) => (
           <li className={styles.element} key={community.id}>
             <div className={styles.elementInfo}>
-              <img src='/icons/group-icon.svg' alt="pfp" className={styles.pfpSrc} onClick={checkItem} />
+              <img src={community.image} alt="pfp" className={styles.pfpSrc} onClick={checkItem} />
               <div className={styles.info}>
                 <div>
                   {community.name}
@@ -211,26 +234,304 @@ function ManageCommunities() {
 }
 
 function ManageStudents() {
+  const authContext = useContext(AuthContext);
+  const [students, setStudents] = useState([]);
+  const[search, setSearch] = useState('');
+
+  useEffect(() => {
+    if (students.length > 0) return; // if there are already students, do not fetch again
+    (async () => {
+      const result = await authContext.getStudents();
+      if (result) {
+        // sort result by id
+        result.sort((a, b) => a.id - b.id);
+        setStudents(result);
+      }
+    })();
+  }, [authContext]);
+
+  useEffect(() => {
+    if (search === '') {
+      // Fetch all students
+      (async () => {
+        const result = await authContext.getStudents();
+        if (result) {
+          // sort result by id
+          result.sort((a, b) => a.id - b.id);
+          setStudents(result);
+        }
+      })();
+    } else {
+      // Fetch students that match the query
+      (async () => {
+        const result = await authContext.getStudents(search);
+        if (result) {
+          // sort result by id
+          result.sort((a, b) => a.id - b.id);
+          setStudents(result);
+        }
+      })();
+    }
+  }, [search]);
+
+  function onDeleteClicked() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    const checked = [];
+    checkboxes.forEach((checkbox) => {
+      if (checkbox.checked && checkbox.id !== 'setAll') {
+        checked.push(checkbox.value);
+      }
+    })
+
+    if (checked.length === 0) return; // if there is no checked student, do not continue
+    
+    checked.forEach(async (id) => {
+      const result = await authContext.deleteStudent(id);
+      if (result) {
+        setStudents(students.filter((student) => student.id !== id));
+      }
+    })
+
+    // reload to window after some time
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  }
+
   return (
     <div className={styles.managementWindow}>
-      <h1>Öğrenciler</h1>
+      <div className={styles.topBar}>
+        <Input type={'search'} placeholder={'Topluluk Ara'} setSearch={setSearch} />
+        <div className={styles.labelInput}>
+          <label htmlFor='setAll'>Tümünü Seç</label>
+          <input type='checkbox' id='setAll' onChange={selectAll} />
+        </div>
+      </div>
+      <ul className={styles.elementList}>
+        {students.map((student) => (
+          <li className={styles.element} key={student.id}>
+            <div className={styles.elementInfo}>
+              <img src={student.image} alt="pfp" className={styles.pfpSrc} onClick={checkItem} />
+              <div className={styles.info}>
+                <div>
+                  {student.user.firstName} {student.user.lastName}
+                </div>
+                <div style={{ color: '#666666', fontSize: '0.8rem' }}>
+                  {student.user.email}
+                </div>
+              </div>
+            </div>
+            <input type="checkbox" value={student.id} />
+          </li>
+        ))}
+      </ul>
+      <div className={styles.bottomBar}> 
+        <div className={styles.buttons}>
+          <button className={styles.buttonReject} type='submit' onClick={onDeleteClicked}>Sil</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ManagePosts() {
+  const authContext = useContext(AuthContext);
+  const [posts, setPosts] = useState([]);
+  const[search, setSearch] = useState('');
+
+  useEffect(() => {
+    if (posts.length > 0) return; // if there are already posts, do not fetch again
+    (async () => {
+      const result = await authContext.getPosts();
+      if (result) {
+        // sort result by id
+        result.sort((a, b) => a.id - b.id);
+        setPosts(result);
+      }
+    })();
+  }, [authContext]);
+
+  useEffect(() => {
+    if (search === '') {
+      // Fetch all posts
+      (async () => {
+        const result = await authContext.getPosts();
+        if (result) {
+          // sort result by id
+          result.sort((a, b) => a.id - b.id);
+          setPosts(result);
+        }
+      })();
+    } else {
+      // Fetch posts that match the query
+      (async () => {
+        const result = await authContext.getPosts(search);
+        if (result) {
+          // sort result by id
+          result.sort((a, b) => a.id - b.id);
+          setPosts(result);
+        }
+      })();
+    }
+  }, [search]);
+
+  function onDeleteClicked() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    const checked = [];
+    checkboxes.forEach((checkbox) => {
+      if (checkbox.checked && checkbox.id !== 'setAll') {
+        checked.push(checkbox.value);
+      }
+    })
+
+    if (checked.length === 0) return; // if there is no checked post, do not continue
+    
+    checked.forEach(async (id) => {
+      const result = await authContext.deleteStudent(id);
+      if (result) {
+        setPosts(posts.filter((post) => post.id !== id));
+      }
+    })
+
+    // reload to window after some time
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  }
+
+  return (
+    <div className={styles.managementWindow}>
+      <div className={styles.topBar}>
+        <Input type={'search'} placeholder={'Topluluk Ara'} setSearch={setSearch} />
+        <div className={styles.labelInput}>
+          <label htmlFor='setAll'>Tümünü Seç</label>
+          <input type='checkbox' id='setAll' onChange={selectAll} />
+        </div>
+      </div>
+      <ul className={styles.elementList}>
+        {posts.map((post) => (
+          <li className={styles.element} key={post.id}>
+            <div className={styles.elementInfo}>
+              <img src={post.image} alt="pfp" className={styles.postImage} onClick={checkItem} />
+              <div className={styles.info}>
+                <div>
+                  {post.title}
+                </div>
+                <div style={{ color: '#666666', fontSize: '0.8rem' }}>
+                  {post.text}
+                </div>
+              </div>
+            </div>
+            <input type="checkbox" value={post.id} />
+          </li>
+        ))}
+      </ul>
+      <div className={styles.bottomBar}> 
+        <div className={styles.buttons}>
+          <button className={styles.buttonReject} type='submit' onClick={onDeleteClicked}>Sil</button>
+        </div>
+      </div>
     </div>
   )
 }
 
 function ManageProjectIdeas() {
+  const authContext = useContext(AuthContext);
+  const [projectIdeas, setProjectIdeas] = useState([]);
+  const[search, setSearch] = useState('');
+
+  useEffect(() => {
+    if (projectIdeas.length > 0) return; // if there are already projectIdeas, do not fetch again
+    (async () => {
+      const result = await authContext.getProjectIdeas();
+      if (result) {
+        // sort result by id
+        result.sort((a, b) => a.id - b.id);
+        setProjectIdeas(result);
+      }
+    })();
+  }, [authContext]);
+
+  useEffect(() => {
+    if (search === '') {
+      // Fetch all projectIdeas
+      (async () => {
+        const result = await authContext.getProjectIdeas();
+        if (result) {
+          // sort result by id
+          result.sort((a, b) => a.id - b.id);
+          setProjectIdeas(result);
+        }
+      })();
+    } else {
+      // Fetch projectIdeas that match the query
+      (async () => {
+        const result = await authContext.getProjectIdeas(search);
+        if (result) {
+          // sort result by id
+          result.sort((a, b) => a.id - b.id);
+          setProjectIdeas(result);
+        }
+      })();
+    }
+  }, [search]);
+
+  function onDeleteClicked() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    const checked = [];
+    checkboxes.forEach((checkbox) => {
+      if (checkbox.checked && checkbox.id !== 'setAll') {
+        checked.push(checkbox.value);
+      }
+    })
+
+    if (checked.length === 0) return; // if there is no checked projectIdea, do not continue
+    
+    checked.forEach(async (id) => {
+      const result = await authContext.deleteStudent(id);
+      if (result) {
+        setProjectIdeas(projectIdeas.filter((projectIdea) => projectIdea.id !== id));
+      }
+    })
+
+    // reload to window after some time
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  }
+
   return (
     <div className={styles.managementWindow}>
-      <h1>Askıda Projeler</h1>
-    </div>
-  )
-}
-
-
-function ManagePosts() {
-  return (
-    <div className={styles.managementWindow}>
-      <h1>Gönderiler</h1>
+      <div className={styles.topBar}>
+        <Input type={'search'} placeholder={'Topluluk Ara'} setSearch={setSearch} />
+        <div className={styles.labelInput}>
+          <label htmlFor='setAll'>Tümünü Seç</label>
+          <input type='checkbox' id='setAll' onChange={selectAll} />
+        </div>
+      </div>
+      <ul className={styles.elementList}>
+        {projectIdeas.map((projectIdea) => (
+          <li className={styles.element} key={projectIdea.id}>
+            <div className={styles.elementInfo}>
+              <img src={projectIdea.image} alt="pfp" className={styles.postImage} onClick={checkItem} />
+              <div className={styles.info}>
+                <div>
+                  {projectIdea.title}
+                </div>
+                <div style={{ color: '#666666', fontSize: '0.8rem' }}>
+                  {projectIdea.text}
+                </div>
+              </div>
+            </div>
+            <input type="checkbox" value={projectIdea.id} />
+          </li>
+        ))}
+      </ul>
+      <div className={styles.bottomBar}> 
+        <div className={styles.buttons}>
+          <button className={styles.buttonReject} type='submit' onClick={onDeleteClicked}>Sil</button>
+        </div>
+      </div>
     </div>
   )
 }
@@ -266,7 +567,7 @@ function ManageApplications() {
     } else {
       // Fetch communities that match the query
       (async () => {
-        const result = await authContext.searchUnverifiedCommunities(search);
+        const result = await authContext.getUnverifiedCommunities(search);
         if (result) {
           // sort result by id
           result.sort((a, b) => a.id - b.id);
@@ -295,8 +596,10 @@ function ManageApplications() {
       }
     })
     
-    // reload to window
-    // window.location.reload();
+    // reload to window after some time
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   }
 
   function onRejectClicked() {
@@ -317,8 +620,10 @@ function ManageApplications() {
       }
     })
     
-    // reload to window
-    // window.location.reload();
+    // reload to window after some time
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   }
 
   // by pressing ESC, fetch unverified communities again
@@ -394,8 +699,6 @@ export default function AdminPanel() {
     localStorage.setItem('menuOption', String(menuOption));
   }, [menuOption]);
   
-
-
   return (
     <div>
         {!authContext.userData || authContext.userData?.roles[0] !== 'ROLE_ADMIN' ?
