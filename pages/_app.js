@@ -1,6 +1,6 @@
 import { Header } from 'components';
 import Head from 'next/head';
-import { createContext, useCallback, useEffect, useState } from 'react';
+import { createContext, useCallback, useEffect, useState, useMemo } from 'react';
 import '../styles/globals.scss';
 
 function api(path) {
@@ -12,7 +12,6 @@ async function request(method, path, body, useCredentials = true) {
   if (!path || path.includes('/undefined') || path.includes('image')) {
     return [null, null];
   }
-
   const res = await fetch(api(path), {
     method,
     credentials: useCredentials ? 'include' : undefined,
@@ -23,7 +22,13 @@ async function request(method, path, body, useCredentials = true) {
   });
   let data;
   if (res.ok) {
-    data = await res.json();
+    console.log(res);
+    if (res.status === 204) {
+      data = {};
+    }
+    else {
+      data = await res.json();
+    }
   }
   return [res, data];
 }
@@ -229,9 +234,39 @@ function MyApp({ Component, pageProps }) {
     return data;
   }, [userData]);
 
-  return (
-    <AuthContext.Provider
-      value={{
+    // ------------------ YUSUF ARSLAN API CALLS ------------------ //
+    const getUnverifiedCommunities = useCallback(async () => {
+      const [_, data] = await request('GET', `cmis/admin/${userData?.id}/unverifiedCommunities`);
+      return data;
+    }, [userData]);
+  
+    const acceptCommunity = useCallback(async (communityId) => {
+      const [_, data] = await request('POST', `cmis/admin/${userData?.id}/unverifiedCommunities/${communityId}/accept`);
+      return data;
+    }, [userData]);
+  
+    const rejectCommunity = useCallback(async (communityId) => {
+      const [_, data] = await request('POST', `cmis/admin/${userData?.id}/unverifiedCommunities/${communityId}/decline`);
+      return data;
+    }, [userData]);
+  
+    const searchUnverifiedCommunities = useCallback(async (search) => {
+      const [_, data] = await request('GET', `cmis/unverified/search?search=${search}`);
+      return data;
+    }, [userData]);
+  
+    const searchCommunities = useCallback(async (search) => {
+      const [_, data] = await request('GET', `cmis/communities/search?search=${search}`);
+      return data;
+    }, [userData]);
+  
+    const deleteCommunity = useCallback(async (communityId) => {
+      const [_, data] = await request('DELETE', `cmis/communities/${communityId}`);
+      return data;
+    }, [userData]);
+  
+    // ------------------ YUSUF ARSLAN API CALLS END--------------- //
+  const value = useMemo(() => ({
         isLoginOpen,
         setIsLoginOpen,
         isSignUpOpen,
@@ -258,7 +293,53 @@ function MyApp({ Component, pageProps }) {
         rejectMemberApplication,
         getCommunityPosts,
         getUserPfp,
-      }}
+
+        // ------------------ YUSUF ARSLAN API CALLS ------------------ //
+        getUnverifiedCommunities,
+        acceptCommunity,
+        rejectCommunity,
+        searchUnverifiedCommunities,
+        searchCommunities,
+        deleteCommunity,
+    } 
+  ), [
+        isLoginOpen,
+        setIsLoginOpen,
+        isSignUpOpen,
+        setIsSignUpOpen,
+        signUp,
+        signIn,
+        signOut,
+        userData,
+        getCommunities,
+        getFollowedCommunities,
+        getCommunity,
+        updateCommunity,
+        followCommunity,
+        unfollowCommunity,
+        isFollowerOfCommunity,
+        cancelMemberApplication,
+        acceptMemberApplication,
+        rejectMemberApplication,
+        getCommunityPosts,
+        getUserPfp,
+        // ------------------ YUSUF ARSLAN API CALLS ------------------ //
+        getUnverifiedCommunities,
+        acceptCommunity,
+        rejectCommunity,
+        searchUnverifiedCommunities,
+        searchCommunities,
+        deleteCommunity,isMemberOfCommunity,
+        applyToCommunity,
+        leaveCommunity,
+        getMembers,
+        getMemberApplications,
+        getMemberApplication,
+  ]);
+
+  return (
+    <AuthContext.Provider
+      value={value}
     >
       <Head>
         <title>GTU Community Management and Interaction System</title>
