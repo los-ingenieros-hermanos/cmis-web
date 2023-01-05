@@ -9,13 +9,13 @@ function api(path) {
 }
 
 async function request(method, path, body, useCredentials = true) {
-  if (!path || path.includes('/undefined')) {
+  if (!path || path.includes('/undefined') || path.includes('image')) {
     return [null, null];
   }
-  console.log(path);
+
   const res = await fetch(api(path), {
     method,
-    credentials: useCredentials && 'include',
+    credentials: useCredentials ? 'include' : undefined,
     body,
     headers: {
       'Content-Type': 'application/json',
