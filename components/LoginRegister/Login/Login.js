@@ -34,13 +34,22 @@ function Login() {
     }
   };
 
-  const handleClick = async () => {
+  const login = async () => {
     const data = await authContext.signIn(user.email, user.password);
     if (data) {
       authContext.setIsLoginOpen(false);
-      alert('Giris Basarili');
     } else {
       alert('Giris Basarisiz');
+    }
+  };
+
+  async function handleClick() {
+    await login();
+  };
+
+  async function handleEnter(e){
+    if (e.key === 'Enter') {
+      await login();
     }
   };
 
@@ -59,8 +68,8 @@ function Login() {
           <p className={styles.logo}>cmis</p> <p>hesabı ile giriş yapın</p>
         </div>
 
-        <input type={'text'} placeholder={'email'} onChange={handleChange} />
-        <input type={'password'} placeholder={'şifre'} onChange={handleChange} />
+        <input type={'text'} placeholder={'email'} onChange={handleChange} onKeyDown={handleEnter} />
+        <input type={'password'} placeholder={'şifre'} onChange={handleChange} onKeyDown={handleEnter} />
 
         <div className={styles.entrance}>
           <a href=''>Şifremi Unuttum</a>

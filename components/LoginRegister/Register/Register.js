@@ -14,10 +14,10 @@ function Register({ setIsLoginOpen, setIsSignUpOpen }) {
   });
   const authContext = useContext(AuthContext);
 
-    // Close modal with esc key
-    useEffect(() => {
-      const handleEsc = (event) => {
-         if (event.keyCode === 27) {
+  // Close modal with esc key
+  useEffect(() => {
+    const handleEsc = (event) => {
+        if (event.keyCode === 27) {
             authContext.setIsSignUpOpen(false);
         }
       };
@@ -39,7 +39,7 @@ function Register({ setIsLoginOpen, setIsSignUpOpen }) {
     });
   };
 
-  const handleClick = async () => {
+  const register = async () => {
     // If any of the fields are empty, alert the user
     if (
       user.firstName === '' ||
@@ -64,11 +64,22 @@ function Register({ setIsLoginOpen, setIsSignUpOpen }) {
         );
         if (data) {
           authContext.setIsSignUpOpen(false);
-          alert('Kayıt başarılı.');
+          // newline character
+          alert('Kayıt başarılı.' + (userType === 'student' ? '\n' : '\nAdmin Onayı İçin İletişime Geçiniz. \ncmis@gtu.edu.tr' + '\n'));
         } else {
           alert('Kayıt başarısız');
         }
       }
+    }
+  }
+
+  const handleClick = () => {
+    register();
+  };
+
+  const handleEnter = (e) => {
+    if (e.key === 'Enter') {
+      register();
     }
   };
 
@@ -108,6 +119,7 @@ function Register({ setIsLoginOpen, setIsSignUpOpen }) {
           name='confirmPassword'
           placeholder={'şifre tekrar'}
           onChange={handleChange}
+          onKeyDown={handleEnter}
         />
 
         <div className={styles.entrance}>
