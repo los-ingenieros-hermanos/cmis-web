@@ -8,6 +8,20 @@ function Login() {
   const [userType, setUserType] = useState('student');
   const authContext = useContext(AuthContext);
 
+  // Close modal with esc key
+  useEffect(() => {
+    const handleEsc = (event) => {
+       if (event.keyCode === 27) {
+          authContext.setIsLoginOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, []);
+
   function onBackgroundClicked() {
     authContext.setIsLoginOpen(false);
   }
@@ -30,19 +44,6 @@ function Login() {
     }
   };
 
-  // Close modal with esc key
-  useEffect(() => {
-    const handleEsc = (event) => {
-       if (event.keyCode === 27) {
-          authContext.setIsLoginOpen(false);
-      }
-    };
-    window.addEventListener('keydown', handleEsc);
-
-    return () => {
-      window.removeEventListener('keydown', handleEsc);
-    };
-  }, []);
 
   // Buraya UserType'a gore giris cikis yapilabilir
   return (

@@ -14,6 +14,20 @@ function Register({ setIsLoginOpen, setIsSignUpOpen }) {
   });
   const authContext = useContext(AuthContext);
 
+    // Close modal with esc key
+    useEffect(() => {
+      const handleEsc = (event) => {
+         if (event.keyCode === 27) {
+            authContext.setIsSignUpOpen(false);
+        }
+      };
+      window.addEventListener('keydown', handleEsc);
+  
+      return () => {
+        window.removeEventListener('keydown', handleEsc);
+      };
+    }, []);
+
   function onBackgroundClicked() {
     authContext.setIsSignUpOpen(false);
   }
@@ -58,19 +72,7 @@ function Register({ setIsLoginOpen, setIsSignUpOpen }) {
     }
   };
 
-  // Close modal with esc key
-  useEffect(() => {
-    const handleEsc = (event) => {
-       if (event.keyCode === 27) {
-          authContext.setIsSignUpOpen(false);
-      }
-    };
-    window.addEventListener('keydown', handleEsc);
 
-    return () => {
-      window.removeEventListener('keydown', handleEsc);
-    };
-  }, []);
 
   return (
     <div className={styles.background} onMouseDown={onBackgroundClicked}>
