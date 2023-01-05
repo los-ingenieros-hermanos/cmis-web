@@ -17,6 +17,17 @@ function checkItem(e) {
   checkbox.checked = !checkbox.checked;
 }
 
+const Input = ({type, className, placeholder, setSearch}) => {
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      setSearch(event.target.value);
+    }
+  }
+  return <input type={type} className={className} placeholder={placeholder} onKeyDown={handleKeyDown} />
+}
+
+//  -------------- UTILS --------------
+
 function Login() {
   const authContext = useContext(AuthContext);
   const [email, setEmail] = useState('');
@@ -41,7 +52,6 @@ function Login() {
     } else {
       alert('Giriş Başarısız');
     }
-    console.log(data);
   }
 
   return (
@@ -87,6 +97,9 @@ function LeftMenu({ setMenuOption, menuOption }) {
         <div className={styles.leftMenuOption} onClick={() => setMenuOption('posts')} style={{ backgroundColor: menuOption === 'posts' ? '#D9D9D9' : null }}>
           <h2> Gönderiler </h2>
         </div>
+        <div className={styles.leftMenuOption} onClick={() => setMenuOption('projectIdeas')} style={{ backgroundColor: menuOption === 'projectIdeas' ? '#D9D9D9' : null }}>
+          <h2> Askıda Projeler </h2>
+        </div>
         <div className={styles.leftMenuOption} onClick={() => setMenuOption('applications')} style={{ backgroundColor: menuOption === 'applications' ? '#D9D9D9' : null }}>
           <h2> Topluluk Başvuruları </h2>
         </div>
@@ -98,16 +111,106 @@ function LeftMenu({ setMenuOption, menuOption }) {
   )
 }
 
-function manageCommunities() {
+function ManageCommunities() {
+  const authContext = useContext(AuthContext);
+  const [communities, setCommunities] = useState([]);
+  const[search, setSearch] = useState('');
+
+  useEffect(() => {
+    if (communities.length > 0) return; // if there are already communities, do not fetch again
+    (async () => {
+      const result = await authContext.getCommunities();
+      if (result) {
+        // sort result by id
+        result.sort((a, b) => a.id - b.id);
+        setCommunities(result);
+      }
+    })();
+  }, [authContext]);
+
+  useEffect(() => {
+    if (search === '') {
+      // Fetch all communities
+      (async () => {
+        const result = await authContext.getCommunities();
+        if (result) {
+          // sort result by id
+          result.sort((a, b) => a.id - b.id);
+          setCommunities(result);
+        }
+      })();
+    } else {
+      // Fetch communities that match the query
+      (async () => {
+        const result = await authContext.searchCommunities(search);
+        if (result) {
+          // sort result by id
+          result.sort((a, b) => a.id - b.id);
+          setCommunities(result);
+        }
+      })();
+    }
+  }, [search]);
+
+  function onDeleteClicked() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    const checked = [];
+    checkboxes.forEach((checkbox) => {
+      if (checkbox.checked && checkbox.id !== 'setAll') {
+        checked.push(checkbox.value);
+      }
+    })
+
+    if (checked.length === 0) return; // if there is no checked community, do not continue
+    
+    checked.forEach(async (id) => {
+      const result = await authContext.deleteCommunity(id);
+      if (result) {
+        setCommunities(communities.filter((community) => community.id !== id));
+      }
+    })
+    
+    // reload to window
+    // window.location.reload();
+  }
+
   return (
     <div className={styles.managementWindow}>
-      <h1>Topluluklar</h1>
+      <div className={styles.topBar}>
+        <Input type={'search'} placeholder={'Topluluk Ara'} setSearch={setSearch} />
+        <div className={styles.labelInput}>
+          <label htmlFor='setAll'>Tümünü Seç</label>
+          <input type='checkbox' id='setAll' onChange={selectAll} />
+        </div>
+      </div>
+      <ul className={styles.elementList}>
+        {communities.map((community) => (
+          <li className={styles.element} key={community.id}>
+            <div className={styles.elementInfo}>
+              <img src='/icons/group-icon.svg' alt="pfp" className={styles.pfpSrc} onClick={checkItem} />
+              <div className={styles.info}>
+                <div>
+                  {community.name}
+                </div>
+                <div style={{ color: '#666666', fontSize: '0.8rem' }}>
+                  {community.user.email}
+                </div>
+              </div>
+            </div>
+            <input type="checkbox" value={community.id} />
+          </li>
+        ))}
+      </ul>
+      <div className={styles.bottomBar}> 
+        <div className={styles.buttons}>
+          <button className={styles.buttonReject} type='submit' onClick={onDeleteClicked}>Sil</button>
+        </div>
+      </div>
     </div>
   )
 }
 
-
-function manageStudents() {
+function ManageStudents() {
   return (
     <div className={styles.managementWindow}>
       <h1>Öğrenciler</h1>
@@ -115,24 +218,65 @@ function manageStudents() {
   )
 }
 
+function ManageProjectIdeas() {
+  return (
+    <div className={styles.managementWindow}>
+      <h1>Askıda Projeler</h1>
+    </div>
+  )
+}
 
 
-function managePosts() {
+function ManagePosts() {
   return (
     <div className={styles.managementWindow}>
       <h1>Gönderiler</h1>
     </div>
   )
-
 }
 
-
-
-function manageApplications() {
-  // fill array with community objects but change the id and name with spread operator
-  const dummyCommunities = Array(10).fill(dummyCommunity).map((community, index) => ({ ...community, id: index, name: `Topluluk ${index}` }));
+function ManageApplications() {
+  const authContext = useContext(AuthContext);
+  const [unverifiedCommunities, setUnverifiedCommunities] = useState([]);
+  const[search, setSearch] = useState('');
   
+  useEffect(() => {
+    if (unverifiedCommunities.length > 0) return; // if there are already communities, do not fetch again
+    (async () => {
+      const result = await authContext.getUnverifiedCommunities();
+      if (result) {
+        // sort result by id
+        result.sort((a, b) => a.id - b.id);
+        setUnverifiedCommunities(result);
+      }
+    })();
+  }, [authContext]);
 
+  useEffect(() => {
+    if (search === '') {
+      // Fetch all communities
+      (async () => {
+        const result = await authContext.getUnverifiedCommunities();
+        if (result) {
+          // sort result by id
+          result.sort((a, b) => a.id - b.id);
+          setUnverifiedCommunities(result);
+        }
+      })();
+    } else {
+      // Fetch communities that match the query
+      (async () => {
+        const result = await authContext.searchUnverifiedCommunities(search);
+        if (result) {
+          // sort result by id
+          result.sort((a, b) => a.id - b.id);
+          setUnverifiedCommunities(result);
+        }
+      })();
+    }
+  }, [search]);
+  
+  
   function onApproveClicked() {
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
     const checked = [];
@@ -141,14 +285,68 @@ function manageApplications() {
         checked.push(checkbox.value);
       }
     })
-    console.log(checked);
+
+    if (checked.length === 0) return; // if there is no checked community, do not continue
+
+    checked.forEach(async (id) => {
+      const result = await authContext.acceptCommunity(id);
+      if (result) {
+        setUnverifiedCommunities(unverifiedCommunities.filter((community) => community.id !== id));
+      }
+    })
+    
+    // reload to window
+    // window.location.reload();
   }
+
+  function onRejectClicked() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    const checked = [];
+    checkboxes.forEach((checkbox) => {
+      if (checkbox.checked && checkbox.id !== 'setAll') {
+        checked.push(checkbox.value);
+      }
+    })
+
+    if (checked.length === 0) return; // if there is no checked community, do not continue
+
+    checked.forEach(async (id) => {
+      const result = await authContext.rejectCommunity(id);
+      if (result) {
+        setUnverifiedCommunities(unverifiedCommunities.filter((community) => community.id !== id));
+      }
+    })
+    
+    // reload to window
+    // window.location.reload();
+  }
+
+  // by pressing ESC, fetch unverified communities again
+  useEffect(() => {
+    const handleEsc = (event) => {
+       if (event.keyCode === 27) {
+        (async () => {
+          const result = await authContext.getUnverifiedCommunities();
+          if (result) {
+            // sort result by id
+            result.sort((a, b) => a.id - b.id);
+            setUnverifiedCommunities(result);
+          }
+        })();
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, []);
 
 
   return (
     <div className={styles.managementWindow}>
       <div className={styles.topBar}>
-        <input type='search' placeholder='Topluluk Ara' />
+        <Input type={'search'} placeholder={'Topluluk Ara'} setSearch={setSearch} />
         <div className={styles.labelInput}>
           <label htmlFor='setAll'>Tümünü Seç</label>
           <input type='checkbox' id='setAll' onChange={selectAll} />
@@ -156,12 +354,17 @@ function manageApplications() {
       </div>
 
       <ul className={styles.elementList}>
-        {dummyCommunities.map((community) => (
+        {unverifiedCommunities.map((community) => (
           <li className={styles.element} key={community.id}>
             <div className={styles.elementInfo}>
-              <img src={community.pfpSrc} alt="community.name" className={styles.pfpSrc} onClick={checkItem}/>
-              <div className={styles.elementName} onClick={checkItem}>
-                {community.name}
+              <img src='/icons/group-icon.svg' alt="pfp" className={styles.pfpSrc} onClick={checkItem} />
+              <div className={styles.info}>
+                <div>
+                  {community.name}
+                </div>
+                <div style={{ color: '#666666', fontSize: '0.8rem' }}>
+                  {community.user.email}
+                </div>
               </div>
             </div>
             <input type="checkbox" value={community.id} />
@@ -171,7 +374,7 @@ function manageApplications() {
       <div className={styles.bottomBar}> 
         <div className={styles.buttons}>
           <button className={styles.buttonApprove} type='submit' onClick={onApproveClicked}>Başvuruları Onayla</button>
-          <button className={styles.buttonDeny} type='submit'>Reddet</button>
+          <button className={styles.buttonReject} type='submit' onClick={onRejectClicked}>Reddet</button>
         </div>
       </div>
     </div>
@@ -181,11 +384,21 @@ function manageApplications() {
 
 export default function AdminPanel() {
   const authContext = useContext(AuthContext);    
-  const [menuOption, setMenuOption] = useState('communities');
+  // store menuOption in localStorage, so that it is not reset when the page is refreshed
+  if (typeof window !== 'undefined') {
+    var storedMenuOption = localStorage.getItem('menuOption');
+  }
+  const [menuOption, setMenuOption] = useState(storedMenuOption ? storedMenuOption : 'communities');
+  
+  useEffect(() => {
+    localStorage.setItem('menuOption', String(menuOption));
+  }, [menuOption]);
+  
+
 
   return (
     <div>
-        {!authContext.userData ?
+        {!authContext.userData || authContext.userData?.roles[0] !== 'ROLE_ADMIN' ?
           <Login /> :
           <div className={styles.adminPanel}>
             <div className={styles.banner}>
@@ -193,10 +406,11 @@ export default function AdminPanel() {
             </div>
             <LeftMenu setMenuOption={setMenuOption} menuOption={menuOption}/>
             <>
-              {menuOption === 'communities' && manageCommunities()}
-              {menuOption === 'students' && manageStudents()}
-              {menuOption === 'posts' && managePosts()}
-              {menuOption === 'applications' && manageApplications()}
+              {menuOption === 'communities' && <ManageCommunities/>}
+              {menuOption === 'students' && <ManageStudents/>}
+              {menuOption === 'posts' && <ManagePosts/>}
+              {menuOption === 'projectIdeas' && <ManageProjectIdeas/>}
+              {menuOption === 'applications' && <ManageApplications/>}
             </>
           </div>
         }
