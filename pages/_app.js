@@ -22,7 +22,6 @@ async function request(method, path, body, useCredentials = true) {
   });
   let data;
   if (res.ok) {
-    console.log(res);
     if (res.status === 204) {
       data = {};
     }
@@ -41,26 +40,20 @@ function MyApp({ Component, pageProps }) {
   const [userData, setUserData] = useState();
 
   useEffect(() => {
-    function getUserData() {
-      const userData_ = JSON.parse(localStorage.getItem('userData'));
+      const userData_ = JSON.parse(localStorage.getItem(userData ? 'userData' : undefined));
       if (userData_ && !isSessionExpired(userData_)) {
         setUserData_(userData_);
       } else {
         setUserData(undefined);
       }
-    }
-
-    getUserData();
-    //const id = setInterval(getUserData, 9000);
-    //return () => clearInterval(id);
   }, []);
 
   useEffect(() => {
-    const userData_ = JSON.parse(localStorage.getItem('userData'));
+    const userData_ = JSON.parse(localStorage.getItem(userData ? 'userData' : undefined));
     // get user with id
     if (userData_) {
-      getUser(userData_.id).then(([res, _]) => {
-        if (!res.ok) {
+      getUser(userData_.id).then(([_, data]) => {
+        if (!data){
           signOut();
         }
       });
