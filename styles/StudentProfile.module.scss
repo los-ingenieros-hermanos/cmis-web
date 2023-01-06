@@ -13,6 +13,17 @@
   }
 }
 
+.title {
+  @include panel;
+  width: 100%;
+  padding: 4px 16px;
+
+  h2 {
+    font-weight: 500;
+    font-size: 20px;
+  }
+}
+
 .bannerFileInput,
 .pfpFileInput {
   position: absolute;
@@ -92,6 +103,7 @@
     min-width: 100%;
     max-width: 100%;
     min-height: 100px;
+    margin-top: 48px;
   }
 
   .btnFlex {
@@ -127,20 +139,8 @@
   @include panel;
   display: flex;
   flex-direction: column;
-  gap: 16px;
   width: 500px;
   padding: 16px;
-
-  .buttons {
-    display: flex;
-    gap: 16px;
-  }
-
-  .applyTextarea {
-    width: 100%;
-    height: 200px;
-    resize: none;
-  }
 }
 
 .leaveModal {

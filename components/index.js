@@ -1,6 +1,11 @@
-export { default as Header } from './Header/Header';
-export { default as Link } from './Link/Link';
-export { default as HeaderTab } from './Header/HeaderTab/HeaderTab';
-export { default as Tabs } from './Tabs/Tabs';
+export { default as Calendar } from './Calendar/Calendar';
 export { default as CommunityProfilePage } from './ComunityProfilePage/CommunityProfilePage';
+export { default as Header } from './Header/Header';
+export { default as HeaderTab } from './Header/HeaderTab/HeaderTab';
+export { default as Link } from './Link/Link';
+export { default as ManagementPage } from './ManagementPage/ManagementPage';
+export { default as MemberListElement } from './MemberListElement/MemberListElement';
+export { default as Modal } from './Modal/Modal';
+export { default as NewPost } from './NewPost/NewPost';
 export { default as Post } from './Post/Post';
+export { default as Tabs } from './Tabs/Tabs';

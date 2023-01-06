@@ -9,12 +9,22 @@ import styles from './Header.module.scss';
 export default function Header() {
   const authContext = useContext(AuthContext);
   const [pfp, setPfp] = useState();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
       setPfp(await authContext.getUserPfp());
     })();
   }, [authContext]);
+
+  useEffect(() => {
+    function onClick() {
+      setIsMenuOpen(false);
+    }
+
+    window.addEventListener('click', onClick);
+    return () => window.removeEventListener('click', onClick);
+  });
 
   function onLoginClicked() {
     authContext.setIsLoginOpen(true);
@@ -24,11 +34,12 @@ export default function Header() {
     authContext.setIsSignUpOpen(true);
   }
 
-  function onBookmarksClicked() {}
+  function onProfileClicked(e) {
+    e.stopPropagation();
+    setIsMenuOpen((oldIsMenuOpen) => !oldIsMenuOpen);
+  }
 
-  function onDmClicked() {}
-
-  function onProfileClicked() {
+  function onSignOutClicked() {
     authContext.signOut();
   }
 
@@ -62,15 +73,12 @@ export default function Header() {
           />
         </ul>
       </nav>
-      <div className={styles.flex1}>
-        <h1>
-          <Link className={styles.logo} href='/'>
-            cmis
-          </Link>
-        </h1>
-        <input className={styles.searchBar} type='text' placeholder="cmis'te ara" />
-      </div>
-      <div className={styles.flex2}>
+      <h1>
+        <Link className={styles.logo} href='/'>
+          cmis
+        </Link>
+      </h1>
+      <div className={styles.rightFlex}>
         {!authContext.userData ? (
           <>
             <button className={styles.loginBtn} onClick={onLoginClicked}>
@@ -86,14 +94,14 @@ export default function Header() {
           </>
         ) : (
           <>
-            <Link href={'/ogrenciler/' + authContext.userData.id + '/kaydedilenler'}>
-              <button className={clsx(styles.bookmarksBtn, 'centerVertically')} onClick={onBookmarksClicked}>
+            {!authContext.userData.isCommunity && (
+              <Link
+                className={clsx(styles.bookmarksBtn, 'centerVertically')}
+                href={'/ogrenciler/' + authContext.userData.id + '/kaydedilenler'}
+              >
                 <img src='/icons/bookmarks-icon.svg' alt='bookmarks' />
-              </button>
-            </Link>
-            <button className={clsx(styles.dmBtn, 'centerVertically')} onClick={onDmClicked}>
-              <img src='/icons/dm-icon.svg' alt='dm' />
-            </button>
+              </Link>
+            )}
             <button className={clsx(styles.profileBtn, 'centerVertically')} onClick={onProfileClicked}>
               <img
                 src={
@@ -103,6 +111,19 @@ export default function Header() {
                 alt='dm'
               />
             </button>
+            {isMenuOpen && (
+              <div className={styles.menu}>
+                <Link
+                  className={styles.menuItem}
+                  href={(authContext.userData.isCommunity ? '/topluluklar/' : '/ogrenciler/') + authContext.userData.id}
+                >
+                  Profil
+                </Link>
+                <button className={styles.menuItem} onClick={onSignOutClicked}>
+                  Çıkış Yap
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>

@@ -44,13 +44,27 @@ function MyApp({ Component, pageProps }) {
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [userData, setUserData] = useState();
 
-  useEffect(() => {
-    const userData_ = JSON.parse(localStorage.getItem('userData'));
-    if (userData_ && !isSessionExpired(userData_)) {
-      setUserData_(userData_);
-    } else {
-      setUserData(undefined);
+  const request = useCallback(async (method, path, body, useCredentials = true) => {
+    if (!path || path.includes('/undefined')) {
+      return [null, null];
     }
+
+    const res = await fetch(api(path), {
+      method,
+      credentials: useCredentials ? 'include' : undefined,
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    let data;
+    if (res.ok && res.status !== 204) {
+      data = await res.json();
+    } else if (res.status === 401) {
+      setIsLoginOpen(true);
+    }
+    return [res, data];
   }, []);
 
   function setUserData_(data) {
@@ -61,23 +75,34 @@ function MyApp({ Component, pageProps }) {
     localStorage.setItem('userData', JSON.stringify(data));
   }
 
-  const getUser = useCallback(async (userId) => {
-    const [res, data] = await request('GET', `cmis/users/${userId}`);
-    return [res, data];
-  }, []);
+  const getUser = useCallback(
+    async (userId) => {
+      const [res, data] = await request('GET', `cmis/users/${userId}`);
+      return [res, data];
+    },
+    [request],
+  );
 
-  function isSessionExpired(userData_) {
-    return parseInt(userData_.expires) - 10000 < new Date().getTime();
-  }
-
-  const signIn = useCallback(async (email, password) => {
-    const [res, data] = await request('POST', 'auth/signin', { email, password });
-    if (res.ok) {
-      data.expires = new Date().getTime() + 86400000;
-      setUserData_(data);
-      return data;
+  useEffect(() => {
+    const userData_ = JSON.parse(localStorage.getItem('userData'));
+    if (userData_ && !isSessionExpired(userData_)) {
+      setUserData_(userData_);
+    } else {
+      setUserData(undefined);
     }
   }, []);
+
+  const signIn = useCallback(
+    async (email, password) => {
+      const [res, data] = await request('POST', 'auth/signin', { email, password });
+      if (res.ok) {
+        data.expires = new Date().getTime() + 86400000;
+        setUserData_(data);
+        return data;
+      }
+    },
+    [request],
+  );
 
   const signUp = useCallback(
     async (firstName, lastName, email, password, role) => {
@@ -92,7 +117,7 @@ function MyApp({ Component, pageProps }) {
         return data;
       }
     },
-    [signIn],
+    [signIn, request],
   );
 
   const signOut = useCallback(async () => {
@@ -100,7 +125,7 @@ function MyApp({ Component, pageProps }) {
     if (res.ok) {
       setUserData_(null);
     }
-  }, []);
+  }, [request]);
 
   useEffect(() => {
     const userData_ = JSON.parse(localStorage.getItem('userData'));
@@ -114,166 +139,341 @@ function MyApp({ Component, pageProps }) {
     }
   }, [getUser, signOut]);
 
-  const getCommunities = useCallback(async (searchTerm) => {
-    let _, data;
-    if (!searchTerm) {
-      [_, data] = await request('GET', 'cmis/communities');
-    } else {
-      [_, data] = await request('GET', `cmis/communities/search?search=${searchTerm}`);
-    }
-    return data;
-  }, []);
+  function isSessionExpired(userData_) {
+    return parseInt(userData_.expires) - 10000 < new Date().getTime();
+  }
+
+  const getCommunities = useCallback(
+    async (searchTerm) => {
+      let _, data;
+      if (!searchTerm) {
+        [_, data] = await request('GET', 'cmis/communities');
+      } else {
+        [_, data] = await request('GET', `cmis/communities/search?search=${searchTerm}`);
+      }
+      return data;
+    },
+    [request],
+  );
 
   const getFollowedCommunities = useCallback(async () => {
     if (userData?.roles[0] === 'ROLE_STUDENT') {
-      const [_, data] = await request('GET', `cmis/students/${userData.id}/followingCommunities`);
+      const [_, data] = await request('GET', `cmis/students/${userData?.id}/followingCommunities`);
       return data;
     }
-  }, [userData]);
+  }, [request, userData]);
 
-  const getCommunity = useCallback(async (communityId) => {
-    const [_, data] = await request('GET', `cmis/communities/${communityId}`);
-    return data;
-  }, []);
+  const getCommunity = useCallback(
+    async (communityId) => {
+      const [_, data] = await request('GET', `cmis/communities/${communityId}`);
+      return data;
+    },
+    [request],
+  );
 
-  const updateCommunity = useCallback(async (communityData) => {
-    const [_, data] = await request('PUT', `cmis/communities/${communityData.id}`, communityData);
-    return data;
-  }, []);
+  const updateCommunity = useCallback(
+    async (communityData) => {
+      const [_, data] = await request('PUT', `cmis/communities/${communityData.id}`, communityData);
+      return data;
+    },
+    [request],
+  );
 
   const followCommunity = useCallback(
     async (communityId) => {
-      const [_, data] = await request('POST', `cmis/students/${userData.id}/followingCommunities/${communityId}`, {
+      const [_, data] = await request('POST', `cmis/students/${userData?.id}/followingCommunities`, {
         id: communityId,
       });
       return data;
     },
-    [userData],
+    [request, userData],
   );
 
   const unfollowCommunity = useCallback(
     async (communityId) => {
-      const [_, data] = await request('DELETE', `cmis/students/${userData.id}/followingCommunities/${communityId}`);
+      const [_, data] = await request('DELETE', `cmis/students/${userData?.id}/followingCommunities/${communityId}`);
       return data;
     },
-    [userData],
+    [request, userData],
   );
 
   const applyToCommunity = useCallback(
     async (communityId, description) => {
-      const [_, data] = await request('POST', `cmis/communities/${communityId}/apply/${userData.id}`, description);
+      const [_, data] = await request('POST', `cmis/communities/${communityId}/apply/${userData?.id}`, description);
       return data;
     },
-    [userData],
+    [request, userData],
+  );
+
+  const hasAppliedToCommunity = useCallback(
+    async (communityId) => {
+      const [_, data] = await request('GET', `cmis/communities/${communityId}/memberApplications/${userData?.id}`);
+      return data;
+    },
+    [request, userData],
   );
 
   const leaveCommunity = useCallback(
     async (communityId) => {
-      const [_, data] = await request('DELETE', `cmis/communities/${communityId}/members/${userData.id}`);
+      const [_, data] = await request('DELETE', `cmis/communities/${communityId}/members/${userData?.id}`);
       return data;
     },
-    [userData],
+    [request, userData],
   );
 
   const getMembers = useCallback(async () => {
-    const [_, data] = await request('GET', `cmis/communities/${userData.id}/members`);
+    const [_, data] = await request('GET', `cmis/communities/${userData?.id}/members`);
     return data;
-  }, [userData]);
+  }, [request, userData]);
 
   const getMemberApplications = useCallback(async () => {
-    const [_, data] = await request('GET', `cmis/communities/${userData.id}/membersApplications`);
+    const [_, data] = await request('GET', `cmis/communities/${userData?.id}/memberApplications`);
     return data;
-  }, [userData]);
+  }, [request, userData]);
 
-  const getMemberApplication = useCallback(async (communityId, studentId) => {
-    const [_, data] = await request('GET', `cmis/communities/${communityId}/membersApplications/${studentId}`);
-    return data;
-  }, []);
+  const getMemberApplication = useCallback(
+    async (communityId, studentId) => {
+      const [_, data] = await request('GET', `cmis/communities/${communityId}/memberApplications/${studentId}`);
+      return data;
+    },
+    [request],
+  );
 
   const cancelMemberApplication = useCallback(
     async (communityId) => {
-      const [_, data] = await request('DELETE', `cmis/communities/${communityId}/cancelApplication/${userData.id}`);
+      const [_, data] = await request('DELETE', `cmis/communities/${communityId}/cancelApplication/${userData?.id}`);
       return data;
     },
-    [userData],
+    [request, userData],
   );
 
   const acceptMemberApplication = useCallback(
     async (studentId) => {
-      const [_, data] = await request('PUT', `cmis/communities/${userData.id}/membersApplications/${studentId}/accept`);
+      const [_, data] = await request(
+        'PUT',
+        `cmis/communities/${userData?.id}/membersApplications/${studentId}/accept`,
+      );
       return data;
     },
-    [userData],
+    [request, userData],
   );
 
   const rejectMemberApplication = useCallback(
     async (studentId) => {
-      const [_, data] = await request('PUT', `cmis/communities/${userData.id}/membersApplications/${studentId}/reject`);
+      const [_, data] = await request(
+        'PUT',
+        `cmis/communities/${userData?.id}/membersApplications/${studentId}/reject`,
+      );
       return data;
     },
-    [userData],
+    [request, userData],
   );
 
   const isFollowerOfCommunity = useCallback(
     async (communityId) => {
       if (userData?.roles[0] === 'ROLE_STUDENT') {
-        const [_, data] = await request('GET', `cmis/students/${userData.id}/isFollowerOf/${communityId}`);
+        const [_, data] = await request('GET', `cmis/students/${userData?.id}/isFollowerOf/${communityId}`);
         return data;
       }
     },
-    [userData],
+    [request, userData],
   );
 
   const isMemberOfCommunity = useCallback(
     async (communityId) => {
       if (userData?.roles[0] === 'ROLE_STUDENT') {
-        const [_, data] = await request('GET', `cmis/students/${userData.id}/isMemberOf/${communityId}`);
+        const [_, data] = await request('GET', `cmis/students/${userData?.id}/isMemberOf/${communityId}`);
         return data;
       }
     },
-    [userData],
+    [request, userData],
   );
 
-  const getCommunityPosts = useCallback(async (communityId) => {
-    const [res, data] = await request('GET', `cmis/communities/${communityId}/posts`);
-    return data;
-  }, []);
+  const getCommunityPosts = useCallback(
+    async (communityId) => {
+      const [_, data] = await request('GET', `cmis/communities/${communityId}/posts`);
+      return data;
+    },
+    [request],
+  );
+
+  const getCommunityPost = useCallback(
+    async (postId) => {
+      const [_, data] = await request('GET', `cmis/posts/${postId}`);
+      return data;
+    },
+    [request],
+  );
 
   const getUserPfp = useCallback(async () => {
     if (!userData) return;
     let _, data;
     if (userData?.roles[0] === 'ROLE_STUDENT') {
-      [_, data] = await request('GET', `cmis/students/${userData.id}`);
+      [_, data] = await request('GET', `cmis/students/${userData?.id}`);
     } else {
-      [_, data] = await request('GET', `cmis/communities/${userData.id}`);
+      [_, data] = await request('GET', `cmis/communities/${userData?.id}`);
     }
     return data?.image;
-  }, [userData]);
+  }, [request, userData]);
 
-  const getStudent = useCallback(async (studentId) => {
-    const [_, data] = await request('GET', `cmis/students/${studentId}`);
-    return data;
-  }, []);
+  const getStudent = useCallback(
+    async (studentId) => {
+      const [_, data] = await request('GET', `cmis/students/${studentId}`);
+      return data;
+    },
+    [request],
+  );
 
   const sendCommunityPost = useCallback(
     async (postData) => {
-      const [_, data] = await request('POST', `cmis/communities/${userData.id}/posts`, postData);
+      const [_, data] = await request('POST', `cmis/communities/${userData?.id}/posts`, postData);
       return data;
     },
-    [userData],
+    [request, userData],
   );
 
-  const getStudentPosts = useCallback(async (studentId) => {
-    const [_, data] = await request('GET', `cmis/students/${studentId}/projectidea`);
-    return data;
-  }, []);
+  const getStudentPosts = useCallback(
+    async (studentId) => {
+      const [_, data] = await request('GET', `cmis/students/${studentId}/projectidea`);
+      return data;
+    },
+    [request],
+  );
+
+  const getStudentPost = useCallback(
+    async (postId) => {
+      const [_, data] = await request('GET', `cmis/projectidea/${postId}`);
+      return data;
+    },
+    [request],
+  );
 
   const sendStudentPost = useCallback(
     async (postData) => {
-      const [_, data] = await request('POST', `cmis/students/${userData.id}/projectidea`, postData);
+      const [_, data] = await request('POST', `cmis/students/${userData?.id}/projectidea`, postData);
       return data;
     },
-    [userData],
+    [request, userData],
+  );
+
+  const isStudentPostLiked = useCallback(
+    async (postId) => {
+      const [_, data] = await request('GET', `cmis/students/${userData?.id}/projectIdeas/${postId}/isLiked`);
+      return data;
+    },
+    [request, userData?.id],
+  );
+
+  const isStudentPostBookmarked = useCallback(
+    async (postId) => {
+      const [_, data] = await request('GET', `cmis/students/${userData?.id}/projectIdeas/${postId}/isBookmarked`);
+      return data;
+    },
+    [request, userData?.id],
+  );
+
+  const isCommunityPostLiked = useCallback(
+    async (postId) => {
+      const [_, data] = await request('GET', `cmis/posts/${postId}/isLikedByStudent/${userData?.id}`);
+      return data;
+    },
+    [request, userData],
+  );
+
+  const isCommunityPostBookmarked = useCallback(
+    async (postId) => {
+      const [_, data] = await request('GET', `cmis/posts/${postId}/isBookmarkedByStudent/${userData?.id}`);
+      return data;
+    },
+    [userData, request],
+  );
+
+  const isCommunityPostAttended = useCallback(
+    async (eventId) => {
+      const [_, data] = await request('GET', `cmis/students/${userData?.id}/events/${eventId}/isAttended`);
+      return data;
+    },
+    [request, userData],
+  );
+
+  const likeCommunityPost = useCallback(
+    async (postId) => {
+      const [_, data] = await request('POST', `cmis/students/${userData?.id}/posts/${postId}/like`);
+      return data;
+    },
+    [request, userData],
+  );
+
+  const bookmarkCommunityPost = useCallback(
+    async (postId) => {
+      const [_, data] = await request('POST', `cmis/students/${userData?.id}/bookmarkedPosts`, { id: postId });
+      return data;
+    },
+    [request, userData],
+  );
+
+  const removeCommunityPostBookmark = useCallback(
+    async (postId) => {
+      const [_, data] = await request('DELETE', `cmis/students/${userData?.id}/bookmarkedPosts/${postId}`);
+      return data;
+    },
+    [request, userData],
+  );
+
+  const attendCommunityPost = useCallback(
+    async (eventId) => {
+      const [_, data] = await request('POST', `cmis/students/${userData?.id}/events`, { id: eventId });
+      return data;
+    },
+    [request, userData],
+  );
+
+  const removeCommunityPostAttendance = useCallback(
+    async (eventId) => {
+      const [_, data] = await request('DELETE', `cmis/students/${userData?.id}/events/${eventId}`);
+      return data;
+    },
+    [request, userData],
+  );
+
+  const likeStudentPost = useCallback(
+    async (postId) => {
+      const [_, data] = await request('POST', `cmis/students/${userData?.id}/projectidea/${postId}/like`);
+      return data;
+    },
+    [request, userData?.id],
+  );
+
+  const bookmarkStudentPost = useCallback(
+    async (postId) => {
+      const [_, data] = await request('POST', `cmis/students/${userData?.id}/bookMarkedProjectIdeas`, { id: postId });
+      return data;
+    },
+    [request, userData?.id],
+  );
+
+  const removeStudentPostBookmark = useCallback(
+    async (postId) => {
+      const [_, data] = await request('POST', `cmis/students/${userData?.id}/bookMarkedProjectIdeas/${postId}`);
+      return data;
+    },
+    [request, userData?.id],
+  );
+
+  const deleteCommunityPost = useCallback(
+    async (postId) => {
+      const [_, data] = await request('DELETE', `cmis/posts/${postId}`);
+      return data;
+    },
+    [request],
+  );
+
+  const deleteStudentPost = useCallback(
+    async (postId) => {
+      const [_, data] = await request('DELETE', `cmis/projectidea/${postId}`);
+      return data;
+    },
+    [request],
   );
 
   // ------------------ YUSUF ARSLAN API CALLS ------------------ //
@@ -287,7 +487,7 @@ function MyApp({ Component, pageProps }) {
         return data;
       }
     },
-    [userData],
+    [request, userData],
   );
 
   const acceptCommunity = useCallback(
@@ -295,7 +495,7 @@ function MyApp({ Component, pageProps }) {
       const [_, data] = await request('POST', `cmis/admin/${userData?.id}/unverifiedCommunities/${communityId}/accept`);
       return data;
     },
-    [userData],
+    [request, userData],
   );
 
   const rejectCommunity = useCallback(
@@ -306,7 +506,7 @@ function MyApp({ Component, pageProps }) {
       );
       return data;
     },
-    [userData],
+    [request, userData],
   );
 
   const deleteCommunity = useCallback(
@@ -314,7 +514,7 @@ function MyApp({ Component, pageProps }) {
       const [_, data] = await request('DELETE', `cmis/communities/${communityId}`);
       return data;
     },
-    [userData],
+    [request],
   );
 
   const getStudents = useCallback(
@@ -327,7 +527,7 @@ function MyApp({ Component, pageProps }) {
         return data;
       }
     },
-    [userData],
+    [request],
   );
 
   const deleteStudent = useCallback(
@@ -335,7 +535,7 @@ function MyApp({ Component, pageProps }) {
       const [_, data] = await request('DELETE', `cmis/students/${studentId}`);
       return data;
     },
-    [userData],
+    [request],
   );
 
   const getPosts = useCallback(
@@ -348,7 +548,7 @@ function MyApp({ Component, pageProps }) {
         return data;
       }
     },
-    [userData],
+    [request],
   );
 
   const deletePost = useCallback(
@@ -356,7 +556,7 @@ function MyApp({ Component, pageProps }) {
       const [_, data] = await request('DELETE', `cmis/posts/${postId}`);
       return data;
     },
-    [userData],
+    [request],
   );
 
   const getProjectIdeas = useCallback(
@@ -369,7 +569,7 @@ function MyApp({ Component, pageProps }) {
         return data;
       }
     },
-    [userData],
+    [request],
   );
 
   const deleteProjectIdea = useCallback(
@@ -377,7 +577,7 @@ function MyApp({ Component, pageProps }) {
       const [_, data] = await request('DELETE', `cmis/projectidea/${projectIdeaId}`);
       return data;
     },
-    [userData],
+    [request],
   );
 
   // ------------------ YUSUF ARSLAN API CALLS END--------------- //
@@ -414,6 +614,23 @@ function MyApp({ Component, pageProps }) {
       sendCommunityPost,
       getStudentPosts,
       sendStudentPost,
+      getCommunityPost,
+      getStudentPost,
+      isStudentPostLiked,
+      isStudentPostBookmarked,
+      isCommunityPostLiked,
+      isCommunityPostBookmarked,
+      isCommunityPostAttended,
+      likeCommunityPost,
+      bookmarkCommunityPost,
+      removeCommunityPostBookmark,
+      attendCommunityPost,
+      removeCommunityPostAttendance,
+      likeStudentPost,
+      bookmarkStudentPost,
+      removeStudentPostBookmark,
+      deleteCommunityPost,
+      deleteStudentPost,
 
       // ------------------ YUSUF ARSLAN API CALLS ------------------ //
       getUnverifiedCommunities,
@@ -426,6 +643,7 @@ function MyApp({ Component, pageProps }) {
       deletePost,
       getProjectIdeas,
       deleteProjectIdea,
+      hasAppliedToCommunity,
     }),
     [
       isLoginOpen,
@@ -456,6 +674,23 @@ function MyApp({ Component, pageProps }) {
       sendCommunityPost,
       getStudentPosts,
       sendStudentPost,
+      getCommunityPost,
+      getStudentPost,
+      isStudentPostLiked,
+      isStudentPostBookmarked,
+      isCommunityPostLiked,
+      isCommunityPostBookmarked,
+      isCommunityPostAttended,
+      likeCommunityPost,
+      bookmarkCommunityPost,
+      removeCommunityPostBookmark,
+      attendCommunityPost,
+      removeCommunityPostAttendance,
+      likeStudentPost,
+      bookmarkStudentPost,
+      removeStudentPostBookmark,
+      deleteCommunityPost,
+      deleteStudentPost,
       getUnverifiedCommunities,
       acceptCommunity,
       rejectCommunity,
@@ -466,6 +701,7 @@ function MyApp({ Component, pageProps }) {
       deletePost,
       getProjectIdeas,
       deleteProjectIdea,
+      hasAppliedToCommunity,
     ],
   );
   return (

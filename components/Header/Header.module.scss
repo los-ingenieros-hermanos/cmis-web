@@ -14,28 +14,10 @@
   z-index: 10;
 }
 
-.flex1 {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
 .logo {
   color: $main-color;
   font-family: 'Aldrich', sans-serif;
   font-weight: 400;
-}
-
-.searchBar {
-  background: url('/icons/search-icon.svg') no-repeat 16px center;
-  padding-left: 52px;
-  padding-right: 16px;
-  width: 300px;
-  height: 48px;
-  border-radius: 24px;
-  background-color: #f0f2f5;
-  border: none;
-  outline: none;
 }
 
 .nav {
@@ -49,7 +31,7 @@
   align-items: center;
 }
 
-.flex2 {
+.rightFlex {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -88,4 +70,26 @@
   border: none;
   background: none;
   cursor: pointer;
+}
+
+.menu {
+  @include panel;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: $header-height - 8px;
+  right: 16px;
+  padding: 8px;
+}
+
+.menuItem {
+  border: none;
+  background: none;
+  font-weight: 500;
+  cursor: pointer;
+  color: #333;
+
+  &:hover {
+    color: #000;
+  }
 }

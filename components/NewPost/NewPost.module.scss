@@ -1,0 +1,55 @@
+@use 'styles/_macros' as *;
+
+.newPost {
+  @include panel;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 640px;
+  margin-top: 16px;
+  padding: 16px;
+  gap: 16px;
+}
+
+.title {
+  width: 100%;
+}
+
+.content {
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 100px;
+}
+
+.checkboxInput {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.checkbox {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.eventDate {
+  height: 24px;
+  width: 150px;
+}
+
+.eventTime {
+  height: 24px;
+  width: 95px;
+}
+
+.visibilityInput {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.buttons {
+  display: flex;
+  gap: 16px;
+}

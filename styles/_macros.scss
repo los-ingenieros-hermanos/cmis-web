@@ -6,8 +6,8 @@ $main-color: #544673;
 $light-purple: #d0d2f2;
 $blue: #2964d9;
 $green: #61ad6c;
-$grey: #E4E6EB;
-$grey-darker: #65676B;
+$grey: #e4e6eb;
+$grey-darker: #65676b;
 $black: #222222;
 $main-color-darker: color.scale($main-color, $lightness: -15%);
 $main-color-lighter: color.scale($main-color, $lightness: 15%);
@@ -21,4 +21,17 @@ $post-width: 640px;
   background-color: white;
   box-shadow: $box-shadow;
   border-radius: $border-radius;
+}
+
+@mixin infoPanel {
+  @include panel;
+  width: 400px;
+  position: absolute;
+  left: calc(100% + 16px);
+  top: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
 }

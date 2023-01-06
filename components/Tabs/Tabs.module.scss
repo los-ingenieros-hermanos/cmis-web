@@ -9,6 +9,10 @@
   a {
     color: #333b;
     font-weight: 500;
+
+    &:hover {
+      color: #333;
+    }
   }
 
   .active {
