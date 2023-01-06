@@ -16,6 +16,9 @@ async function request(method, path, body, useCredentials = true) {
     method,
     credentials: useCredentials ? 'include' : undefined,
     body,
+    headers: {
+      'Content-Type': 'application/json',
+    },
   });
   let data;
   if (res.ok && res.status !== 204) {
@@ -37,19 +40,6 @@ function MyApp({ Component, pageProps }) {
       setUserData_(userData_);
     } else {
       setUserData(undefined);
-    }
-  }, []);
-
-  useEffect(() => {
-    const userData_ = JSON.parse(localStorage.getItem('userData'));
-    // get user with id
-    if (userData_) {
-      getUser(userData_.id).then(([_, data]) => {
-        console.log(data);
-        if (!data) {
-          signOut();
-        }
-      });
     }
   }, []);
 
@@ -101,6 +91,19 @@ function MyApp({ Component, pageProps }) {
       setUserData_(null);
     }
   }, []);
+
+  useEffect(() => {
+    const userData_ = JSON.parse(localStorage.getItem('userData'));
+    // get user with id
+    if (userData_) {
+      getUser(userData_.id).then(([_, data]) => {
+        console.log(data);
+        if (!data) {
+          signOut();
+        }
+      });
+    }
+  }, [getUser, signOut]);
 
   const getCommunities = useCallback(async (searchTerm) => {
     let _, data;
