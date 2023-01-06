@@ -3,6 +3,16 @@ import Head from 'next/head';
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import '../styles/globals.scss';
 
+export function imageToBase64(file, callback) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    callback(reader.result);
+  };
+  if (file) {
+    reader.readAsDataURL(file);
+  }
+}
+
 function api(path) {
   //return 'https://cmisbackend.azurewebsites.net/api/' + path;
   return 'http://localhost:8070/api/' + path;
@@ -15,7 +25,7 @@ async function request(method, path, body, useCredentials = true) {
   const res = await fetch(api(path), {
     method,
     credentials: useCredentials ? 'include' : undefined,
-    body,
+    body: JSON.stringify(body),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -61,7 +71,7 @@ function MyApp({ Component, pageProps }) {
   }
 
   const signIn = useCallback(async (email, password) => {
-    const [res, data] = await request('POST', 'auth/signin', JSON.stringify({ email, password }));
+    const [res, data] = await request('POST', 'auth/signin', { email, password });
     if (res.ok) {
       data.expires = new Date().getTime() + 86400000;
       setUserData_(data);
@@ -74,7 +84,7 @@ function MyApp({ Component, pageProps }) {
       const [res, data] = await request(
         'POST',
         'auth/signup',
-        JSON.stringify({ firstName, lastName, email, password, role: [role] }),
+        { firstName, lastName, email, password, role: [role] },
         false,
       );
       if (res.ok) {
@@ -127,7 +137,7 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   const updateCommunity = useCallback(async (communityData) => {
-    const [_, data] = await request('PUT', `cmis/communities/${communityData.id}`, JSON.stringify(communityData));
+    const [_, data] = await request('PUT', `cmis/communities/${communityData.id}`, communityData);
     return data;
   }, []);
 
@@ -245,9 +255,22 @@ function MyApp({ Component, pageProps }) {
     return data;
   }, []);
 
-  const sendPostCommunity = useCallback(
+  const sendCommunityPost = useCallback(
     async (postData) => {
       const [_, data] = await request('POST', `cmis/communities/${userData.id}/posts`, postData);
+      return data;
+    },
+    [userData],
+  );
+
+  const getStudentPosts = useCallback(async (studentId) => {
+    const [_, data] = await request('GET', `cmis/students/${studentId}/projectidea`);
+    return data;
+  }, []);
+
+  const sendStudentPost = useCallback(
+    async (postData) => {
+      const [_, data] = await request('POST', `cmis/students/${userData.id}/projectidea`, postData);
       return data;
     },
     [userData],
@@ -388,7 +411,9 @@ function MyApp({ Component, pageProps }) {
       getCommunityPosts,
       getUserPfp,
       getStudent,
-      sendPostCommunity,
+      sendCommunityPost,
+      getStudentPosts,
+      sendStudentPost,
 
       // ------------------ YUSUF ARSLAN API CALLS ------------------ //
       getUnverifiedCommunities,
@@ -404,9 +429,7 @@ function MyApp({ Component, pageProps }) {
     }),
     [
       isLoginOpen,
-      setIsLoginOpen,
       isSignUpOpen,
-      setIsSignUpOpen,
       signUp,
       signIn,
       signOut,
@@ -430,7 +453,9 @@ function MyApp({ Component, pageProps }) {
       getCommunityPosts,
       getUserPfp,
       getStudent,
-      sendPostCommunity,
+      sendCommunityPost,
+      getStudentPosts,
+      sendStudentPost,
       getUnverifiedCommunities,
       acceptCommunity,
       rejectCommunity,
