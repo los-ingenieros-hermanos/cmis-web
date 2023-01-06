@@ -14,8 +14,8 @@ export function imageToBase64(file, callback) {
 }
 
 function api(path) {
-  //return 'https://cmisbackend.azurewebsites.net/api/' + path;
-  return 'http://localhost:8070/api/' + path;
+  return 'https://cmis.azurewebsites.net/api/' + path;
+  //return 'http://localhost:8070/api/' + path;
 }
 
 async function request(method, path, body, useCredentials = true) {
