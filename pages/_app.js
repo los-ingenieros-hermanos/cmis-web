@@ -1,6 +1,6 @@
 import { Header } from 'components';
 import Head from 'next/head';
-import { createContext, useCallback, useEffect, useState, useMemo } from 'react';
+import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import '../styles/globals.scss';
 
 function api(path) {
@@ -9,25 +9,17 @@ function api(path) {
 }
 
 async function request(method, path, body, useCredentials = true) {
-  if (!path || path.includes('/undefined') || path.includes('image')) {
+  if (!path || path.includes('/undefined')) {
     return [null, null];
   }
   const res = await fetch(api(path), {
     method,
     credentials: useCredentials ? 'include' : undefined,
     body,
-    headers: {
-      'Content-Type': 'application/json',
-    },
   });
   let data;
-  if (res.ok) {
-    if (res.status === 204) {
-      data = {};
-    }
-    else {
-      data = await res.json();
-    }
+  if (res.ok && res.status !== 204) {
+    data = await res.json();
   }
   return [res, data];
 }
@@ -40,12 +32,12 @@ function MyApp({ Component, pageProps }) {
   const [userData, setUserData] = useState();
 
   useEffect(() => {
-      const userData_ = JSON.parse(localStorage.getItem('userData'));
-      if (userData_ && !isSessionExpired(userData_)) {
-        setUserData_(userData_);
-      } else {
-        setUserData(undefined);
-      }
+    const userData_ = JSON.parse(localStorage.getItem('userData'));
+    if (userData_ && !isSessionExpired(userData_)) {
+      setUserData_(userData_);
+    } else {
+      setUserData(undefined);
+    }
   }, []);
 
   useEffect(() => {
@@ -54,13 +46,12 @@ function MyApp({ Component, pageProps }) {
     if (userData_) {
       getUser(userData_.id).then(([_, data]) => {
         console.log(data);
-        if (!data){
+        if (!data) {
           signOut();
         }
       });
     }
   }, []);
-  
 
   function setUserData_(data) {
     if (data) {
@@ -73,7 +64,7 @@ function MyApp({ Component, pageProps }) {
   const getUser = useCallback(async (userId) => {
     const [res, data] = await request('GET', `cmis/users/${userId}`);
     return [res, data];
-  }, [])
+  }, []);
 
   function isSessionExpired(userData_) {
     return parseInt(userData_.expires) - 10000 < new Date().getTime();
@@ -239,176 +230,222 @@ function MyApp({ Component, pageProps }) {
   const getUserPfp = useCallback(async () => {
     let _, data;
     if (userData?.roles[0] === 'ROLE_STUDENT') {
-      [_, data] = await request('GET', `cmis/students/${userData.id}/image`);
+      [_, data] = await request('GET', `cmis/students/${userData.id}/image`, undefined, true, {
+        'Content-Type': 'text/plain',
+      });
     } else if (userData?.roles[0] === 'ROLE_COMMUNITY') {
-      [_, data] = await request('GET', `cmis/communities/${userData.id}/image`);
+      [_, data] = await request('GET', `cmis/communities/${userData.id}/image`, undefined, true, {
+        'Content-Type': 'text/plain',
+      });
     }
     return data;
   }, [userData]);
 
-    // ------------------ YUSUF ARSLAN API CALLS ------------------ //
-    const getUnverifiedCommunities = useCallback(async (search) => {
+  const getStudent = useCallback(async (studentId) => {
+    const [_, data] = await request('GET', `cmis/students/${studentId}`);
+    return data;
+  }, []);
+
+  const sendPostCommunity = useCallback(
+    async (postData) => {
+      const [_, data] = await request('POST', `cmis/communities/${userData.id}/posts`, postData);
+      return data;
+    },
+    [userData],
+  );
+
+  // ------------------ YUSUF ARSLAN API CALLS ------------------ //
+  const getUnverifiedCommunities = useCallback(
+    async (search) => {
       if (!search) {
         const [_, data] = await request('GET', `cmis/admin/${userData?.id}/unverifiedCommunities`);
         return data;
-      }
-      else {
+      } else {
         const [_, data] = await request('GET', `cmis/unverified/search?search=${search}`);
         return data;
       }
-    }, [userData]);
-  
-    const acceptCommunity = useCallback(async (communityId) => {
+    },
+    [userData],
+  );
+
+  const acceptCommunity = useCallback(
+    async (communityId) => {
       const [_, data] = await request('POST', `cmis/admin/${userData?.id}/unverifiedCommunities/${communityId}/accept`);
       return data;
-    }, [userData]);
-  
-    const rejectCommunity = useCallback(async (communityId) => {
-      const [_, data] = await request('POST', `cmis/admin/${userData?.id}/unverifiedCommunities/${communityId}/decline`);
+    },
+    [userData],
+  );
+
+  const rejectCommunity = useCallback(
+    async (communityId) => {
+      const [_, data] = await request(
+        'POST',
+        `cmis/admin/${userData?.id}/unverifiedCommunities/${communityId}/decline`,
+      );
       return data;
-    }, [userData]);
-  
-    const deleteCommunity = useCallback(async (communityId) => {
+    },
+    [userData],
+  );
+
+  const deleteCommunity = useCallback(
+    async (communityId) => {
       const [_, data] = await request('DELETE', `cmis/communities/${communityId}`);
       return data;
-    }, [userData]);
+    },
+    [userData],
+  );
 
-    const getStudents = useCallback(async (search) => {
+  const getStudents = useCallback(
+    async (search) => {
       if (!search) {
         const [_, data] = await request('GET', `cmis/students`);
         return data;
-      }
-      else {
+      } else {
         const [_, data] = await request('GET', `cmis/students/search?search=${search}`);
         return data;
       }
-    }, [userData]);
+    },
+    [userData],
+  );
 
-    const deleteStudent = useCallback(async (studentId) => {
+  const deleteStudent = useCallback(
+    async (studentId) => {
       const [_, data] = await request('DELETE', `cmis/students/${studentId}`);
       return data;
-    }, [userData]);
+    },
+    [userData],
+  );
 
-    const getPosts = useCallback(async (search) => {
+  const getPosts = useCallback(
+    async (search) => {
       if (!search) {
         const [_, data] = await request('GET', `cmis/posts`);
         return data;
-      }
-      else {
+      } else {
         const [_, data] = await request('GET', `cmis/posts/search?search=${search}`);
         return data;
       }
-    }, [userData]);
+    },
+    [userData],
+  );
 
-    const deletePost = useCallback(async (postId) => {
+  const deletePost = useCallback(
+    async (postId) => {
       const [_, data] = await request('DELETE', `cmis/posts/${postId}`);
       return data;
-    }, [userData]);
+    },
+    [userData],
+  );
 
-    const getProjectIdeas = useCallback(async (search) => {
+  const getProjectIdeas = useCallback(
+    async (search) => {
       if (!search) {
         const [_, data] = await request('GET', `cmis/projectidea`);
         return data;
-      }
-      else {
+      } else {
         const [_, data] = await request('GET', `cmis/projectidea/search?search=${search}`);
         return data;
       }
-    }, [userData]);
+    },
+    [userData],
+  );
 
-    const deleteProjectIdea = useCallback(async (projectIdeaId) => {
+  const deleteProjectIdea = useCallback(
+    async (projectIdeaId) => {
       const [_, data] = await request('DELETE', `cmis/projectidea/${projectIdeaId}`);
       return data;
-    }, [userData]);
-    
+    },
+    [userData],
+  );
 
-    // ------------------ YUSUF ARSLAN API CALLS END--------------- //
+  // ------------------ YUSUF ARSLAN API CALLS END--------------- //
 
-  const value = useMemo(() => ({
-        isLoginOpen,
-        setIsLoginOpen,
-        isSignUpOpen,
-        setIsSignUpOpen,
-        signUp,
-        signIn,
-        signOut,
-        userData,
-        getCommunities,
-        getFollowedCommunities,
-        getCommunity,
-        updateCommunity,
-        followCommunity,
-        unfollowCommunity,
-        isFollowerOfCommunity,
-        isMemberOfCommunity,
-        applyToCommunity,
-        leaveCommunity,
-        getMembers,
-        getMemberApplications,
-        getMemberApplication,
-        cancelMemberApplication,
-        acceptMemberApplication,
-        rejectMemberApplication,
-        getCommunityPosts,
-        getUserPfp,
+  const value = useMemo(
+    () => ({
+      isLoginOpen,
+      setIsLoginOpen,
+      isSignUpOpen,
+      setIsSignUpOpen,
+      signUp,
+      signIn,
+      signOut,
+      userData,
+      getCommunities,
+      getFollowedCommunities,
+      getCommunity,
+      updateCommunity,
+      followCommunity,
+      unfollowCommunity,
+      isFollowerOfCommunity,
+      isMemberOfCommunity,
+      applyToCommunity,
+      leaveCommunity,
+      getMembers,
+      getMemberApplications,
+      getMemberApplication,
+      cancelMemberApplication,
+      acceptMemberApplication,
+      rejectMemberApplication,
+      getCommunityPosts,
+      getUserPfp,
+      getStudent,
+      sendPostCommunity,
 
-        // ------------------ YUSUF ARSLAN API CALLS ------------------ //
-        getUnverifiedCommunities,
-        acceptCommunity,
-        rejectCommunity,
-        deleteCommunity,
-        getStudents,
-        deleteStudent,
-        getPosts,
-        deletePost,
-        getProjectIdeas,
-        deleteProjectIdea,
-
-    } 
-  ), [
-        isLoginOpen,
-        setIsLoginOpen,
-        isSignUpOpen,
-        setIsSignUpOpen,
-        signUp,
-        signIn,
-        signOut,
-        userData,
-        getCommunities,
-        getFollowedCommunities,
-        getCommunity,
-        updateCommunity,
-        followCommunity,
-        unfollowCommunity,
-        isFollowerOfCommunity,
-        isMemberOfCommunity,
-        applyToCommunity,
-        leaveCommunity,
-        getMembers,
-        getMemberApplications,
-        getMemberApplication,
-        cancelMemberApplication,
-        acceptMemberApplication,
-        rejectMemberApplication,
-        getCommunityPosts,
-        getUserPfp,
-        // ------------------ YUSUF ARSLAN API CALLS ------------------ //
-        getUnverifiedCommunities,
-        acceptCommunity,
-        rejectCommunity,
-        deleteCommunity,
-        getStudents,
-        deleteStudent,
-        getPosts,
-        deletePost,
-        getProjectIdeas,
-        deleteProjectIdea,
-  ]);
-
+      // ------------------ YUSUF ARSLAN API CALLS ------------------ //
+      getUnverifiedCommunities,
+      acceptCommunity,
+      rejectCommunity,
+      deleteCommunity,
+      getStudents,
+      deleteStudent,
+      getPosts,
+      deletePost,
+      getProjectIdeas,
+      deleteProjectIdea,
+    }),
+    [
+      isLoginOpen,
+      setIsLoginOpen,
+      isSignUpOpen,
+      setIsSignUpOpen,
+      signUp,
+      signIn,
+      signOut,
+      userData,
+      getCommunities,
+      getFollowedCommunities,
+      getCommunity,
+      updateCommunity,
+      followCommunity,
+      unfollowCommunity,
+      isFollowerOfCommunity,
+      isMemberOfCommunity,
+      applyToCommunity,
+      leaveCommunity,
+      getMembers,
+      getMemberApplications,
+      getMemberApplication,
+      cancelMemberApplication,
+      acceptMemberApplication,
+      rejectMemberApplication,
+      getCommunityPosts,
+      getUserPfp,
+      getStudent,
+      sendPostCommunity,
+      getUnverifiedCommunities,
+      acceptCommunity,
+      rejectCommunity,
+      deleteCommunity,
+      getStudents,
+      deleteStudent,
+      getPosts,
+      deletePost,
+      getProjectIdeas,
+      deleteProjectIdea,
+    ],
+  );
   return (
-    <AuthContext.Provider
-      value={value}
-    >
+    <AuthContext.Provider value={value}>
       <Head>
         <title>GTU Community Management and Interaction System</title>
       </Head>
