@@ -97,7 +97,6 @@ function MyApp({ Component, pageProps }) {
     // get user with id
     if (userData_) {
       getUser(userData_.id).then(([_, data]) => {
-        console.log(data);
         if (!data) {
           signOut();
         }
@@ -231,17 +230,14 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   const getUserPfp = useCallback(async () => {
+    if (!userData) return;
     let _, data;
     if (userData?.roles[0] === 'ROLE_STUDENT') {
-      [_, data] = await request('GET', `cmis/students/${userData.id}/image`, undefined, true, {
-        'Content-Type': 'text/plain',
-      });
-    } else if (userData?.roles[0] === 'ROLE_COMMUNITY') {
-      [_, data] = await request('GET', `cmis/communities/${userData.id}/image`, undefined, true, {
-        'Content-Type': 'text/plain',
-      });
+      [_, data] = await request('GET', `cmis/students/${userData.id}`);
+    } else {
+      [_, data] = await request('GET', `cmis/communities/${userData.id}`);
     }
-    return data;
+    return data?.image;
   }, [userData]);
 
   const getStudent = useCallback(async (studentId) => {
