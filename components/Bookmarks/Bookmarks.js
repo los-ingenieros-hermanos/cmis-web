@@ -4,54 +4,8 @@ import { AuthContext } from 'pages/_app';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Link, Post } from 'components';
 import LeftMenu from 'components/LeftMenu/LeftMenu';
-import { dummyCommunity } from 'components/ComunityProfilePage/CommunityProfilePage';
-import { dummyCommunityPosts } from 'pages/[communityType]/[id]/gonderiler';
 
-function api(path) {
-    // return 'https://cmisbackend.azurewebsites.net/api/' + path;
-    return 'http://localhost:8070/api/' + path;
-  }
-const dummyEvent = {
-    title: 'Lorem Ipsum Dummy Event',
-    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
-    visibility: 'false',
-    event: {
-        attendance: true,
-        date: {
-            year: 2023,
-            month: 1,
-            day: 3,
-        },
-    },
-    community: {
-        id: 1,
-        url: '/topluluklar/1',
-        image: '/images/placeholder.png',
-        user: {
-            firstName: 'Dummy Team',
-            role: 'ROLE_STUDENT'
-        },
-    },
-    image: '/images/dummy-image.png',
-    
-};
 
-const dummyPost = {
-    title: 'Lorem Ipsum Dummy Post',
-    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
-    visibility: 'public',
-    event: null,
-    community: {
-        id: 1,
-        url: '/topluluklar/1',
-        image: '/images/placeholder.png',
-        user: {
-            firstName: 'Dummy Team',
-            role: 'ROLE_STUDENT'
-        },
-    },
-    image: '/images/placeholder.png',
-};
 
 const dummyIdea = {
     title: 'Lorem Ipsum Dummy Idea',
@@ -60,7 +14,7 @@ const dummyIdea = {
     event: null,
     community: {
         id: 1,
-        url: '/ogrenciler/1',
+        url: '/ogrenciler/43',
         image: '/images/placeholder.png',
         user: {
             firstName: 'Dummy Team',
@@ -209,14 +163,7 @@ export const Bookmarks = () => {
                         <h1>Kaydedilenler</h1>
                     </div>
                 </div>
-                <Bookmark post={dummyEvent}/>
-                <Bookmark post={dummyPost}/>
                 <Bookmark post={dummyIdea}/>
-                <Bookmark post={dummyEvent}/>
-                <Bookmark post={dummyEvent}/>
-                <Bookmark post={dummyEvent}/>
-                <Bookmark post={dummyEvent}/>
-                <Bookmark post={dummyEvent}/>
             </div>
         </>
     );

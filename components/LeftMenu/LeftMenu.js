@@ -45,10 +45,10 @@ export default function LeftMenu() {
             </li>
             {authContext.userData &&
               <li className={styles.item}>
-                <Link href={'/ogrenciler/' + authContext.userData.id + "/kaydedilenler"}>
+                <Link href={"/kaydedilenler"}>
                     <img src={'/icons/sidebar-bookmark.svg'} alt='kaydedilenler' />
                 </Link>
-                <Link href={'/ogrenciler/' + authContext.userData.id + "/kaydedilenler"}>Kaydedilenler</Link>
+                <Link href={"/kaydedilenler"}>Kaydedilenler</Link>
               </li>
             }
             {authContext.userData && 

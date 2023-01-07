@@ -5,127 +5,11 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { AuthContext } from 'pages/_app';
 import LeftMenu from 'components/LeftMenu/LeftMenu';
 
-
-  const dummyCommunityPosts = [
-    {
-      community: {
-        name: 'GTÜ Bilgisayar Topluluğu',
-        pfpSrc: '/images/pfp1.png',
-        url: '/topluluklar/xRTtShHBupaYOvugN0Bvp',
-      },
-      poster: { name: 'Alperen Öztürk', role: 'Başkan Yardımcısı' },
-      date: '6 Ocak, 2021',
-      visibility: 'public',
-      title: 'Lorem Ipsum Post Title',
-      content:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
-      likeCount: 236,
-      eventDetails: {
-        date: '10 Ocak, 2021 | 16.00 - 18.00',
-        participantCount: 72,
-      },
-    },
-    {
-      community: {
-        name: 'GTÜ Bilgisayar Topluluğu',
-        pfpSrc: '/images/pfp1.png',
-        url: '/topluluklar/xRTtShHBupaYOvugN0Bvp',
-      },
-      poster: { name: 'Alperen Öztürk', role: 'Başkan Yardımcısı' },
-      date: '7 Ocak, 2021',
-      visibility: 'public',
-      title: 'Lorem Ipsum Post Title',
-      content:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
-      likeCount: 236,
-    },
-    {
-      community: {
-        name: 'GTÜ Bilgisayar Topluluğu',
-        pfpSrc: '/images/pfp1.png',
-        url: '/topluluklar/xRTtShHBupaYOvugN0Bvp',
-      },
-      poster: { name: 'Alperen Öztürk', role: 'Başkan Yardımcısı' },
-      date: '19 Ocak, 2021',
-      visibility: 'public',
-      title: 'Lorem Ipsum Post Title',
-      content:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus.',
-      likeCount: 236,
-    },
-  ];
-  
-  const dummyTeamPosts = [
-    {
-      community: {
-        name: 'Doğa Takımı',
-        pfpSrc: '/images/pfp4.png',
-        url: '/takimlar/Jz4rdsWpk2xZYan86a6kW',
-      },
-      poster: { name: 'Alperen Öztürk', role: 'Başkan Yardımcısı' },
-      date: '7 Şubat, 2021',
-      visibility: 'public',
-      title: 'Lorem Ipsum Post Title',
-      content:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
-      likeCount: 236,
-      eventDetails: {
-        date: '10 Ocak, 2021 | 16.00 - 18.00',
-        participantCount: 72,
-      },
-    },
-    {
-      community: {
-        name: 'Doğa Takımı',
-        pfpSrc: '/images/pfp4.png',
-        url: '/takimlar/Jz4rdsWpk2xZYan86a6kW',
-      },
-      pfpSrc: '/images/pfp4.png',
-      poster: { name: 'Alperen Öztürk', role: 'Başkan Yardımcısı' },
-      date: '6 Ocak, 2021',
-      visibility: 'public',
-      title: 'Lorem Ipsum Post Title',
-      content:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
-      likeCount: 236,
-    },
-  ];
-
-  // Merge the two arrays
-  const dummyPosts = [...dummyCommunityPosts, ...dummyTeamPosts];
-  
-  const dummyCommunity = {
-    type: 'topluluklar',
-    id: 'xRTtShHBupaYOvugN0Bvp',
-    name: 'GTÜ Bilgisayar Topluluğu',
-    pfpSrc: '/images/pfp1.png',
-    bannerSrc: '/images/banner1.png',
-    bannerBgColor: '#000000',
-    description:
-      'Community description. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
-    isFollowed: false,
-  };
-  
-  const dummyTeam = {
-    type: 'takimlar',
-    id: 'Jz4rdsWpk2xZYan86a6kW',
-    name: 'Doğa Takımı',
-    pfpSrc: '/images/pfp4.png',
-    bannerSrc: '/images/banner2.png',
-    bannerBgColor: '#1d5525',
-    description:
-      'Community description. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
-    isFollowed: false,
-  };
-
-  const followedTeamsOrCommunityList = Array(4).fill(<FollowedListElement data={dummyTeam} />);
-  followedTeamsOrCommunityList.push(...Array(4).fill(<FollowedListElement data={dummyCommunity} />));
-
   function Banner({ isGlobalContext, setisGlobalContext, authContext }) {
     return (
       <div className={styles.banner}>
         <Link href={'/'}> Anasayfa </Link>
-        {authContext.userData ? (
+        {authContext.userData && !authContext.userData?.isCommunity ? (
           <div className={styles.dropdown}>
           {isGlobalContext ? (
               <img src="/icons/public-icon.svg" alt="public" height={20} width={20} />
@@ -140,7 +24,7 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
             </div>
             <div className={styles.dropDownItem} onClick={() => setisGlobalContext(false)}>
               <img src="/icons/private-icon.svg" alt="private" height={14} width={14} />
-              <p>Takip Ettiklerim</p>
+              <p>Üye</p>
             </div>
           </div>
         </div>
@@ -150,46 +34,85 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
     );
   }
 
-  function Posts( { authContext , isGlobalContext } ) {
-    const router = useRouter();
-  
-    // request id from backend and show 404 if id doesn't exist
+  function Posts( { isGlobalContext } ) {
+    const authContext = useContext(AuthContext);
+    const [posts, setPosts] = useState([]);
+    
+    useEffect(() => {
+      (async () => {
+        let postsData;
+        if (isGlobalContext) {
+           postsData = await authContext.getGlobalPosts();
+        } else {
+           postsData = await authContext.getPosts();
+        }
+        if (postsData) {
+          postsData.reverse();
+          setPosts(
+            postsData.map((postData) => (
+              <Post
+                key={postData.id}
+                id={postData.id}
+                eventId={postData.event[0] && postData.event[0].id}
+                onPostDeleted={onPostDeleted}
+              />
+            )),
+          );
+        }
+      })();
+    }, [authContext]);
+
+    function onPostDeleted(postId) {
+      setPosts((oldPosts) => oldPosts.filter((post) => post.key != postId));
+    }
+    
+
     return (
         <ul>
-            {/* map the lists and pass datas to the Post componenent */}
-            {dummyPosts.map((post) => (
-                <Post
-                    key={post.id}
-                    postData={post}
-                />
-            ))}
-
+          {posts}
         </ul>
     );
   }
 
   function RightSide( {authContext} ) {
+  const [followedCommunitiesList, setFollowedCommunitiesList] = useState([]);
+  useEffect(() => {
+    (async () => {
+      const followedCommunities = await authContext.getFollowedCommunities();
+
+      setFollowedCommunitiesList(
+        followedCommunities?.map((community) => <FollowedCommunitiesListElement key={community.id} data={community} />),
+      );
+    })();
+  }, [authContext]);
+  
     return ((authContext.signIn) ? (
       <ul className={styles.right}>
         <h2 className={styles.followedTitle}>Takip Ettiklerim</h2>
-        {followedTeamsOrCommunityList}
+        {followedCommunitiesList}
       </ul>
     ) : (<></>));
   }
 
-  function FollowedListElement({ data }) {
+  function FollowedCommunitiesListElement({ data }) {
     return (
       <li className={styles.followedListElement}>
         <Link href={getHref(data)}>
-          <img src={data.pfpSrc} alt='profile picture' />
+          <img
+            src={
+              data?.image ??
+              'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN88OjpfwAI+QOoF8YQhgAAAABJRU5ErkJggg=='
+            }
+            alt='profile picture'
+          />
         </Link>
-        <Link href={getHref(data)}>{data.name}</Link>
+        <Link href={getHref(data)}>{data.user.firstName}</Link>
       </li>
     );
   }
 
   function getHref(data) {
-    return `/${data.type}/${data.id}`;
+    return `/topluluklar/${data.id}`;
   }
 
 

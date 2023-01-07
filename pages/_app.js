@@ -14,8 +14,8 @@ export function imageToBase64(file, callback) {
 }
 
 function api(path) {
-  return 'http://cmis.azurewebsites.net/api/' + path;
-  //return 'http://localhost:8070/api/' + path;
+  // return 'http://cmis.azurewebsites.net/api/' + path;
+  return 'http://localhost:8070/api/' + path;
 }
 
 async function request(method, path, body, useCredentials = true) {
@@ -551,6 +551,19 @@ function MyApp({ Component, pageProps }) {
     [request],
   );
 
+  const getGlobalPosts = useCallback(
+    async (search) => {
+      if (!search) {
+        const [_, data] = await request('GET', `cmis/posts/global`);
+        return data;
+      } else {
+        const [_, data] = await request('GET', `cmis/posts/global/search?search=${search}`);
+        return data;
+      }
+    },
+    [request],
+  );
+
   const deletePost = useCallback(
     async (postId) => {
       const [_, data] = await request('DELETE', `cmis/posts/${postId}`);
@@ -644,6 +657,7 @@ function MyApp({ Component, pageProps }) {
       getProjectIdeas,
       deleteProjectIdea,
       hasAppliedToCommunity,
+      getGlobalPosts,
     }),
     [
       isLoginOpen,
@@ -702,6 +716,7 @@ function MyApp({ Component, pageProps }) {
       getProjectIdeas,
       deleteProjectIdea,
       hasAppliedToCommunity,
+      getGlobalPosts,
     ],
   );
   return (

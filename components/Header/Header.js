@@ -97,7 +97,7 @@ export default function Header() {
             {!authContext.userData.isCommunity && (
               <Link
                 className={clsx(styles.bookmarksBtn, 'centerVertically')}
-                href={'/ogrenciler/' + authContext.userData.id + '/kaydedilenler'}
+                href={'/kaydedilenler'}
               >
                 <img src='/icons/bookmarks-icon.svg' alt='bookmarks' />
               </Link>
