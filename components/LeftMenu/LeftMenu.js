@@ -5,6 +5,9 @@ import React from 'react';
 
 export default function LeftMenu() {
     const authContext = React.useContext(AuthContext);
+    const user = authContext.userData;
+    console.log(user);
+
     return (
         <ul className={styles.left}>
             {!authContext.userData && 
@@ -18,6 +21,24 @@ export default function LeftMenu() {
                   <img src={'/icons/sidebar-sign-up.svg'} alt='kayit-ol' />
                   <a>Kayıt Ol</a>
                 </li>
+            }
+            {/* {authContext.userData &&
+              <li className={styles.item}>
+                <Link href={authContext.userData.isCommunity ? "/topluluklar/" + authContext.userData.id + "/gonderiler": "/ogrenciler/" + authContext.userData.id}>
+                    <img src={authContext.userData.image} alt='profil' />
+                </Link>
+                <Link href={authContext.userData.isCommunity ? "/topluluklar/" + authContext.userData.id + "/gonderiler" : "/ogrenciler/" + authContext.userData.id}>
+                  {authContext.userData.isCommunity ? authContext.userData.name : authContext.userData.firstName + " " + authContext.userData.lastName}
+                </Link>
+              </li>
+            } */}
+            {authContext.userData && !authContext.userData.isCommunity &&
+              <li className={styles.item}>
+                <Link href={"/kaydedilenler"}>
+                    <img src={'/icons/sidebar-bookmark.svg'} alt='kaydedilenler' />
+                </Link>
+                <Link href={"/kaydedilenler"}>Kaydedilenler</Link>
+              </li>
             }
             <li className={styles.item}>
               <Link href={'/yaklasan-etkinlikler'}>
@@ -43,14 +64,6 @@ export default function LeftMenu() {
                 Askıda Proje
               </Link>
             </li>
-            {authContext.userData &&
-              <li className={styles.item}>
-                <Link href={"/kaydedilenler"}>
-                    <img src={'/icons/sidebar-bookmark.svg'} alt='kaydedilenler' />
-                </Link>
-                <Link href={"/kaydedilenler"}>Kaydedilenler</Link>
-              </li>
-            }
             {authContext.userData && 
               <li className={styles.item} onClick={() => authContext.signOut()}>
                 <img src={'/icons/sidebar-sign-in.svg'} alt='cikis' style={{transform: 'scaleX(-1)'}} />

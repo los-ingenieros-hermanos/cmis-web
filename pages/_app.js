@@ -596,6 +596,31 @@ function MyApp({ Component, pageProps }) {
     [request],
   );
 
+  const getBookmarkedPosts = useCallback(
+    async (search) => {
+      if (!search) {
+        const [_, data] = await request('GET', `cmis/students/${userData?.id}/bookmarkedPosts`);
+        return data;
+      } else {
+        const [_, data] = await request('GET', `cmis/students/${userData?.id}/bookmarkedPosts/search?search=${search}`);
+        return data;
+      }
+    },
+    [request, userData],
+  );
+
+  const getBookmarkedProjectIdeas = useCallback(
+    async (search) => {
+      if (!search) {
+        const [_, data] = await request('GET', `cmis/students/${userData?.id}/bookMarkedProjectIdeas`);
+        return data;
+      } else {
+        const [_, data] = await request('GET', `cmis/students/${userData?.id}/bookMarkedPosts/search?search=${search}`);
+        return data;
+      }
+    },
+    [request, userData],
+  );
 
   // ------------------ YUSUF ARSLAN API CALLS END--------------- //
 
@@ -662,6 +687,8 @@ function MyApp({ Component, pageProps }) {
       deleteProjectIdea,
       hasAppliedToCommunity,
       getGlobalPosts,
+      getBookmarkedPosts,
+      getBookmarkedProjectIdeas,
     }),
     [
       isLoginOpen,
@@ -721,6 +748,8 @@ function MyApp({ Component, pageProps }) {
       deleteProjectIdea,
       hasAppliedToCommunity,
       getGlobalPosts,
+      getBookmarkedPosts,
+      getBookmarkedProjectIdeas,
     ],
   );
   return (

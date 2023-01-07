@@ -6,48 +6,6 @@ import clsx from 'clsx';
 import { AuthContext } from 'pages/_app';
 import LeftMenu from 'components/LeftMenu/LeftMenu';
 
-  const dummyIdeaPosts = [
-    {
-      community: {
-        name: 'Azra Arslan',
-        pfpSrc: '/icons/default-user-icon.svg',
-        url: '/ogrenciler/xRTtShHBupaYOvugN0Bvp',
-      },
-      date: '6 Ocak, 2021',
-      title: 'Lorem Ipsum Post Title',
-      content:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
-      likeCount: 236,
-    },
-    {
-      community: {
-        name: 'Azra Arslan',
-        pfpSrc: '/icons/default-user-icon.svg',
-        url: '/ogrenciler/xRTtShHBupaYOvugN0Bvp',
-      },
-      date: '6 Ocak, 2021',
-      title: 'Lorem Ipsum Post Title',
-      content:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
-      likeCount: 236,
-    },
-    {
-      community: {
-        name: 'Azra Arslan',
-        pfpSrc: '/icons/default-user-icon.svg',
-        url: '/ogrenciler/xRTtShHBupaYOvugN0Bvp',
-      },
-      date: '6 Ocak, 2021',
-      title: 'Lorem Ipsum Post Title',
-      content:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
-      likeCount: 236,
-    },
-  ];
-  
-  // Merge the two arrays
-  const dummyIdeas = [...dummyIdeaPosts];
-  
   const dummyUser = {
     type: 'ogrenciler',
     id: 'xRTtShHBupaYOvugN0Bvp',
@@ -71,20 +29,32 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
     );
   }
 
-  function Posts( { authContext , isGlobal } ) {
-    const router = useRouter();
-  
-    // request id from backend and show 404 if id doesn't exist
+  function Posts() {
+    const authContext = useContext(AuthContext);
+    const [posts, setPosts] = useState([]);
+
+    useEffect(() => {
+      (async () => {
+        const postsData = await authContext.getProjectIdeas();
+        if (postsData) {
+          // sort by likeNum
+          postsData.sort((a, b) => b.likeNum - a.likeNum);          
+          setPosts(
+            postsData.map((postData) => (
+              <Post key={postData.id} id={postData.id} isProjectIdea={true} onPostDeleted={onPostDeleted} />
+            )),
+          );
+        }
+      })();
+    }, [authContext]);
+
+    function onPostDeleted(postId) {
+      setPosts((oldPosts) => oldPosts.filter((post) => post.key != postId));
+    }
+    
     return (
         <ul>
-            {/* map the lists and pass datas to the Post componenent */}
-            {dummyIdeas.map((post) => (
-                <Post
-                    key={post.id}
-                    postData={post}
-                />
-            ))}
-
+            {posts}
         </ul>
     );
   }
@@ -114,12 +84,11 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
   }
 
   export default function ProjectIdea() {
-    const [isGlobal, setIsGlobal] = useState(true);
       return (
         <div className={styles.page}>
-            <Banner isGlobal={isGlobal} setIsGlobal={setIsGlobal}/>
+            <Banner />
             <LeftMenu />
-            <Posts isGlobal={isGlobal}/>
+            <Posts />
             <RightSide />
         </div>
     );

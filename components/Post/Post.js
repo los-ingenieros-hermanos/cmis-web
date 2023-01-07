@@ -3,7 +3,7 @@ import { AuthContext } from 'pages/_app';
 import { useContext, useEffect, useState } from 'react';
 import styles from './Post.module.scss';
 
-export default function Post({ id, eventId, isProjectIdea, onPostDeleted }) {
+export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBookmark = false }) {
   const authContext = useContext(AuthContext);
   const [isContentOverflown, setIsContentOverflown] = useState(true);
   const [data, setData] = useState();
@@ -155,7 +155,9 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted }) {
 
   return (
     data && (
-      <div className={styles.post} style={isContentOverflown ? { maxHeight: '400px' } : undefined}>
+      <div className={styles.post} style={isContentOverflown && !isBookmark ? { maxHeight: '400px'} : undefined || 
+                                         (isContentOverflown && isBookmark) ? {maxHeight: '400px', minWidth: 'calc(50% + 365px)'} : undefined ||
+                                         (!isContentOverflown && isBookmark) ? {minWidth: 'calc(50% + 365px)'} : undefined}>
         {isPoster && (
           <button className={styles.menuBtn} onClick={onMenuClicked}>
             <img src='/icons/three-dots-icon.svg' alt='üç nokta' />
@@ -246,7 +248,7 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted }) {
               <span className={styles.bottomText}>{`${data.likeNum} Beğeni`}</span>
             </>
           </div>
-          {!isProjectIdea && !authContext.userData?.isCommunity && (
+          {!authContext.userData?.isCommunity && (
             <button className={styles.btnFlex} onClick={onSaveClicked}>
               <img src={data.isBookmarked ? '/icons/save-icon-active.svg' : '/icons/save-icon.svg'} alt='kaydet' />
               <span className={styles.bottomText}>Kaydet</span>
