@@ -285,6 +285,9 @@ function MyApp({ Component, pageProps }) {
         const [_, data] = await request('GET', `cmis/students/${userData?.id}/isMemberOf/${communityId}`);
         return data;
       }
+      else {
+        return false;
+      }
     },
     [request, userData],
   );
@@ -551,19 +554,6 @@ function MyApp({ Component, pageProps }) {
     [request],
   );
 
-  const getGlobalPosts = useCallback(
-    async (search) => {
-      if (!search) {
-        const [_, data] = await request('GET', `cmis/posts/global`);
-        return data;
-      } else {
-        const [_, data] = await request('GET', `cmis/posts/global/search?search=${search}`);
-        return data;
-      }
-    },
-    [request],
-  );
-
   const deletePost = useCallback(
     async (postId) => {
       const [_, data] = await request('DELETE', `cmis/posts/${postId}`);
@@ -592,6 +582,20 @@ function MyApp({ Component, pageProps }) {
     },
     [request],
   );
+  
+  const getGlobalPosts = useCallback(
+    async (search) => {
+      if (!search) {
+        const [_, data] = await request('GET', `cmis/posts/global`);
+        return data;
+      } else {
+        const [_, data] = await request('GET', `cmis/posts/global/search?search=${search}`);
+        return data;
+      }
+    },
+    [request],
+  );
+
 
   // ------------------ YUSUF ARSLAN API CALLS END--------------- //
 

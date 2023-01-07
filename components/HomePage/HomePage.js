@@ -40,11 +40,25 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
     
     useEffect(() => {
       (async () => {
-        let postsData;
+        let postsData = [];
         if (isGlobalContext) {
-           postsData = await authContext.getGlobalPosts();
+           postsData = await authContext.getPosts().then((posts) => {
+            return posts.filter((post) => {
+              if (post.visibility === 'global') 
+                return true;
+              
+              authContext.isMemberOfCommunity(post.community.id).then((isMember) => {
+                return isMember;
+              });
+            });
+          });
         } else {
-           postsData = await authContext.getPosts();
+          //  remove posts that user not the member of the community
+           postsData = await authContext.getPosts().then((posts) => {
+            return posts.filter((post) => {
+              return !authContext.isMemberOfCommunity(post.community.id);
+            });
+          });
         }
         if (postsData) {
           postsData.reverse();
@@ -60,12 +74,11 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
           );
         }
       })();
-    }, [authContext]);
+    }, [authContext, isGlobalContext]);
 
     function onPostDeleted(postId) {
       setPosts((oldPosts) => oldPosts.filter((post) => post.key != postId));
     }
-    
 
     return (
         <ul>
