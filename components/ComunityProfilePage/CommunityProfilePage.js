@@ -14,7 +14,7 @@ function Tag({ children }) {
   );
 }
 
-function ApplyModal({ setIsOpen }) {
+function ApplyModal({ setIsOpen, onApplied, onApplicationCancelled, isEditing }) {
   const authContext = useContext(AuthContext);
   const router = useRouter();
   const [info, setInfo] = useState('');
@@ -26,7 +26,7 @@ function ApplyModal({ setIsOpen }) {
         setInfo(application.message);
       }
     })();
-  }, []);
+  }, [authContext, router.query.id]);
 
   function onTextareaChanged(e) {
     setInfo(e.target.value);
@@ -38,6 +38,13 @@ function ApplyModal({ setIsOpen }) {
 
   function onSendClicked() {
     authContext.applyToCommunity(router.query.id, info);
+    onApplied();
+    setIsOpen(false);
+  }
+
+  function onCancelApplicationClicked() {
+    authContext.cancelMemberApplication(router.query.id);
+    onApplicationCancelled();
     setIsOpen(false);
   }
 
@@ -54,7 +61,41 @@ function ApplyModal({ setIsOpen }) {
           Vazgeç
         </button>
         <button className='mainButton' onClick={onSendClicked}>
-          Gönder
+          Kaydet
+        </button>
+        {isEditing && (
+          <button className={clsx('mainButton', 'mainButtonNegative')} onClick={onCancelApplicationClicked}>
+            Başvuruyu İptal Et
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function LeaveModal({ setIsOpen, onLeft }) {
+  const router = useRouter();
+  const authContext = useContext(AuthContext);
+
+  function onCancelClicked() {
+    setIsOpen(false);
+  }
+
+  function onLeaveClicked() {
+    authContext.removeMember(router.query.id, authContext.userData?.id);
+    onLeft();
+    setIsOpen(false);
+  }
+
+  return (
+    <div className={styles.leaveModal}>
+      Kulüpten çıkmak istediğine emin misin? (Tekrar girebilmek için tekrar başvurman gerekecek.)
+      <div className={styles.buttons}>
+        <button className={clsx('mainButton', 'mainButtonNeutral')} onClick={onCancelClicked}>
+          Vazgeç
+        </button>
+        <button className={clsx('mainButton', 'mainButtonNegative')} onClick={onLeaveClicked}>
+          Üyelikten Çık
         </button>
       </div>
     </div>
@@ -77,9 +118,9 @@ export default function CommunityProfilePage({ children }) {
       if (router.query.id) {
         const reqData = await Promise.all([
           authContext.getCommunity(router.query.id),
-          authContext.isFollowerOfCommunity(router.query.id),
-          authContext.isMemberOfCommunity(router.query.id),
-          authContext.hasAppliedToCommunity(router.query.id),
+          !authContext.userData?.isCommunity && authContext.isFollowerOfCommunity(router.query.id),
+          !authContext.userData?.isCommunity && authContext.isMemberOfCommunity(router.query.id),
+          !authContext.userData?.isCommunity && authContext.hasAppliedToCommunity(router.query.id),
         ]);
 
         if (reqData[0]) {
@@ -98,9 +139,13 @@ export default function CommunityProfilePage({ children }) {
 
   useEffect(() => {
     (async () => {
-      setIsManager(authContext.userData?.id == router.query.id);
+      let isAuthorizedMember = false;
+      if (!authContext.userData?.isCommunity) {
+        isAuthorizedMember = await authContext.isAuthorizedMember(router.query.id);
+      }
+      setIsManager(authContext.userData?.id == router.query.id || isAuthorizedMember);
     })();
-  }, [authContext.userData?.id, router.query.id]);
+  }, [authContext, router.query.id]);
 
   function onBannerChange(e) {
     imageToBase64(e.target.files[0], (base64) => setEditData((oldEditData) => ({ ...oldEditData, banner: base64 })));
@@ -138,13 +183,25 @@ export default function CommunityProfilePage({ children }) {
 
     setData((oldData) => {
       const newData = { ...oldData };
-      if (!newData.isMember) {
+      if (!newData.isMemberOf) {
         setIsApplyModalOpen(true);
       } else {
         setIsLeaveModalOpen(true);
       }
       return newData;
     });
+  }
+
+  function onApplied() {
+    setData((oldData) => ({ ...oldData, hasApplied: true }));
+  }
+
+  function onApplicationCancelled() {
+    setData((oldData) => ({ ...oldData, hasApplied: false }));
+  }
+
+  function onLeft() {
+    setData((oldData) => ({ ...oldData, isMemberOf: false, memberCount: oldData.memberCount - 1 }));
   }
 
   function onEditClicked() {
@@ -290,12 +347,12 @@ export default function CommunityProfilePage({ children }) {
               value={editData.info || ''}
             ></textarea>
           )}
-          <div className={styles.tagsFlex}>
+          {/* <div className={styles.tagsFlex}>
             <p className='bold'>Etiketler:</p>
             {data?.tags?.map((tag) => (
               <Tag key={tag.id}>{tag.tag}</Tag>
             ))}
-          </div>
+          </div> */}
           <div className={!isEditing ? styles.socials : styles.socialsEditing}>
             {!isEditing ? (
               <>
@@ -342,15 +399,15 @@ export default function CommunityProfilePage({ children }) {
             )}
           </div>
           <Modal isOpen={isApplyModalOpen} setIsOpen={setIsApplyModalOpen}>
-            <ApplyModal setIsOpen={setIsApplyModalOpen} />
+            <ApplyModal
+              setIsOpen={setIsApplyModalOpen}
+              onApplied={onApplied}
+              onApplicationCancelled={onApplicationCancelled}
+              isEditing={data.hasApplied}
+            />
           </Modal>
           <Modal isOpen={isLeaveModalOpen} setIsOpen={setIsLeaveModalOpen}>
-            <div className={styles.leaveModal}>
-              Kulüpten çıkmak istediğine emin misin? (Tekrar girebilmek için tekrar başvurman gerekecek.)
-              <div className={styles.buttons}>
-                <button></button>
-              </div>
-            </div>
+            <LeaveModal setIsOpen={setIsLeaveModalOpen} onLeft={onLeft} />
           </Modal>
         </div>
       </div>

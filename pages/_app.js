@@ -210,15 +210,21 @@ function MyApp({ Component, pageProps }) {
     [request, userData],
   );
 
-  const getMembers = useCallback(async () => {
-    const [_, data] = await request('GET', `cmis/communities/${userData?.id}/members`);
-    return data;
-  }, [request, userData]);
+  const getMembers = useCallback(
+    async (communityId) => {
+      const [_, data] = await request('GET', `cmis/communities/${communityId}/members`);
+      return data;
+    },
+    [request],
+  );
 
-  const getMemberApplications = useCallback(async () => {
-    const [_, data] = await request('GET', `cmis/communities/${userData?.id}/memberApplications`);
-    return data;
-  }, [request, userData]);
+  const getMemberApplications = useCallback(
+    async (communityId) => {
+      const [_, data] = await request('GET', `cmis/communities/${communityId}/memberApplications`);
+      return data;
+    },
+    [request],
+  );
 
   const getMemberApplication = useCallback(
     async (communityId, studentId) => {
@@ -237,22 +243,48 @@ function MyApp({ Component, pageProps }) {
   );
 
   const acceptMemberApplication = useCallback(
-    async (studentId) => {
-      const [_, data] = await request(
-        'PUT',
-        `cmis/communities/${userData?.id}/membersApplications/${studentId}/accept`,
-      );
+    async (communityId, studentId) => {
+      const [_, data] = await request('PUT', `cmis/communities/${communityId}/memberApplications/${studentId}/accept`);
       return data;
     },
-    [request, userData],
+    [request],
   );
 
   const rejectMemberApplication = useCallback(
-    async (studentId) => {
-      const [_, data] = await request(
-        'PUT',
-        `cmis/communities/${userData?.id}/membersApplications/${studentId}/reject`,
-      );
+    async (communityId, studentId) => {
+      const [_, data] = await request('PUT', `cmis/communities/${communityId}/memberApplications/${studentId}/reject`);
+      return data;
+    },
+    [request],
+  );
+
+  const removeMember = useCallback(
+    async (communityId, studentId) => {
+      const [_, data] = await request('DELETE', `cmis/communities/${communityId}/members/${studentId}`);
+      return data;
+    },
+    [request],
+  );
+
+  const authorizeMember = useCallback(
+    async (communityId, studentId) => {
+      const [_, data] = await request('PUT', `cmis/communities/${communityId}/members/${studentId}`, ['ALL']);
+      return data;
+    },
+    [request],
+  );
+
+  const removeMemberAuthorization = useCallback(
+    async (communityId, studentId) => {
+      const [_, data] = await request('PUT', `cmis/communities/${communityId}/members/${studentId}`, ['NONE']);
+      return data;
+    },
+    [request],
+  );
+
+  const isAuthorizedMember = useCallback(
+    async (communityId) => {
+      const [_, data] = await request('GET', `cmis/communities/${communityId}/isAuthorized/${userData?.id}/`);
       return data;
     },
     [request, userData],
@@ -273,8 +305,7 @@ function MyApp({ Component, pageProps }) {
       if (userData?.roles[0] === 'ROLE_STUDENT') {
         const [_, data] = await request('GET', `cmis/students/${userData?.id}/isMemberOf/${communityId}`);
         return data;
-      }
-      else {
+      } else {
         return false;
       }
     },
@@ -317,11 +348,11 @@ function MyApp({ Component, pageProps }) {
   );
 
   const sendCommunityPost = useCallback(
-    async (postData) => {
-      const [_, data] = await request('POST', `cmis/communities/${userData?.id}/posts`, postData);
+    async (communityId, postData) => {
+      const [_, data] = await request('POST', `cmis/communities/${communityId}/posts`, postData);
       return data;
     },
-    [request, userData],
+    [request],
   );
 
   const getStudentPosts = useCallback(
@@ -468,6 +499,19 @@ function MyApp({ Component, pageProps }) {
     [request],
   );
 
+  const getEvents = useCallback(async () => {
+    const [_, data] = await request('GET', `cmis/students/${userData?.id}/allEventDetails`);
+    return data;
+  }, [request, userData]);
+
+  const getCommunityEvents = useCallback(
+    async (communityId) => {
+      const [_, data] = await request('GET', `cmis/communities/${communityId}/allEventDetails`);
+      return data;
+    },
+    [request],
+  );
+
   // ------------------ YUSUF ARSLAN API CALLS ------------------ //
   const getUnverifiedCommunities = useCallback(
     async (search) => {
@@ -571,7 +615,7 @@ function MyApp({ Component, pageProps }) {
     },
     [request],
   );
-  
+
   const getGlobalPosts = useCallback(
     async (search) => {
       if (!search) {
@@ -610,30 +654,24 @@ function MyApp({ Component, pageProps }) {
     },
     [request, userData],
   );
-  
+
   const getPrivateCommunityPosts = useCallback(
     async (communityId) => {
-        const [_, data] = await request('GET', `cmis/posts/communities/${communityId}/private`);
-        return data;
+      const [_, data] = await request('GET', `cmis/posts/communities/${communityId}/private`);
+      return data;
     },
     [request, userData],
   );
 
-  const getMemberCommunityPosts = useCallback(
-    async () => {
-        const [_, data] = await request('GET', `cmis/posts/${userData?.id}/private`);
-        return data;
-    },
-    [request, userData],
-  );
+  const getMemberCommunityPosts = useCallback(async () => {
+    const [_, data] = await request('GET', `cmis/posts/${userData?.id}/private`);
+    return data;
+  }, [request, userData]);
 
-  const getStudentsHasProjectIdea = useCallback(
-    async () => {
-        const [_, data] = await request('GET', `cmis/students/withProjectIdea`);
-        return data;
-    },
-    [request, userData],
-  );
+  const getStudentsHasProjectIdea = useCallback(async () => {
+    const [_, data] = await request('GET', `cmis/students/withProjectIdea`);
+    return data;
+  }, [request, userData]);
 
   // ------------------ YUSUF ARSLAN API CALLS END--------------- //
 
@@ -687,6 +725,12 @@ function MyApp({ Component, pageProps }) {
       deleteCommunityPost,
       deleteStudentPost,
       updateStudent,
+      removeMember,
+      authorizeMember,
+      removeMemberAuthorization,
+      isAuthorizedMember,
+      getEvents,
+      getCommunityEvents,
 
       // ------------------ YUSUF ARSLAN API CALLS ------------------ //
       getUnverifiedCommunities,
@@ -753,6 +797,11 @@ function MyApp({ Component, pageProps }) {
       removeStudentPostBookmark,
       deleteCommunityPost,
       deleteStudentPost,
+      updateStudent,
+      removeMember,
+      authorizeMember,
+      removeMemberAuthorization,
+      isAuthorizedMember,
       getUnverifiedCommunities,
       acceptCommunity,
       rejectCommunity,

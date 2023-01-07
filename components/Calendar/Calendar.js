@@ -1,5 +1,6 @@
-import styles from './Calendar.module.scss';
 import clsx from 'clsx';
+import { useEffect, useState } from 'react';
+import styles from './Calendar.module.scss';
 
 const monthNames = [
   'Ocak',
@@ -18,7 +19,58 @@ const monthNames = [
 
 const dayNames = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
 
-export default function Calendar({ date }) {
+function Event({ event }) {
+  const [isDetailsShowing, setIsDetailsShowing] = useState(false);
+
+  function withZero(time) {
+    return (time < 10 ? '0' : '') + time;
+  }
+
+  return (
+    <div className={styles.event}>
+      <img
+        key={event.id}
+        src={event.community?.image || event.student?.image}
+        alt='event'
+        onMouseOver={() => setIsDetailsShowing(true)}
+        onMouseOut={() => setIsDetailsShowing(false)}
+      />
+      {isDetailsShowing && (
+        <div className={styles.eventDetails}>
+          <div className={styles.title}>{event.title}</div>
+          <div>{withZero(event.event[0].date.hour) + ':' + withZero(event.event[0].date.minute)}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Day({ className, date, allEvents }) {
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    setEvents(
+      allEvents.filter((event) => {
+        const { year, month, day } = event.event[0].date;
+        return year === date.getFullYear() && month === date.getMonth() && day === date.getDate();
+      }),
+    );
+  }, [allEvents, date]);
+
+  return (
+    <div className={className}>
+      <span className='dayNumber'>{date.getDate()}</span>
+      <div className={styles.events}>
+        {events.map((event) => (
+          <Event key={event.id} event={event} />
+        ))}
+      </div>
+      <div className={styles.eventInfo}>{}</div>
+    </div>
+  );
+}
+
+export default function Calendar({ date, events }) {
   function getWeekElements() {
     let startDate = new Date(date.getFullYear(), date.getMonth());
     let weekElements = [[]];
@@ -41,12 +93,12 @@ export default function Calendar({ date }) {
         startDate.getMonth() === today.getMonth() &&
         startDate.getDate() === today.getDate();
       weekElements[weekElements.length - 1].push(
-        <div
+        <Day
           key={weekElements[weekElements.length - 1].length}
           className={clsx(styles.day, styles.existingDay, isDayToday && styles.currentDay)}
-        >
-          {startDate.getDate()}
-        </div>,
+          date={new Date(startDate)}
+          allEvents={events}
+        />,
       );
       startDate.setDate(startDate.getDate() + 1);
     }

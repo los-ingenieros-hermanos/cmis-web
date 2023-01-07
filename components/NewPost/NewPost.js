@@ -1,9 +1,11 @@
 import clsx from 'clsx';
+import { useRouter } from 'next/router';
 import { AuthContext, imageToBase64 } from 'pages/_app';
 import { useContext, useState } from 'react';
 import styles from './NewPost.module.scss';
 
 export default function NewPost({ setIsNewPostOpen, isProjectIdea, onPostSent }) {
+  const router = useRouter();
   const authContext = useContext(AuthContext);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -113,7 +115,7 @@ export default function NewPost({ setIsNewPostOpen, isProjectIdea, onPostSent })
     if (isProjectIdea) {
       newPostData = await authContext.sendStudentPost(postData);
     } else {
-      newPostData = await authContext.sendCommunityPost(postData);
+      newPostData = await authContext.sendCommunityPost(router.query.id, postData);
     }
 
     onPostSent(newPostData);

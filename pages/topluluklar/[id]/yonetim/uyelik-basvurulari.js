@@ -1,21 +1,36 @@
-import styles from 'styles/Management.module.scss';
+import clsx from 'clsx';
 import ManagementPage from 'components/ManagementPage/ManagementPage';
 import MemberListElement from 'components/MemberListElement/MemberListElement';
-import { useState } from 'react';
 import Modal from 'components/Modal/Modal';
-import clsx from 'clsx';
+import { useRouter } from 'next/router';
+import { AuthContext } from 'pages/_app';
+import { useContext, useEffect, useState } from 'react';
+import styles from 'styles/Management.module.scss';
 
-function ApplicationsListElement() {
+function ApplicationsListElement({ application }) {
+  const authContext = useContext(AuthContext);
+  const router = useRouter();
+
   const memberListElement = (
-    <MemberListElement pfpSrc='/images/pfp6.png' name='Şamil Berat Delioğulları' profileLink='#' />
+    <MemberListElement
+      pfpSrc={application.student.image}
+      name={`${application.student.user.firstName} ${application.student.user.lastName}`}
+      profileLink={`/ogrenciler/${application.student.id}`}
+    />
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  function acceptMember() {
+  function onCancelClicked() {
     setIsModalOpen(false);
   }
 
-  function rejectMember() {
+  function onRejectClicked() {
+    authContext.rejectMemberApplication(router.query.id, application.student.id);
+    setIsModalOpen(false);
+  }
+
+  function onAcceptClicked() {
+    authContext.acceptMemberApplication(router.query.id, application.student.id);
     setIsModalOpen(false);
   }
 
@@ -31,25 +46,16 @@ function ApplicationsListElement() {
         <div className={clsx(styles.modal, styles.applicationModal)}>
           <h2>Üyelik Başvurusu</h2>
           {memberListElement}
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin lobortis maximus nisl, id rutrum ex
-            pellentesque at. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-            Maecenas ut lacinia massa, vitae bibendum erat. Nulla mollis id elit nec sollicitudin. Vestibulum ante ipsum
-            primis in faucibus orci luctus et ultrices posuere cubilia curae; Quisque cursus aliquam ultricies.
-            Suspendisse varius efficitur purus, a fringilla dolor efficitur id. Nam in sodales mauris, ac tempor turpis.
-            Duis vitae libero nec elit rhoncus pulvinar vel ac lectus. Curabitur interdum mi non dolor aliquam, nec
-            tristique urna fermentum. Pellentesque id aliquet nisl, eu congue neque. Morbi lectus nunc, rhoncus id est
-            vitae, mattis dictum urna. In eget vestibulum lacus, et sollicitudin leo. Proin tincidunt laoreet tincidunt.
-          </p>
+          <p>{application.message}</p>
           <div className={styles.modalButtons}>
-            <button className='mainButton mainButtonNeutral' onClick={() => setIsModalOpen(false)}>
+            <button className='mainButton mainButtonNeutral' onClick={onCancelClicked}>
               Vazgeç
             </button>
-            <button className='mainButton' onClick={acceptMember}>
-              Kabul Et
-            </button>
-            <button className='mainButton mainButtonNegative' onClick={rejectMember}>
+            <button className='mainButton mainButtonNegative' onClick={onRejectClicked}>
               Reddet
+            </button>
+            <button className='mainButton' onClick={onAcceptClicked}>
+              Kabul Et
             </button>
           </div>
         </div>
@@ -59,15 +65,25 @@ function ApplicationsListElement() {
 }
 
 export default function Applications() {
+  const router = useRouter();
+  const authContext = useContext(AuthContext);
+  const [applications, setApplications] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      setApplications((await authContext.getMemberApplications(router.query.id)) || []);
+    })();
+  }, [authContext, router.query.id]);
+
+  function getApplicationListElements() {
+    return applications.map((application) => (
+      <ApplicationsListElement key={application.id} application={application} />
+    ));
+  }
+
   return (
     <ManagementPage>
-      <div className={styles.managementList}>
-        <ApplicationsListElement />
-        <ApplicationsListElement />
-        <ApplicationsListElement />
-        <ApplicationsListElement />
-        <ApplicationsListElement />
-      </div>
+      <div className={styles.managementList}>{getApplicationListElements()}</div>
     </ManagementPage>
   );
 }

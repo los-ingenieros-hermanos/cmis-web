@@ -60,9 +60,48 @@
 }
 
 .day {
+  position: relative;
   width: calc(608px / 7);
   height: calc(608px / 7);
   padding-left: 4px;
+  display: flex;
+  justify-content: center;
+
+  span {
+    position: absolute;
+    left: 4px;
+    top: 0;
+  }
+
+  .events {
+    display: flex;
+    flex-direction: column;
+    padding: 4px;
+    gap: 4px;
+  }
+
+  img {
+    width: 40px;
+    height: 40px;
+    border-radius: 99px;
+  }
+
+  .event {
+    position: relative;
+  }
+
+  .eventDetails {
+    @include panel;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    padding: 8px;
+    z-index: 5;
+
+    .title {
+      font-weight: 500;
+    }
+  }
 }
 
 .existingDay {

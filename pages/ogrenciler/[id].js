@@ -213,12 +213,12 @@ export default function StudentProfile() {
               onDescriptionTextareaChanged={onDescriptionTextareaChanged}
             />
           )}
-          <div className={styles.tagsFlex}>
+          {/* <div className={styles.tagsFlex}>
             <p className='bold'>İlgi alanları:</p>
             {data?.tags?.map((tag) => (
               <Tag key={tag.id}>{tag.tag}</Tag>
             ))}
-          </div>
+          </div> */}
           <div className={!isEditing ? styles.socials : styles.socialsEditing}>
             {!isEditing ? (
               <>

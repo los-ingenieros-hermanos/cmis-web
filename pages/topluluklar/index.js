@@ -67,7 +67,7 @@ function CommunitiesListElement({ data, addToFollowed, removeFromFollowed }) {
       <h2>{data.user.firstName}</h2>
       <p>{data.info}</p>
       <div className={styles.buttons}>
-        {!authContext.userData?.isManagar && (
+        {!authContext.userData?.isCommunity && (
           <button onClick={onFollowClicked} className={clsx('mainButton', isFollowerOf && 'mainButtonNegative')}>
             {isFollowerOf ? 'Takipten Çık' : 'Takip Et'}
           </button>

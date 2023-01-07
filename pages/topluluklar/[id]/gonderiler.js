@@ -31,9 +31,13 @@ export default function Posts() {
 
   useEffect(() => {
     (async () => {
-      setIsManager(authContext.userData?.id == router.query.id);
+      let isAuthorizedMember = false;
+      if (!authContext.userData?.isCommunity) {
+        isAuthorizedMember = await authContext.isAuthorizedMember(router.query.id);
+      }
+      setIsManager(authContext.userData?.id == router.query.id || isAuthorizedMember);
     })();
-  }, [authContext.userData?.id, router.query.id]);
+  }, [authContext, router.query.id]);
 
   function onPostDeleted(postId) {
     setPosts((oldPosts) => oldPosts.filter((post) => post.key != postId));
