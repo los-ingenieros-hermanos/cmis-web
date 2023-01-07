@@ -2,24 +2,9 @@ import styles from './ProjectIdea.module.scss';
 import { Tabs, Link, Post } from 'components';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useRef, useState } from 'react';
-import clsx from 'clsx';
 import { AuthContext } from 'pages/_app';
 import LeftMenu from 'components/LeftMenu/LeftMenu';
 
-  const dummyUser = {
-    type: 'ogrenciler',
-    id: 'xRTtShHBupaYOvugN0Bvp',
-    name: 'Azra Arslan',
-    pfpSrc: '/icons/default-user-icon.svg',
-    bannerSrc: '/images/banner1.png',
-    bannerBgColor: '#000000',
-    description:
-      'Community description. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras in egestas erat, in aliquet metus. Praesent porta quis nunc eu elerisque. Sed id nulla venenatis tortor euismod imperdiet ac sed augue.',
-    isFollowed: false,
-  };
-
-  const UserHasIdeaListElementList = Array(4).fill(<UserHasIdeaListElement data={dummyUser} />);
-  
 
   function Banner() {
     return (
@@ -60,28 +45,50 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
   }
 
   function RightSide( ) {
+    const authContext = useContext(AuthContext);
+    const [userHasIdeaList, setUserHasIdeaList] = useState([]);
+    useEffect(() => {
+      (async () => {
+        const userHasIdeaListData = await authContext.getStudentsHasProjectIdea();
+        if (userHasIdeaListData) {
+          setUserHasIdeaList(
+            userHasIdeaListData.map((data) => (
+              <UserHasIdeaListElement key={data.user.id} data={data} />
+            )),
+          );
+        }
+      })();
+    }, [authContext]);
+    
     return (
       <ul className={styles.right}>
         <h2 className={styles.followedTitle}>Askıda Projesi Olanlar</h2>
-        {UserHasIdeaListElementList}
+        {userHasIdeaList}
       </ul>
     );
   }
 
   function UserHasIdeaListElement({ data }) {
     return (
-      <li className={styles.UserHasIdeaListElement}>
+      <li className={styles.userHasIdeaListElement}>
         <Link href={getHref(data)}>
-          <img src={data.pfpSrc} alt='profile picture' />
+          <img
+            src={
+              data?.image ??
+              'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN88OjpfwAI+QOoF8YQhgAAAABJRU5ErkJggg=='
+            }
+            alt='profile picture'
+          />
         </Link>
-        <Link href={getHref(data)}>{data.name}</Link>
+        <Link href={getHref(data)}>{data.user.firstName + " " + data.user.lastName} </Link>
       </li>
     );
   }
 
   function getHref(data) {
-    return `/${data.type}/${data.id}`;
+    return `/ogrenciler/${data.id}`;
   }
+
 
   export default function ProjectIdea() {
       return (

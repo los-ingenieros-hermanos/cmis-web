@@ -627,6 +627,14 @@ function MyApp({ Component, pageProps }) {
     [request, userData],
   );
 
+  const getStudentsHasProjectIdea = useCallback(
+    async () => {
+        const [_, data] = await request('GET', `cmis/students/withProjectIdea`);
+        return data;
+    },
+    [request, userData],
+  );
+
   // ------------------ YUSUF ARSLAN API CALLS END--------------- //
 
   const value = useMemo(
@@ -697,6 +705,7 @@ function MyApp({ Component, pageProps }) {
       getBookmarkedProjectIdeas,
       getPrivateCommunityPosts,
       getMemberCommunityPosts,
+      getStudentsHasProjectIdea,
     }),
     [
       isLoginOpen,
@@ -760,6 +769,7 @@ function MyApp({ Component, pageProps }) {
       getBookmarkedProjectIdeas,
       getPrivateCommunityPosts,
       getMemberCommunityPosts,
+      getStudentsHasProjectIdea,
     ],
   );
   return (
