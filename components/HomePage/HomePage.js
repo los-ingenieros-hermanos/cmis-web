@@ -42,23 +42,25 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
       (async () => {
         let postsData = [];
         if (isGlobalContext) {
-           postsData = await authContext.getPosts().then((posts) => {
-            return posts.filter((post) => {
-              if (post.visibility === 'global') 
-                return true;
-              
-              authContext.isMemberOfCommunity(post.community.id).then((isMember) => {
-                return isMember;
-              });
-            });
-          });
+           postsData = await authContext.getGlobalPosts();
+          //  if user is community
+          if (authContext.userData?.isCommunity) {
+            const privatePosts = await authContext.getPrivateCommunityPosts(authContext.userData.id);
+            // append private posts to global posts if length is not 0
+            if (privatePosts != null) {
+              postsData = postsData.concat(privatePosts);
+            }
+          }
+          else {
+            const memberCommunityPosts = await authContext.getMemberCommunityPosts();
+            // append member community posts to global posts if length is not 0
+            if (memberCommunityPosts != null) {
+              postsData = postsData.concat(memberCommunityPosts);
+            }
+          }
         } else {
           //  remove posts that user not the member of the community
-           postsData = await authContext.getPosts().then((posts) => {
-            return posts.filter((post) => {
-              return !authContext.isMemberOfCommunity(post.community.id);
-            });
-          });
+           postsData = await authContext.getMemberCommunityPosts();
         }
         if (postsData) {
           postsData.reverse();

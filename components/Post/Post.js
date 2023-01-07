@@ -10,6 +10,14 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBook
   const [isPoster, setIsPoster] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  function isEventExpired() {
+    const date = new Date(data.event[0].date.year, data.event[0].date.month, data.event[0].date.day, 
+                          data.event[0].date.hour, data.event[0].date.minute);
+    const now = new Date();
+    return now > date;
+  }
+
+
   useEffect(() => {
     function onClick() {
       setIsMenuOpen(false);
@@ -90,6 +98,7 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBook
   }
 
   function onWillAttendClicked() {
+    console.log(isEventExpired());
     setData((oldData) => {
       if (!oldData.isAttended) {
         authContext.attendCommunityPost(eventId);
@@ -215,22 +224,36 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBook
           <>
             <div className={styles.flex4}>
               <div className={styles.btnFlex}>
-                {!authContext.userData?.isCommunity && (
-                  <button className={styles.btnFlex} onClick={onWillAttendClicked}>
-                    <img
-                      src={data.isAttended ? '/icons/attend-icon-active.svg' : '/icons/attend-icon.svg'}
-                      alt='katılacağını belirt'
-                    />
-                    <span className={styles.bottomText}>Katılacağını Belirt</span>
-                  </button>
+                {!authContext.userData?.isCommunity && !isEventExpired() &&
+                (
+                  <>
+                    <button className={styles.btnFlex} onClick={onWillAttendClicked}>
+                      <img
+                        src={data.isAttended ? '/icons/attend-icon-active.svg' : '/icons/attend-icon.svg'}
+                        alt='katılacağını belirt'
+                      />
+                      <span className={styles.bottomText}>Katılacağını Belirt</span>
+                    </button>
+                    {!authContext.userData?.isCommunity && <span className={styles.middot}>&middot;</span>}
+                    <span className={styles.bottomText}>{`${data.event[0].attendantsNum} Katılımcı`}</span>
+                  </>
                 )}
-                {!authContext.userData?.isCommunity && <span className={styles.middot}>&middot;</span>}
-                <span className={styles.bottomText}>{`${data.event[0].attendantsNum} Katılımcı`}</span>
+                {isEventExpired() && (
+                  <span className={styles.bottomText}>{`${data.event[0].attendantsNum} Kişi Katıldı`}</span>
+                )}
               </div>
-              <div className={styles.eventDate}>
+              {isEventExpired() && (
+                <div className={styles.eventDate}>
+                  Etkinliğin Süresi Doldu
+                </div>
+              )}
+              {!isEventExpired() && (
+                <div className={styles.eventDate}>
                 <img src='/icons/date-icon.svg' alt='etkinlik tarihi' />
                 {getDateAndTime(data.event[0].date)}
               </div>
+              )}
+              
             </div>
             <div className={styles.divider}></div>
           </>

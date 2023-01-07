@@ -610,6 +610,22 @@ function MyApp({ Component, pageProps }) {
     },
     [request, userData],
   );
+  
+  const getPrivateCommunityPosts = useCallback(
+    async (communityId) => {
+        const [_, data] = await request('GET', `cmis/posts/communities/${communityId}/private`);
+        return data;
+    },
+    [request, userData],
+  );
+
+  const getMemberCommunityPosts = useCallback(
+    async () => {
+        const [_, data] = await request('GET', `cmis/posts/${userData?.id}/private`);
+        return data;
+    },
+    [request, userData],
+  );
 
   // ------------------ YUSUF ARSLAN API CALLS END--------------- //
 
@@ -679,6 +695,8 @@ function MyApp({ Component, pageProps }) {
       getGlobalPosts,
       getBookmarkedPosts,
       getBookmarkedProjectIdeas,
+      getPrivateCommunityPosts,
+      getMemberCommunityPosts,
     }),
     [
       isLoginOpen,
@@ -740,6 +758,8 @@ function MyApp({ Component, pageProps }) {
       getGlobalPosts,
       getBookmarkedPosts,
       getBookmarkedProjectIdeas,
+      getPrivateCommunityPosts,
+      getMemberCommunityPosts,
     ],
   );
   return (
