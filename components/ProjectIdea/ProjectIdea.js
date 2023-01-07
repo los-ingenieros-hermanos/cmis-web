@@ -50,9 +50,15 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
     useEffect(() => {
       (async () => {
         const userHasIdeaListData = await authContext.getStudentsHasProjectIdea();
-        if (userHasIdeaListData) {
+        // delete duplicated users
+        const filteredList = userHasIdeaListData.filter((data, index) => {
+          return userHasIdeaListData.findIndex((d) => d.id === data.id) === index;
+        });
+        
+
+        if (filteredList) {
           setUserHasIdeaList(
-            userHasIdeaListData.map((data) => (
+            filteredList.map((data) => (
               <UserHasIdeaListElement key={data.user.id} data={data} />
             )),
           );

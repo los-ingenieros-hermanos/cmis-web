@@ -75,6 +75,9 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
             )),
           );
         }
+        else {
+          setPosts([]);
+        }
       })();
     }, [authContext, isGlobalContext]);
 
