@@ -96,7 +96,7 @@
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 5;
   }
 
   .buttons {
@@ -105,6 +105,18 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
+  }
+
+  .goToProfileBtn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: $main-color;
+    font-weight: 500;
+
+    &:hover {
+      color: $main-color-lighter;
+    }
   }
 }
 

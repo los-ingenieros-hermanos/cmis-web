@@ -10,6 +10,7 @@ function getHref(data) {
 }
 
 function CommunitiesListElement({ data, addToFollowed, removeFromFollowed }) {
+  const router = useRouter();
   const authContext = useContext(AuthContext);
   const [isFollowerOf, setIsFollowerOf] = useState(data.isFollowed);
 
@@ -37,6 +38,14 @@ function CommunitiesListElement({ data, addToFollowed, removeFromFollowed }) {
     });
   }
 
+  function onGoToProfileClicked() {
+    if (!authContext.userData) {
+      authContext.setIsLoginOpen(true);
+    } else {
+      router.push(getHref(data));
+    }
+  }
+
   return (
     <li className={styles.mainListElement}>
       <img
@@ -58,10 +67,14 @@ function CommunitiesListElement({ data, addToFollowed, removeFromFollowed }) {
       <h2>{data.user.firstName}</h2>
       <p>{data.info}</p>
       <div className={styles.buttons}>
-        <button onClick={onFollowClicked} className={clsx('mainButton', isFollowerOf && 'mainButtonNegative')}>
-          {isFollowerOf ? 'Takipten Çık' : 'Takip Et'}
+        {!authContext.userData?.isManagar && (
+          <button onClick={onFollowClicked} className={clsx('mainButton', isFollowerOf && 'mainButtonNegative')}>
+            {isFollowerOf ? 'Takipten Çık' : 'Takip Et'}
+          </button>
+        )}
+        <button className={styles.goToProfileBtn} onClick={onGoToProfileClicked}>
+          Profile Git {'>'}
         </button>
-        <Link href={getHref(data)}>Profile Git {'>'}</Link>
       </div>
     </li>
   );

@@ -118,6 +118,31 @@
     align-items: center;
     flex-wrap: wrap;
   }
+
+  .socials {
+    display: flex;
+    gap: 4px;
+
+    img {
+      width: 40px;
+    }
+  }
+
+  .socialsEditing {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .socialsEditItem {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    img {
+      width: 40px;
+    }
+  }
 }
 
 .tag {

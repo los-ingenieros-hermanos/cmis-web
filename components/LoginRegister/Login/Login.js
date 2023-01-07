@@ -1,7 +1,7 @@
-import styles from './Login.module.scss';
-import UserType from '../UserType/UserType';
-import { useContext, useState, useEffect } from 'react';
 import { AuthContext } from 'pages/_app';
+import { useContext, useEffect, useState } from 'react';
+import UserType from '../UserType/UserType';
+import styles from './Login.module.scss';
 
 function Login() {
   const [user, setUser] = useState({ email: '', password: '' });
@@ -11,8 +11,8 @@ function Login() {
   // Close modal with esc key
   useEffect(() => {
     const handleEsc = (event) => {
-       if (event.keyCode === 27) {
-          authContext.setIsLoginOpen(false);
+      if (event.keyCode === 27) {
+        authContext.setIsLoginOpen(false);
       }
     };
     window.addEventListener('keydown', handleEsc);
@@ -20,7 +20,7 @@ function Login() {
     return () => {
       window.removeEventListener('keydown', handleEsc);
     };
-  }, []);
+  }, [authContext]);
 
   function onBackgroundClicked() {
     authContext.setIsLoginOpen(false);
@@ -45,14 +45,13 @@ function Login() {
 
   async function handleClick() {
     await login();
-  };
+  }
 
-  async function handleEnter(e){
+  async function handleEnter(e) {
     if (e.key === 'Enter') {
       await login();
     }
-  };
-
+  }
 
   // Buraya UserType'a gore giris cikis yapilabilir
   return (
