@@ -107,6 +107,22 @@ export default function StudentProfile() {
     setEditData((oldEditData) => ({ ...oldEditData, info: e.target.value }));
   }
 
+  function onInstagramInputChanged(e) {
+    setEditData((oldEditData) => ({ ...oldEditData, instagram: e.target.value }));
+  }
+
+  function onTwitterInputChanged(e) {
+    setEditData((oldEditData) => ({ ...oldEditData, twitter: e.target.value }));
+  }
+
+  function onGithubInputChanged(e) {
+    setEditData((oldEditData) => ({ ...oldEditData, github: e.target.value }));
+  }
+
+  function onLinkedinInputChanged(e) {
+    setEditData((oldEditData) => ({ ...oldEditData, linkedin: e.target.value }));
+  }
+
   return !data ? (
     <Custom404 />
   ) : (
@@ -202,6 +218,51 @@ export default function StudentProfile() {
             {data?.tags?.map((tag) => (
               <Tag key={tag.id}>{tag.tag}</Tag>
             ))}
+          </div>
+          <div className={!isEditing ? styles.socials : styles.socialsEditing}>
+            {!isEditing ? (
+              <>
+                {data.instagram && (
+                  <a href={data.instagram} target='_blank' rel='noreferrer'>
+                    <img src='/icons/instagram-icon.svg' alt='instagram' />
+                  </a>
+                )}
+                {data.twitter && (
+                  <a href={data.twitter} target='_blank' rel='noreferrer'>
+                    <img src='/icons/twitter-icon.svg' alt='twitter' />
+                  </a>
+                )}
+                {data.github && (
+                  <a href={data.github} target='_blank' rel='noreferrer'>
+                    <img src='/icons/github-icon.svg' alt='github' />
+                  </a>
+                )}
+                {data.linkedin && (
+                  <a href={data.linkedin} target='_blank' rel='noreferrer'>
+                    <img src='/icons/linkedin-icon.svg' alt='linkedin' />
+                  </a>
+                )}
+              </>
+            ) : (
+              <>
+                <div className={styles.socialsEditItem}>
+                  <img src='/icons/instagram-icon.svg' alt='instagram' />
+                  <input type='text' value={editData.instagram || ''} onChange={onInstagramInputChanged} />
+                </div>
+                <div className={styles.socialsEditItem}>
+                  <img src='/icons/twitter-icon.svg' alt='twitter' />
+                  <input type='text' value={editData.twitter || ''} onChange={onTwitterInputChanged} />
+                </div>
+                <div className={styles.socialsEditItem}>
+                  <img src='/icons/github-icon.svg' alt='github' />
+                  <input type='text' value={editData.github || ''} onChange={onGithubInputChanged} />
+                </div>
+                <div className={styles.socialsEditItem}>
+                  <img src='/icons/linkedin-icon.svg' alt='linkedin' />
+                  <input type='text' value={editData.linkedin || ''} onChange={onLinkedinInputChanged} />
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
