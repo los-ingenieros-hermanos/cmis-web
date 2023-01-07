@@ -106,6 +106,18 @@
     justify-content: space-around;
     align-items: center;
   }
+
+  .goToProfileBtn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: $main-color;
+    font-weight: 500;
+
+    &:hover {
+      color: $main-color-lighter;
+    }
+  }
 }
 
 .followedListElement {

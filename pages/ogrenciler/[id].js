@@ -100,7 +100,7 @@ export default function StudentProfile() {
   function onSaveEditClicked() {
     setIsEditing(false);
     setData(editData);
-    authContext.updateCommunity(editData);
+    authContext.updateStudent(editData);
   }
 
   function onDescriptionTextareaChanged(e) {

@@ -224,9 +224,9 @@ export default function CommunityProfilePage({ children }) {
           fontSize='20px'
           padding='5px'
           tabs={[
-            { name: 'Gönderiler', url: `topluluklar/${router.query.id}/gonderiler` },
-            { name: 'Yaklaşan Etkinlikler', url: `topluluklar/${router.query.id}/yaklasan-etkinlikler` },
-            isManager ? { name: 'Yönetim', url: `topluluklar/${router.query.id}/yonetim` } : undefined,
+            { name: 'Gönderiler', url: `/topluluklar/${router.query.id}/gonderiler` },
+            { name: 'Yaklaşan Etkinlikler', url: `/topluluklar/${router.query.id}/yaklasan-etkinlikler` },
+            isManager ? { name: 'Yönetim', url: `/topluluklar/${router.query.id}/yonetim` } : undefined,
           ].filter(Boolean)}
         />
         {children}

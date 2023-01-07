@@ -18,25 +18,6 @@ function api(path) {
   return 'http://localhost:8070/api/' + path;
 }
 
-async function request(method, path, body, useCredentials = true) {
-  if (!path || path.includes('/undefined')) {
-    return [null, null];
-  }
-  const res = await fetch(api(path), {
-    method,
-    credentials: useCredentials ? 'include' : undefined,
-    body: JSON.stringify(body),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  let data;
-  if (res.ok && res.status !== 204) {
-    data = await res.json();
-  }
-  return [res, data];
-}
-
 export const AuthContext = createContext();
 
 function MyApp({ Component, pageProps }) {
@@ -174,6 +155,14 @@ function MyApp({ Component, pageProps }) {
   const updateCommunity = useCallback(
     async (communityData) => {
       const [_, data] = await request('PUT', `cmis/communities/${communityData.id}`, communityData);
+      return data;
+    },
+    [request],
+  );
+
+  const updateStudent = useCallback(
+    async (studentData) => {
+      const [_, data] = await request('PUT', `cmis/students/${studentData.id}`, studentData);
       return data;
     },
     [request],
@@ -631,6 +620,7 @@ function MyApp({ Component, pageProps }) {
       removeStudentPostBookmark,
       deleteCommunityPost,
       deleteStudentPost,
+      updateStudent,
 
       // ------------------ YUSUF ARSLAN API CALLS ------------------ //
       getUnverifiedCommunities,
@@ -702,6 +692,7 @@ function MyApp({ Component, pageProps }) {
       getProjectIdeas,
       deleteProjectIdea,
       hasAppliedToCommunity,
+      updateStudent,
     ],
   );
   return (

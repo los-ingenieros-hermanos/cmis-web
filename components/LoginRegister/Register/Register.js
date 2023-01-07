@@ -1,7 +1,7 @@
-import styles from './Register.module.scss';
-import UserType from '../UserType/UserType';
-import { useContext, useState, useEffect } from 'react';
 import { AuthContext } from 'pages/_app';
+import { useContext, useEffect, useState } from 'react';
+import UserType from '../UserType/UserType';
+import styles from './Register.module.scss';
 
 function Register({ setIsLoginOpen, setIsSignUpOpen }) {
   const [userType, setUserType] = useState('student');
@@ -17,16 +17,16 @@ function Register({ setIsLoginOpen, setIsSignUpOpen }) {
   // Close modal with esc key
   useEffect(() => {
     const handleEsc = (event) => {
-        if (event.keyCode === 27) {
-            authContext.setIsSignUpOpen(false);
-        }
-      };
-      window.addEventListener('keydown', handleEsc);
-  
-      return () => {
-        window.removeEventListener('keydown', handleEsc);
-      };
-    }, []);
+      if (event.keyCode === 27) {
+        authContext.setIsSignUpOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, [authContext]);
 
   function onBackgroundClicked() {
     authContext.setIsSignUpOpen(false);
@@ -55,23 +55,20 @@ function Register({ setIsLoginOpen, setIsSignUpOpen }) {
         alert('Şifreler uyuşmuyor.');
       } else {
         // If the passwords match, alert the user
-        const data = await authContext.signUp(
-          user.firstName,
-          user.lastName,
-          user.email,
-          user.password,
-          userType,
-        );
+        const data = await authContext.signUp(user.firstName, user.lastName, user.email, user.password, userType);
         if (data) {
           authContext.setIsSignUpOpen(false);
           // newline character
-          alert('Kayıt başarılı.' + (userType === 'student' ? '\n' : '\nAdmin Onayı İçin İletişime Geçiniz. \ncmis@gtu.edu.tr' + '\n'));
+          alert(
+            'Kayıt başarılı.' +
+              (userType === 'student' ? '\n' : '\nAdmin Onayı İçin İletişime Geçiniz. \ncmis@gtu.edu.tr' + '\n'),
+          );
         } else {
           alert('Kayıt başarısız');
         }
       }
     }
-  }
+  };
 
   const handleClick = () => {
     register();
@@ -82,8 +79,6 @@ function Register({ setIsLoginOpen, setIsSignUpOpen }) {
       register();
     }
   };
-
-
 
   return (
     <div className={styles.background} onMouseDown={onBackgroundClicked}>
@@ -105,12 +100,7 @@ function Register({ setIsLoginOpen, setIsSignUpOpen }) {
             <input type={'text'} name='lastName' placeholder={'soy isim'} onChange={handleChange} />
           </>
         ) : (
-          <input
-            type={'text'}
-            name='firstName'
-            placeholder={'topluluk/takım ismi'}
-            onChange={handleChange}
-          />
+          <input type={'text'} name='firstName' placeholder={'topluluk/takım ismi'} onChange={handleChange} />
         )}
         <input type={'text'} name='email' placeholder={'email'} onChange={handleChange} />
         <input type={'password'} name='password' placeholder={'şifre'} onChange={handleChange} />
