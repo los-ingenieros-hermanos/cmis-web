@@ -15,8 +15,8 @@ export function imageToBase64(file, callback) {
 }
 
 function api(path) {
-  return 'https://cmis.azurewebsites.net/api/' + path;
-  //return 'http://localhost:8070/api/' + path;
+  // return 'https://cmis.azurewebsites.net/api/' + path;
+  return 'http://localhost:8070/api/' + path;
 }
 
 export const AuthContext = createContext();
@@ -38,6 +38,8 @@ function MyApp({ Component, pageProps }) {
       body: JSON.stringify(body),
       headers: {
         'Content-Type': 'application/json',
+        // get token from local storage
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
 
@@ -81,6 +83,7 @@ function MyApp({ Component, pageProps }) {
       if (res.ok) {
         data.expires = new Date().getTime() + 86400000;
         setUserData_(data);
+        localStorage.setItem('token', data.token);
         return data;
       }
     },
