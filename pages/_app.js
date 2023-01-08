@@ -58,9 +58,9 @@ function MyApp({ Component, pageProps }) {
     }
     setUserData(data);
     localStorage.setItem('userData', JSON.stringify(data));
-    localStorage.setItem('token', data.token);
+    localStorage.setItem('token', data?.token);
     console.log(data);
-    console.log(data.token);
+    console.log(data?.token);
   }
 
   const getUser = useCallback(
