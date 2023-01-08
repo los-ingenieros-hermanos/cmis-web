@@ -51,7 +51,7 @@ function MyApp({ Component, pageProps }) {
       }
       return [res, data];
     },
-    [userData.token],
+    [userData],
   );
 
   function setUserData_(data) {
