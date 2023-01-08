@@ -365,7 +365,8 @@ function ManagePosts() {
       })();
     }
   }, [search]);
-
+  
+  function onDeleteClicked() {}
   useEffect(() => {
       const checkboxes = document.querySelectorAll('input[type="checkbox"]');
       const checked = [];
@@ -381,7 +382,7 @@ function ManagePosts() {
         authContext.deletePost(id);
       })
       setPosts(posts.filter((post) => !checked.includes(post.id.toString())));
-  }, [onDeleteClicked()]);
+  }, [onDeleteClicked]);
 
   return (
     <div className={styles.managementWindow}>
