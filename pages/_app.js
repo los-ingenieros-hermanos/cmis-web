@@ -1,7 +1,7 @@
 import { Header } from 'components';
 import Head from 'next/head';
-import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
+import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import '../styles/globals.scss';
 
 export function imageToBase64(file, callback) {
@@ -16,7 +16,7 @@ export function imageToBase64(file, callback) {
 
 function api(path) {
   return 'https://cmis.azurewebsites.net/api/' + path;
-//   return 'http://localhost:8070/api/' + path;
+  //   return 'http://localhost:8070/api/' + path;
 }
 
 export const AuthContext = createContext();
@@ -27,30 +27,32 @@ function MyApp({ Component, pageProps }) {
   const [userData, setUserData] = useState();
   const router = useRouter();
 
-  const request = useCallback(async (method, path, body, useCredentials = true) => {
-    if (!path || path.includes('/undefined')) {
-      return [null, null];
-    }
+  const request = useCallback(
+    async (method, path, body, useCredentials = true) => {
+      if (!path || path.includes('/undefined')) {
+        return [null, null];
+      }
 
-    const res = await fetch(api(path), {
-      method,
-      credentials: useCredentials ? 'include' : undefined,
-      body: JSON.stringify(body),
-      headers: {
-        'Content-Type': 'application/json',
-        // get token from local storage
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
+      const res = await fetch(api(path), {
+        method,
+        credentials: useCredentials ? 'include' : undefined,
+        body: JSON.stringify(body),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userData.token}`,
+        },
+      });
 
-    let data;
-    if (res.ok && res.status !== 204) {
-      data = await res.json();
-    } else if (res.status === 401) {
-      setIsLoginOpen(true);
-    }
-    return [res, data];
-  }, []);
+      let data;
+      if (res.ok && res.status !== 204) {
+        data = await res.json();
+      } else if (res.status === 401) {
+        setIsLoginOpen(true);
+      }
+      return [res, data];
+    },
+    [userData.token],
+  );
 
   function setUserData_(data) {
     if (data) {
@@ -81,9 +83,9 @@ function MyApp({ Component, pageProps }) {
     async (email, password) => {
       const [res, data] = await request('POST', 'auth/signin', { email, password });
       if (res.ok) {
+        data.token = res.headers['Authorization'];
         data.expires = new Date().getTime() + 86400000;
         setUserData_(data);
-        localStorage.setItem('token', data.token);
         return data;
       }
     },
@@ -834,7 +836,7 @@ function MyApp({ Component, pageProps }) {
       </Head>
       {
         // if page is not admin panel, show header
-        !router.asPath.includes("admin-paneli") && <Header />
+        !router.asPath.includes('admin-paneli') && <Header />
       }
       <main>
         <Component {...pageProps} />
