@@ -472,6 +472,7 @@ function ManageProjectIdeas() {
     if (checked.length === 0) return; // if there is no checked projectIdea, do not continue
     
     checked.forEach(async (value) => {
+      console.log(value);
       authContext.deleteProjectIdea(value);
     })
 
