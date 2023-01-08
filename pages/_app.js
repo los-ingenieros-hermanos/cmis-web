@@ -15,8 +15,8 @@ export function imageToBase64(file, callback) {
 }
 
 function api(path) {
-  // return 'https://cmis.azurewebsites.net/api/' + path;
-  return 'http://localhost:8070/api/' + path;
+  return 'https://cmis.azurewebsites.net/api/' + path;
+  // return 'http://localhost:8070/api/' + path;
 }
 
 export const AuthContext = createContext();
@@ -59,6 +59,8 @@ function MyApp({ Component, pageProps }) {
     setUserData(data);
     localStorage.setItem('userData', JSON.stringify(data));
     localStorage.setItem('token', data.token);
+    console.log(data);
+    console.log(data.token);
   }
 
   const getUser = useCallback(
