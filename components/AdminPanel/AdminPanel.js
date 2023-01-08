@@ -19,7 +19,7 @@ function checkItem(e) {
 const Input = ({type, className, placeholder, setSearch}) => {
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
-      setSearch(event.target.id);
+      setSearch(event.target.value);
     }
   }
   return <input type={type} className={className} placeholder={placeholder} onKeyDown={handleKeyDown} />
@@ -48,9 +48,9 @@ function Login() {
 
   function handleChange(e) {
     if (e.target.id === 'email') {
-      setEmail(e.target.id);
+      setEmail(e.target.value);
     } else if (e.target.id === 'password') {
-      setPassword(e.target.id);
+      setPassword(e.target.value);
     }
   }
   
@@ -161,7 +161,7 @@ function ManageCommunities() {
     const checked = [];
     checkboxes.forEach((checkbox) => {
       if (checkbox.checked && checkbox.id !== 'setAll') {
-        checked.push(checkbox.id);
+        checked.push(checkbox.value);
       }
     })
 
@@ -218,7 +218,7 @@ function ManageCommunities() {
                 </div>
               </div>
             </div>
-            <input type="checkbox" id={community.id} />
+            <input type="checkbox" value={community.id} />
           </li>
         ))}
       </ul>
@@ -277,7 +277,7 @@ function ManageStudents() {
     const checked = [];
     checkboxes.forEach((checkbox) => {
       if (checkbox.checked && checkbox.id !== 'setAll') {
-        checked.push(checkbox.id);
+        checked.push(checkbox.value);
       }
     })
 
@@ -312,7 +312,7 @@ function ManageStudents() {
                 </div>
               </div>
             </div>
-            <input type="checkbox" id={student.id} />
+            <input type="checkbox" value={student.id} />
           </li>
         ))}
       </ul>
@@ -371,7 +371,7 @@ function ManagePosts() {
     const checked = [];
     checkboxes.forEach((checkbox) => {
       if (checkbox.checked && checkbox.id !== 'setAll') {
-        checked.push(checkbox.id);
+        checked.push(checkbox.value);
       }
     })
 
@@ -406,7 +406,7 @@ function ManagePosts() {
                 </div>
               </div>
             </div>
-            <input type="checkbox" id={post.id} />
+            <input type="checkbox" value={post.id} />
           </li>
         ))}
       </ul>
@@ -465,14 +465,14 @@ function ManageProjectIdeas() {
     const checked = [];
     checkboxes.forEach((checkbox) => {
       if (checkbox.checked && checkbox.id !== 'setAll') {
-        checked.push(checkbox.id);
+        checked.push(checkbox.value);
       }
     })
 
     if (checked.length === 0) return; // if there is no checked projectIdea, do not continue
     
-    checked.forEach(async (id) => {
-      authContext.deleteProjectIdea(id);
+    checked.forEach(async (value) => {
+      authContext.deleteProjectIdea(value);
     })
 
     setProjectIdeas(projectIdeas.filter((projectIdea) => !checked.includes(projectIdea.id.toString())));
@@ -501,7 +501,7 @@ function ManageProjectIdeas() {
                 </div>
               </div>
             </div>
-            <input type="checkbox" id={projectIdea.id} />
+            <input type="checkbox" value={projectIdea.id} />
           </li>
         ))}
       </ul>
@@ -561,7 +561,7 @@ function ManageApplications() {
     const checked = [];
     checkboxes.forEach((checkbox) => {
       if (checkbox.checked && checkbox.id !== 'setAll') {
-        checked.push(checkbox.id);
+        checked.push(checkbox.value);
       }
     })
 
@@ -579,7 +579,7 @@ function ManageApplications() {
     const checked = [];
     checkboxes.forEach((checkbox) => {
       if (checkbox.checked && checkbox.id !== 'setAll') {
-        checked.push(checkbox.id);
+        checked.push(checkbox.value);
       }
     })
 
@@ -637,7 +637,7 @@ function ManageApplications() {
                 </div>
               </div>
             </div>
-            <input type="checkbox" id={community.id} />
+            <input type="checkbox" value={community.id} />
           </li>
         ))}
       </ul>
