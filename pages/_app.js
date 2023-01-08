@@ -24,7 +24,7 @@ function MyApp({ Component, pageProps }) {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [userData, setUserData] = useState();
-  const router = useRouter();
+  // const router = useRouter();
 
   const request = useCallback(async (method, path, body, useCredentials = true) => {
     if (!path || path.includes('/undefined')) {
@@ -829,7 +829,7 @@ function MyApp({ Component, pageProps }) {
       </Head>
       {
         // if page is not admin panel, show header
-        !router.asPath.includes("admin-paneli") && <Header />
+        true && <Header />
       }
       <main>
         <Component {...pageProps} />
