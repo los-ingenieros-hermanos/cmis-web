@@ -51,11 +51,9 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
       (async () => {
         const userHasIdeaListData = await authContext.getStudentsHasProjectIdea();
         // delete duplicated users
-        const filteredList = userHasIdeaListData.filter((data, index) => {
+        const filteredList = userHasIdeaListData?.filter((data, index) => {
           return userHasIdeaListData.findIndex((d) => d.id === data.id) === index;
         });
-        
-
         if (filteredList) {
           setUserHasIdeaList(
             filteredList.map((data) => (

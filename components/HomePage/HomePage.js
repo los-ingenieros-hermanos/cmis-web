@@ -63,7 +63,8 @@ import LeftMenu from 'components/LeftMenu/LeftMenu';
            postsData = await authContext.getMemberCommunityPosts();
         }
         if (postsData) {
-          postsData.reverse();
+          // sort by id
+          postsData.sort((a, b) => b.id - a.id);
           setPosts(
             postsData.map((postData) => (
               <Post

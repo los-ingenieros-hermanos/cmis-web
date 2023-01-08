@@ -168,16 +168,9 @@ function ManageCommunities() {
     if (checked.length === 0) return; // if there is no checked community, do not continue
     
     checked.forEach(async (id) => {
-      const result = await authContext.deleteCommunity(id);
-      if (result) {
-        setCommunities(communities.filter((community) => community.id !== id));
-      }
+      await authContext.deleteCommunity(id);
     })
-
-    // reload to window after some time
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
+    setCommunities(communities.filter((community) => !checked.includes(community.id.toString())));
   }
 
   useEffect(() => {
@@ -291,16 +284,9 @@ function ManageStudents() {
     if (checked.length === 0) return; // if there is no checked student, do not continue
     
     checked.forEach(async (id) => {
-      const result = await authContext.deleteStudent(id);
-      if (result) {
-        setStudents(students.filter((student) => student.id !== id));
-      }
+      await authContext.deleteStudent(id);
     })
-
-    // reload to window after some time
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
+    setStudents(students.filter((student) => !checked.includes(student.id.toString())));
   }
 
   return (
@@ -392,16 +378,9 @@ function ManagePosts() {
     if (checked.length === 0) return; // if there is no checked post, do not continue
     
     checked.forEach(async (id) => {
-      const result = await authContext.deleteStudent(id);
-      if (result) {
-        setPosts(posts.filter((post) => post.id !== id));
-      }
+      authContext.deletePost(id);
     })
-
-    // reload to window after some time
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
+    setPosts(posts.filter((post) => !checked.includes(post.id.toString())));
   }
 
   return (
@@ -417,7 +396,7 @@ function ManagePosts() {
         {posts.map((post) => (
           <li className={styles.element} key={post.id}>
             <div className={styles.elementInfo}>
-              <img src={post.image} alt="pfp" className={styles.postImage} onClick={checkItem} />
+              <img src={post.image} alt="img" className={styles.postImage} onClick={checkItem} />
               <div className={styles.info}>
                 <div>
                   {post.title}
@@ -493,16 +472,10 @@ function ManageProjectIdeas() {
     if (checked.length === 0) return; // if there is no checked projectIdea, do not continue
     
     checked.forEach(async (id) => {
-      const result = await authContext.deleteStudent(id);
-      if (result) {
-        setProjectIdeas(projectIdeas.filter((projectIdea) => projectIdea.id !== id));
-      }
+      authContext.deleteProjectIdea(id);
     })
 
-    // reload to window after some time
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
+    setProjectIdeas(projectIdeas.filter((projectIdea) => !checked.includes(projectIdea.id.toString())));
   }
 
   return (
@@ -518,7 +491,7 @@ function ManageProjectIdeas() {
         {projectIdeas.map((projectIdea) => (
           <li className={styles.element} key={projectIdea.id}>
             <div className={styles.elementInfo}>
-              <img src={projectIdea.image} alt="pfp" className={styles.postImage} onClick={checkItem} />
+              <img src={projectIdea.image} alt="img" className={styles.postImage} onClick={checkItem} />
               <div className={styles.info}>
                 <div>
                   {projectIdea.title}
@@ -595,16 +568,10 @@ function ManageApplications() {
     if (checked.length === 0) return; // if there is no checked community, do not continue
 
     checked.forEach(async (id) => {
-      const result = await authContext.acceptCommunity(id);
-      if (result) {
-        setUnverifiedCommunities(unverifiedCommunities.filter((community) => community.id !== id));
-      }
+      authContext.acceptCommunity(id);
     })
-    
-    // reload to window after some time
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
+
+    setUnverifiedCommunities(unverifiedCommunities.filter((community) => !checked.includes(community.id.toString())));
   }
 
   function onRejectClicked() {
@@ -619,16 +586,9 @@ function ManageApplications() {
     if (checked.length === 0) return; // if there is no checked community, do not continue
 
     checked.forEach(async (id) => {
-      const result = await authContext.rejectCommunity(id);
-      if (result) {
-        setUnverifiedCommunities(unverifiedCommunities.filter((community) => community.id !== id));
-      }
+      await authContext.rejectCommunity(id);
     })
-    
-    // reload to window after some time
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
+    setUnverifiedCommunities(unverifiedCommunities.filter((community) => !checked.includes(community.id.toString())));
   }
 
   // by pressing ESC, fetch unverified communities again
