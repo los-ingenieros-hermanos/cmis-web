@@ -365,24 +365,23 @@ function ManagePosts() {
       })();
     }
   }, [search]);
-  
-  function onDeleteClicked() {}
-  useEffect(() => {
-      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-      const checked = [];
-      checkboxes.forEach((checkbox) => {
-        if (checkbox.checked && checkbox.id !== 'setAll') {
-          checked.push(checkbox.id);
-        }
-      })
-  
-      if (checked.length === 0) return; // if there is no checked post, do not continue
-      
-      checked.forEach(async (id) => {
-        authContext.deletePost(id);
-      })
-      setPosts(posts.filter((post) => !checked.includes(post.id.toString())));
-  }, [onDeleteClicked]);
+
+  function onDeleteClicked() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    const checked = [];
+    checkboxes.forEach((checkbox) => {
+      if (checkbox.checked && checkbox.id !== 'setAll') {
+        checked.push(checkbox.id);
+      }
+    })
+
+    if (checked.length === 0) return; // if there is no checked post, do not continue
+    
+    checked.forEach(async (id) => {
+      authContext.deletePost(id);
+    })
+    setPosts(posts.filter((post) => !checked.includes(post.id.toString())));
+  }
 
   return (
     <div className={styles.managementWindow}>
