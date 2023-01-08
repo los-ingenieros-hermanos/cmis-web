@@ -21,7 +21,6 @@ export const Bookmarks = () => {
                 posts.push(...reqData[1]);
                 // sort by id
                 posts.sort((a, b) => b.id - a.id);
-                console.log(posts);
                 setBookmarks(posts.map((post) => <Post key={post.id} id={post.id} eventId={post.eventId} isProjectIdea={post?.student} isBookmark={true}/>));
             }
         }
