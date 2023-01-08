@@ -39,7 +39,7 @@ function MyApp({ Component, pageProps }) {
         body: JSON.stringify(body),
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${userData.token}`,
+          Authorization: userData && `Bearer ${userData.token}`,
         },
       });
 
