@@ -105,6 +105,7 @@ export default function Communities() {
   const [followedCommunitiesList, setFollowedCommunitiesList] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchTags, setSearchTags] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   function onSearchChanged(e) {
     setSearchTerm(e.target.value);
@@ -124,6 +125,7 @@ export default function Communities() {
 
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       let mainCommunities = await authContext.getCommunities(searchTerm);
 
       mainCommunities = mainCommunities.filter((community) => {
@@ -145,6 +147,7 @@ export default function Communities() {
           />
         )),
       );
+      setIsLoading(false);
     })();
   }, [addToFollowed, authContext, removeFromFollowed, searchTerm, searchTags]);
 
@@ -172,7 +175,7 @@ export default function Communities() {
           </div>
         </div>
         <ul className={styles.mainList}>
-          {communitiesList}
+          {isLoading ? <div className='eventsLoader'></div> : communitiesList}
           {authContext.userData?.roles[0] === 'ROLE_STUDENT' && (
             <div className={styles.followedPanel}>
               <h2 className={styles.followedTitle}>Takip Ettiklerim</h2>
