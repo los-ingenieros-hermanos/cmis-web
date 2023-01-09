@@ -89,7 +89,6 @@
 .adminPanel {
     background-color: $bg-color;
     width: 100vw;
-    height: 100vh;
     margin: calc(-1 * $header-height) 0 0 0;        // 64px is the height of the header
 
     .banner {
@@ -112,7 +111,7 @@
     }
 
     .leftMenu {
-        width: calc(50% - 365px);
+        width: 25%;
         height: calc(100vh - calc($header-height));
         background-color: #BFBFBF;
         position: fixed;
@@ -166,7 +165,7 @@
 
     .managementWindow {
         // area of the content, where the content is displayed - the right side of the admin panel
-        width: calc(50% + 365px - 128px);
+        width: 65%;
         height: calc(100vh - calc($header-height) - 128px);
         position: fixed;
         top: $header-height;
@@ -177,13 +176,7 @@
         margin: 64px 64px 64px 64px;
         border: 1px solid $grey-darker;
         
-        input[type="checkbox"]
-        {
-            width: 24px;
-            height: 24px;
-            position: relative;
-            cursor: pointer;
-        } 
+
 
         .topBar {
             width: calc(100% - 16px);
@@ -211,28 +204,44 @@
             }
 
             .labelInput {
+                position: absolute;
+                right: 64px;
                 display: flex;
-                flex-direction: row;
-                align-items: center;
                 gap: 8px;
-                user-select: none; /* Standard syntax */
+                label {
+                    font-size: 1rem;
+                    font-weight: 500;
+                    color: $black;
+                    display: flex;
+                    // position: absolute;
+                    right: 96px;
+                }
+
+                input[type="checkbox"]
+                {
+                    width: 24px;
+                    height: 24px;
+                    position: fixed;
+                    right: 96px;
+                    cursor: pointer;        
+                } 
             }
         }
 
         .elementList {
             width: calc(100% - 16px);
-            height: calc(100% - 64px);
+            height: calc(100% - 112px);
             display: flex;
             flex-direction: column;
             align-items: center;
-            position: absolute;
-            top: 48px;
-            left: 0;
+            // position: absolute;
             margin: 8px;
             overflow-y: scroll;
+            position: absolute;
+            top: 48px;
             
             .element {
-                width: 100%;
+                width: calc(100%);
                 min-height: 64px;
                 display: flex;
                 flex-direction: row;
@@ -241,36 +250,45 @@
                 padding: 0 16px 0 16px; // top right bottom left
                 color: $black;
                 border-bottom: 1px solid $grey-darker;
+                // if overflow, extend the div
 
                 .elementInfo {
                     display: flex;
                     flex-direction: row;
                     align-items: center;
-                    // disable selection of text
+                    justify-content: space-between;
+                    // width: 60%;
+                    overflow: hidden;
+                    margin-right: 40px;
+                    gap: 8px;
                     
                     .pfpSrc {
                         width: 40px;
                         height: 40px;
+                        min-width: 40px;
+                        // size is fixed
                         border-radius: 50%;
                         background-color: $grey;
                         margin-right: 8px;
                     }
 
                     .postImage {
-                        max-height: 40px;
+                        height: 40px;
+                        width: 60px;
+                        min-width: 60px;
                         border-radius: 8px;
                         margin-right: 8px;
                         background-color: $grey;
                     }
-
-                    .info {
-                        display: flex;
-                        flex-direction: column;
-                        align-items: left;
-                        position: relative;
-                        // gap: 4px;
-                    }
                 }
+                input[type="checkbox"]
+                {
+                    width: 24px;
+                    height: 24px;
+                    right: 8px;
+                    cursor: pointer;
+                    position: absolute;        
+                } 
             }
         }
 
