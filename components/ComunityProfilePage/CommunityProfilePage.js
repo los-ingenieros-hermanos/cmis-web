@@ -93,6 +93,7 @@ function LeaveModal({ setIsOpen, onLeft }) {
     authContext.removeMember(router.query.id, authContext.userData?.id);
     onLeft();
     setIsOpen(false);
+    router.reload();
   }
 
   return (

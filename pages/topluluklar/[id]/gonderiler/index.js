@@ -29,22 +29,32 @@ function VisibilityDropdown({ isGlobalContext, setisGlobalContext, isManager }) 
   );
 }
 
-export default function Posts() {
+export default function PostsPage() {
   const router = useRouter();
   const authContext = useContext(AuthContext);
   const [posts, setPosts] = useState();
   const [isManager, setIsManager] = useState();
   const [isNewPostOpen, setIsNewPostOpen] = useState(false);
   const [isGlobalContext, setisGlobalContext] = useState(true);
+  const [isMember, setIsMember] = useState(false);
 
   useEffect(() => {
     (async () => {
+      const isMember_ = authContext.userData?.isCommunity
+        ? true
+        : await authContext.isMemberOfCommunity(router.query.id);
       let postsData;
-      if (isGlobalContext) {
-        postsData = await authContext.getCommunityPosts(router.query.id);
+      if (isMember_) {
+        if (isGlobalContext) {
+          postsData = await authContext.getCommunityPosts(router.query.id);
+        } else {
+          postsData = await authContext.getPrivateCommunityPosts(router.query.id);
+        }
       } else {
-        postsData = await authContext.getPrivateCommunityPosts(router.query.id);
+        postsData = await authContext.getGlobalCommunityPosts(router.query.id);
       }
+
+      setIsMember(isMember_);
 
       if (postsData) {
         postsData.reverse();
@@ -106,7 +116,7 @@ export default function Posts() {
         </>
       )}
       <>
-        {posts?.length > 0 && (
+        {posts?.length > 0 && isMember && (
           <VisibilityDropdown
             isGlobalContext={isGlobalContext}
             setisGlobalContext={setisGlobalContext}

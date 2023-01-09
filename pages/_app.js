@@ -15,8 +15,8 @@ export function imageToBase64(file, callback) {
 }
 
 function api(path) {
-  //return 'https://cmis.azurewebsites.net/api/' + path;
-  return 'http://localhost:8070/api/' + path;
+  return 'https://cmis.azurewebsites.net/api/' + path;
+  //return 'http://localhost:8070/api/' + path;
 }
 
 export const AuthContext = createContext();
@@ -524,6 +524,14 @@ function MyApp({ Component, pageProps }) {
     [request],
   );
 
+  const getGlobalCommunityPosts = useCallback(
+    async (communityId) => {
+      const [_, data] = await request('GET', `cmis/posts/communities/${communityId}/global`);
+      return data;
+    },
+    [request],
+  );
+
   // ------------------ YUSUF ARSLAN API CALLS ------------------ //
   const getUnverifiedCommunities = useCallback(
     async (search) => {
@@ -743,6 +751,7 @@ function MyApp({ Component, pageProps }) {
       isAuthorizedMember,
       getEvents,
       getCommunityEvents,
+      getGlobalCommunityPosts,
 
       // ------------------ YUSUF ARSLAN API CALLS ------------------ //
       getUnverifiedCommunities,
@@ -816,6 +825,7 @@ function MyApp({ Component, pageProps }) {
       isAuthorizedMember,
       getEvents,
       getCommunityEvents,
+      getGlobalCommunityPosts,
       getUnverifiedCommunities,
       acceptCommunity,
       rejectCommunity,
