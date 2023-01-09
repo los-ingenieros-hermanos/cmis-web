@@ -1,4 +1,6 @@
 import clsx from 'clsx';
+import Link from 'components/Link/Link';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import styles from './Calendar.module.scss';
 
@@ -20,6 +22,7 @@ const monthNames = [
 const dayNames = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
 
 function Event({ event }) {
+  const router = useRouter();
   const [isDetailsShowing, setIsDetailsShowing] = useState(false);
 
   function withZero(time) {
@@ -28,16 +31,21 @@ function Event({ event }) {
 
   return (
     <div className={styles.event}>
-      <img
-        key={event.id}
-        src={event.community?.image || event.student?.image}
-        alt='event'
-        onMouseOver={() => setIsDetailsShowing(true)}
-        onMouseOut={() => setIsDetailsShowing(false)}
-      />
+      <Link href={`/topluluklar/${event.community.id}/gonderiler/${event.id}?eventId=${event.event[0].id}`}>
+        <img
+          key={event.id}
+          src={event.community?.image || event.student?.image}
+          alt='event'
+          onMouseOver={() => setIsDetailsShowing(true)}
+          onMouseOut={() => setIsDetailsShowing(false)}
+        />
+      </Link>
       {isDetailsShowing && (
         <div className={styles.eventDetails}>
-          <div className={styles.title}>{event.title}</div>
+          {!router.asPath.includes('topluluklar') && (
+            <div className={styles.title}>{event.community.user.firstName}</div>
+          )}
+          <div>{event.title}</div>
           <div>{withZero(event.event[0].date.hour) + ':' + withZero(event.event[0].date.minute)}</div>
         </div>
       )}
