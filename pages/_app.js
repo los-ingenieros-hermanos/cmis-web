@@ -15,8 +15,8 @@ export function imageToBase64(file, callback) {
 }
 
 function api(path) {
-  return 'https://cmis.azurewebsites.net/api/' + path;
-  //return 'http://localhost:8070/api/' + path;
+  //return 'https://cmis.azurewebsites.net/api/' + path;
+  return 'http://localhost:8070/api/' + path;
 }
 
 export const AuthContext = createContext();
@@ -532,6 +532,72 @@ function MyApp({ Component, pageProps }) {
     [request],
   );
 
+  const getAllTags = useCallback(async () => {
+    const [_, data] = await request('GET', `cmis/tags`);
+    return data;
+  }, [request]);
+
+  const getStudentTags = useCallback(
+    async (studentId) => {
+      const [_, data] = await request('GET', `cmis/students/${studentId}/interests`);
+      return data;
+    },
+    [request],
+  );
+
+  const addStudentTag = useCallback(
+    async (studentId, tagId) => {
+      const [_, data] = await request('POST', `cmis/students/${studentId}/interests`, { id: tagId });
+      return data;
+    },
+    [request],
+  );
+
+  const removeStudentTag = useCallback(
+    async (studentId, tagId) => {
+      const [_, data] = await request('DELETE', `cmis/students/${studentId}/interests/${tagId}`);
+      return data;
+    },
+    [request],
+  );
+
+  const getCommunityTags = useCallback(
+    async (communityId) => {
+      const [_, data] = await request('GET', `cmis/communities/${communityId}/tags`);
+      return data;
+    },
+    [request],
+  );
+
+  const addCommunityTag = useCallback(
+    async (communityId, tagId) => {
+      const [_, data] = await request('POST', `cmis/communities/${communityId}/tags`, { id: tagId });
+      return data;
+    },
+    [request],
+  );
+
+  const removeCommunityTag = useCallback(
+    async (communityId, tagId) => {
+      const [_, data] = await request('DELETE', `cmis/communities/${communityId}/tags/${tagId}`);
+      return data;
+    },
+    [request],
+  );
+
+  const getCommunitiesWithTags = useCallback(
+    async (tagIds) => {
+      let str = '';
+      for (const tagId of tagIds) {
+        str += 'tags=' + tagId + '&';
+      }
+      str = str.slice(0, -1);
+      const [_, data] = await request('GET', 'cmis/communities/communitiesWithTags?' + str);
+      return data;
+    },
+    [request],
+  );
+
   // ------------------ YUSUF ARSLAN API CALLS ------------------ //
   const getUnverifiedCommunities = useCallback(
     async (search) => {
@@ -752,6 +818,14 @@ function MyApp({ Component, pageProps }) {
       getEvents,
       getCommunityEvents,
       getGlobalCommunityPosts,
+      getAllTags,
+      getStudentTags,
+      addStudentTag,
+      removeStudentTag,
+      getCommunityTags,
+      addCommunityTag,
+      removeCommunityTag,
+      getCommunitiesWithTags,
 
       // ------------------ YUSUF ARSLAN API CALLS ------------------ //
       getUnverifiedCommunities,
@@ -826,6 +900,14 @@ function MyApp({ Component, pageProps }) {
       getEvents,
       getCommunityEvents,
       getGlobalCommunityPosts,
+      getAllTags,
+      getStudentTags,
+      addStudentTag,
+      removeStudentTag,
+      getCommunityTags,
+      addCommunityTag,
+      removeCommunityTag,
+      getCommunitiesWithTags,
       getUnverifiedCommunities,
       acceptCommunity,
       rejectCommunity,

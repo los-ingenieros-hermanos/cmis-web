@@ -1,18 +1,11 @@
 import clsx from 'clsx';
-import { Link, Modal, Tabs } from 'components';
+import { Modal, Tabs } from 'components';
+import TagSelector, { Tag } from 'components/TagSelector/TagSelector';
 import { useRouter } from 'next/router';
 import Custom404 from 'pages/404';
 import { AuthContext, imageToBase64 } from 'pages/_app';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import styles from './CommunityProfilePage.module.scss';
-
-function Tag({ children }) {
-  return (
-    <Link className={styles.tag} href='#'>
-      {children}
-    </Link>
-  );
-}
 
 function ApplyModal({ data, setIsOpen, onApplied, onApplicationCancelled, isEditing }) {
   const authContext = useContext(AuthContext);
@@ -232,6 +225,10 @@ export default function CommunityProfilePage({ children }) {
     setEditData((oldEditData) => ({ ...oldEditData, info: e.target.value }));
   }
 
+  const onTagsSelected = useCallback((selectedTags) => {
+    setEditData((oldEditData) => ({ ...oldEditData, tags: selectedTags }));
+  }, []);
+
   function onInstagramInputChanged(e) {
     setEditData((oldEditData) => ({ ...oldEditData, instagram: e.target.value }));
   }
@@ -357,12 +354,21 @@ export default function CommunityProfilePage({ children }) {
               value={editData.info || ''}
             ></textarea>
           )}
-          {/* <div className={styles.tagsFlex}>
-            <p className='bold'>Etiketler:</p>
-            {data?.tags?.map((tag) => (
-              <Tag key={tag.id}>{tag.tag}</Tag>
-            ))}
-          </div> */}
+          {isEditing ? (
+            <div>
+              Etiketler:
+              <TagSelector selectedTags={editData.tags} onTagsSelected={onTagsSelected} />
+            </div>
+          ) : (
+            data.tags.length > 0 && (
+              <div className={styles.tagsFlex}>
+                Etiketler:
+                {data.tags.map((tag) => (
+                  <Tag key={tag.id} tag={tag} />
+                ))}
+              </div>
+            )
+          )}
           <div className={!isEditing ? styles.socials : styles.socialsEditing}>
             {!isEditing ? (
               <>

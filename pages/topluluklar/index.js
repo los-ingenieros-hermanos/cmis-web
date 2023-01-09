@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { Link } from 'components';
+import TagSelector from 'components/TagSelector/TagSelector';
 import { useRouter } from 'next/router';
 import { AuthContext } from 'pages/_app';
 import { useCallback, useContext, useEffect, useState } from 'react';
@@ -103,6 +104,7 @@ export default function Communities() {
   const [communitiesList, setCommunitiesList] = useState([]);
   const [followedCommunitiesList, setFollowedCommunitiesList] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchTags, setSearchTags] = useState([]);
 
   function onSearchChanged(e) {
     setSearchTerm(e.target.value);
@@ -122,7 +124,16 @@ export default function Communities() {
 
   useEffect(() => {
     (async () => {
-      const mainCommunities = await authContext.getCommunities(searchTerm);
+      let mainCommunities = await authContext.getCommunities(searchTerm);
+
+      mainCommunities = mainCommunities.filter((community) => {
+        for (const searchTag of searchTags) {
+          if (!community.tags.some((tag) => tag.id == searchTag.id)) {
+            return false;
+          }
+        }
+        return true;
+      });
 
       setCommunitiesList(
         mainCommunities?.map((community) => (
@@ -135,7 +146,7 @@ export default function Communities() {
         )),
       );
     })();
-  }, [addToFollowed, authContext, removeFromFollowed, searchTerm]);
+  }, [addToFollowed, authContext, removeFromFollowed, searchTerm, searchTags]);
 
   useEffect(() => {
     (async () => {
@@ -147,11 +158,18 @@ export default function Communities() {
     })();
   }, [addToFollowed, authContext, removeFromFollowed, router.query.communityType]);
 
+  function onTagsSelected(tags) {
+    setSearchTags(tags);
+  }
+
   return (
     <>
       <div className={styles.searchAndMainList}>
         <div className={styles.flex1}>
           <input className={styles.searchBar} onChange={onSearchChanged} type='text' placeholder="cmis'te ara" />
+          <div className={styles.tagSelector}>
+            <TagSelector onTagsSelected={onTagsSelected} isSearching={true} />
+          </div>
         </div>
         <ul className={styles.mainList}>
           {communitiesList}

@@ -1,17 +1,10 @@
-import { Link, NewPost, Post } from 'components';
+import { NewPost, Post } from 'components';
+import TagSelector, { Tag } from 'components/TagSelector/TagSelector';
 import { useRouter } from 'next/router';
 import Custom404 from 'pages/404';
 import { AuthContext, imageToBase64 } from 'pages/_app';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import styles from 'styles/StudentProfile.module.scss';
-
-function Tag({ children }) {
-  return (
-    <Link className={styles.tag} href='#'>
-      {children}
-    </Link>
-  );
-}
 
 export default function StudentProfile() {
   const router = useRouter();
@@ -87,11 +80,23 @@ export default function StudentProfile() {
     setIsEditing(false);
   }
 
-  function onSaveEditClicked() {
+  async function onSaveEditClicked() {
     setIsEditing(false);
     setData(editData);
     authContext.updateStudent(editData);
+    const requests = [];
+    for (let i = 1; i <= 19; i++) {
+      requests.push(authContext.removeStudentTag(router.query.id, i));
+    }
+    await Promise.all(requests);
+    for (const tag of editData.interests) {
+      authContext.addStudentTag(router.query.id, tag.id);
+    }
   }
+
+  const onTagsSelected = useCallback((selectedTags) => {
+    setEditData((oldEditData) => ({ ...oldEditData, interests: selectedTags }));
+  }, []);
 
   function onDescriptionTextareaChanged(e) {
     setEditData((oldEditData) => ({ ...oldEditData, info: e.target.value }));
@@ -204,12 +209,21 @@ export default function StudentProfile() {
               value={editData.info || ''}
             ></textarea>
           )}
-          {/* <div className={styles.tagsFlex}>
-            <p className='bold'>İlgi alanları:</p>
-            {data?.tags?.map((tag) => (
-              <Tag key={tag.id}>{tag.tag}</Tag>
-            ))}
-          </div> */}
+          {isEditing ? (
+            <div>
+              İlgi alanları:
+              <TagSelector onTagsSelected={onTagsSelected} />
+            </div>
+          ) : (
+            data.interests.length > 0 && (
+              <div className={styles.tagsFlex}>
+                İlgi alanları:
+                {data.interests.map((tag) => (
+                  <Tag key={tag.id} tag={tag} />
+                ))}
+              </div>
+            )
+          )}
           <div className={!isEditing ? styles.socials : styles.socialsEditing}>
             {!isEditing ? (
               <>

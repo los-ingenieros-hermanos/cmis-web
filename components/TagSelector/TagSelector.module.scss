@@ -1,0 +1,33 @@
+.tags {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background-color: #f0f0f0;
+  padding: 2px 8px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  border-radius: 4px;
+  color: #333;
+  font-weight: 400;
+
+  &:hover {
+    color: #000;
+  }
+}
+
+.tagRemove {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 16px;
+  height: 16px;
+  margin-left: 4px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  cursor: pointer;
+}

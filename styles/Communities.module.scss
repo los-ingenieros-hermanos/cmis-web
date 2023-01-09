@@ -18,6 +18,12 @@
   background-color: white;
   border: 1px solid #666;
   outline: none;
+  margin-bottom: 8px;
+}
+
+.tagSelector {
+  @include panel;
+  padding: 16px;
 }
 
 .mainList {
