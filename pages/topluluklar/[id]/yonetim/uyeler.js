@@ -110,11 +110,11 @@ function AuthorizeModal({ member, isOpen, setIsOpen, onChanged }) {
     setIsOpen(false);
   }
 
-  function onAuthorizeClicked() {
+  async function onAuthorizeClicked() {
     if (member.authorizations[0] === 'NONE') {
-      authContext.authorizeMember(router.query.id, member.student.id);
+      await authContext.authorizeMember(router.query.id, member.student.id);
     } else {
-      authContext.removeMemberAuthorization(router.query.id, member.student.id);
+      await authContext.removeMemberAuthorization(router.query.id, member.student.id);
     }
     setIsOpen(false);
     onChanged();
@@ -152,8 +152,8 @@ function RemoveMemberModal({ member, isOpen, setIsOpen, onChanged }) {
     setIsOpen(false);
   }
 
-  function onRemoveMemberClicked() {
-    authContext.removeMember(authContext.userData?.id, member.student.id);
+  async function onRemoveMemberClicked() {
+    await authContext.removeMember(authContext.userData?.id, member.student.id);
     setIsOpen(false);
     onChanged();
   }
@@ -235,7 +235,11 @@ export default function Members() {
 
   return (
     <ManagementPage>
-      <div className={styles.managementList}>{getMembersListElements()}</div>
+      {getMembersListElements().length > 0 ? (
+        <div className={styles.managementList}>{getMembersListElements()}</div>
+      ) : (
+        <p className='noMembers'>Üye yok</p>
+      )}
     </ManagementPage>
   );
 }

@@ -2,18 +2,8 @@ import { Link, NewPost, Post } from 'components';
 import { useRouter } from 'next/router';
 import Custom404 from 'pages/404';
 import { AuthContext, imageToBase64 } from 'pages/_app';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styles from 'styles/StudentProfile.module.scss';
-
-function Description({ height, content, onDescriptionTextareaChanged }) {
-  const descriptionRef = useRef();
-
-  useEffect(() => {
-    descriptionRef.current.value = content;
-  }, [content]);
-
-  return <textarea style={{ height }} ref={descriptionRef} onChange={onDescriptionTextareaChanged}></textarea>;
-}
 
 function Tag({ children }) {
   return (
@@ -174,12 +164,12 @@ export default function StudentProfile() {
                 onClick={onNewPostClicked}
                 style={{ marginTop: '16px', height: '40px', fontSize: '18px' }}
               >
-                Yeni Gönderi
+                Yeni Askıda Proje
               </button>
             )}
           </>
         )}
-        {posts}
+        {!posts || posts.length > 0 || isManager ? posts : <p className='noPosts'>Askıda proje yok</p>}
         <div className={styles.infoPanel}>
           {isManager &&
             (!isEditing ? (
@@ -207,11 +197,12 @@ export default function StudentProfile() {
               {data?.info}
             </p>
           ) : (
-            <Description
-              height={descriptionHeight}
-              content={data?.info}
-              onDescriptionTextareaChanged={onDescriptionTextareaChanged}
-            />
+            <textarea
+              style={{ height: descriptionHeight }}
+              onChange={onDescriptionTextareaChanged}
+              placeholder='Öğrenci açıklaması'
+              value={editData.info || ''}
+            ></textarea>
           )}
           {/* <div className={styles.tagsFlex}>
             <p className='bold'>İlgi alanları:</p>
@@ -223,22 +214,22 @@ export default function StudentProfile() {
             {!isEditing ? (
               <>
                 {data.instagram && (
-                  <a href={data.instagram} target='_blank' rel='noreferrer'>
+                  <a href={'https://www.instagram.com/' + data.instagram} target='_blank' rel='noreferrer'>
                     <img src='/icons/instagram-icon.svg' alt='instagram' />
                   </a>
                 )}
                 {data.twitter && (
-                  <a href={data.twitter} target='_blank' rel='noreferrer'>
+                  <a href={'https://twitter.com/' + data.twitter} target='_blank' rel='noreferrer'>
                     <img src='/icons/twitter-icon.svg' alt='twitter' />
                   </a>
                 )}
                 {data.github && (
-                  <a href={data.github} target='_blank' rel='noreferrer'>
+                  <a href={'https://github.com/' + data.github} target='_blank' rel='noreferrer'>
                     <img src='/icons/github-icon.svg' alt='github' />
                   </a>
                 )}
                 {data.linkedin && (
-                  <a href={data.linkedin} target='_blank' rel='noreferrer'>
+                  <a href={'https://www.linkedin.com/in/' + data.linkedin} target='_blank' rel='noreferrer'>
                     <img src='/icons/linkedin-icon.svg' alt='linkedin' />
                   </a>
                 )}

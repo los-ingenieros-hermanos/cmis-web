@@ -69,7 +69,7 @@ function CommunitiesListElement({ data, addToFollowed, removeFromFollowed }) {
       <div className={styles.buttons}>
         {!authContext.userData?.isCommunity && (
           <button onClick={onFollowClicked} className={clsx('mainButton', isFollowerOf && 'mainButtonNegative')}>
-            {isFollowerOf ? 'Takipten Çık' : 'Takip Et'}
+            {isFollowerOf ? 'Takibi Bırak' : 'Takip Et'}
           </button>
         )}
         <button className={styles.goToProfileBtn} onClick={onGoToProfileClicked}>
@@ -148,19 +148,21 @@ export default function Communities() {
   }, [addToFollowed, authContext, removeFromFollowed, router.query.communityType]);
 
   return (
-    <div className={styles.searchAndMainList}>
-      <div className={styles.flex1}>
-        <input className={styles.searchBar} onChange={onSearchChanged} type='text' placeholder="cmis'te ara" />
+    <>
+      <div className={styles.searchAndMainList}>
+        <div className={styles.flex1}>
+          <input className={styles.searchBar} onChange={onSearchChanged} type='text' placeholder="cmis'te ara" />
+        </div>
+        <ul className={styles.mainList}>
+          {communitiesList}
+          {authContext.userData?.roles[0] === 'ROLE_STUDENT' && (
+            <div className={styles.followedPanel}>
+              <h2 className={styles.followedTitle}>Takip Ettiklerim</h2>
+              {followedCommunitiesList}
+            </div>
+          )}
+        </ul>
       </div>
-      <ul className={styles.mainList}>
-        {communitiesList}
-        {authContext.userData?.roles[0] === 'ROLE_STUDENT' && (
-          <div className={styles.followedPanel}>
-            <h2 className={styles.followedTitle}>Takip Ettiklerim</h2>
-            {followedCommunitiesList}
-          </div>
-        )}
-      </ul>
-    </div>
+    </>
   );
 }

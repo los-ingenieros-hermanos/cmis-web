@@ -4,10 +4,10 @@ import MemberListElement from 'components/MemberListElement/MemberListElement';
 import Modal from 'components/Modal/Modal';
 import { useRouter } from 'next/router';
 import { AuthContext } from 'pages/_app';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import styles from 'styles/Management.module.scss';
 
-function ApplicationsListElement({ application }) {
+function ApplicationsListElement({ application, onChanged }) {
   const authContext = useContext(AuthContext);
   const router = useRouter();
 
@@ -24,14 +24,16 @@ function ApplicationsListElement({ application }) {
     setIsModalOpen(false);
   }
 
-  function onRejectClicked() {
-    authContext.rejectMemberApplication(router.query.id, application.student.id);
+  async function onRejectClicked() {
+    await authContext.rejectMemberApplication(router.query.id, application.student.id);
     setIsModalOpen(false);
+    onChanged();
   }
 
-  function onAcceptClicked() {
-    authContext.acceptMemberApplication(router.query.id, application.student.id);
+  async function onAcceptClicked() {
+    await authContext.acceptMemberApplication(router.query.id, application.student.id);
     setIsModalOpen(false);
+    onChanged();
   }
 
   return (
@@ -64,26 +66,80 @@ function ApplicationsListElement({ application }) {
   );
 }
 
+function ApplicationReqModal({ setIsApplicationReqOpen }) {
+  const router = useRouter();
+  const authContext = useContext(AuthContext);
+  const [applicationReq, setApplicationReq] = useState('');
+
+  useEffect(() => {
+    (async () => {
+      const data = await authContext.getCommunity(router.query.id);
+      setApplicationReq(data.applicationCriteria);
+    })();
+  }, [authContext, router.query.id]);
+
+  function onApplicationReqSaved() {
+    authContext.updateCommunity({ id: router.query.id, applicationCriteria: applicationReq });
+    setIsApplicationReqOpen(false);
+  }
+
+  return (
+    <div className={styles.modal}>
+      <h2>Başvuru gereksinimleri</h2>
+      <textarea
+        placeholder='Başvuru gereksinimleri'
+        value={applicationReq}
+        onChange={(e) => setApplicationReq(e.target.value)}
+      ></textarea>
+      <div className={styles.modalButtons}>
+        <button className='mainButton mainButtonNeutral' onClick={() => setIsApplicationReqOpen(false)}>
+          Vazgeç
+        </button>
+        <button className='mainButton' onClick={onApplicationReqSaved}>
+          Kaydet
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function Applications() {
   const router = useRouter();
   const authContext = useContext(AuthContext);
   const [applications, setApplications] = useState([]);
+  const [isApplicationReqOpen, setIsApplicationReqOpen] = useState(false);
+
+  const fetchApplications = useCallback(async () => {
+    setApplications((await authContext.getMemberApplications(router.query.id)) || []);
+  }, [authContext, router.query.id]);
 
   useEffect(() => {
-    (async () => {
-      setApplications((await authContext.getMemberApplications(router.query.id)) || []);
-    })();
-  }, [authContext, router.query.id]);
+    fetchApplications();
+  }, [fetchApplications]);
 
   function getApplicationListElements() {
     return applications.map((application) => (
-      <ApplicationsListElement key={application.id} application={application} />
+      <ApplicationsListElement key={application.id} application={application} onChanged={fetchApplications} />
     ));
   }
 
   return (
     <ManagementPage>
-      <div className={styles.managementList}>{getApplicationListElements()}</div>
+      <button
+        className='mainButton'
+        onClick={() => setIsApplicationReqOpen(true)}
+        style={{ marginTop: '16px', height: '35px', fontSize: '16px' }}
+      >
+        Başvuru Gereksinimlerini Düzenle
+      </button>
+      <Modal isOpen={isApplicationReqOpen} setIsOpen={setIsApplicationReqOpen}>
+        <ApplicationReqModal setIsApplicationReqOpen={setIsApplicationReqOpen} />
+      </Modal>
+      {getApplicationListElements().length > 0 ? (
+        <div className={styles.managementList}>{getApplicationListElements()}</div>
+      ) : (
+        <p className='noApplications'>Üyelik başvurusu yok</p>
+      )}
     </ManagementPage>
   );
 }

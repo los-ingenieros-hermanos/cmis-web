@@ -2,6 +2,32 @@ import { CommunityProfilePage, NewPost, Post } from 'components';
 import { useRouter } from 'next/router';
 import { AuthContext } from 'pages/_app';
 import { useContext, useEffect, useState } from 'react';
+import styles from 'styles/Management.module.scss';
+
+function VisibilityDropdown({ isGlobalContext, setisGlobalContext, isManager }) {
+  return (
+    <div className={styles.visibilityDropdown} style={isManager ? { top: '112px' } : undefined}>
+      <div className={styles.dropdown}>
+        {isGlobalContext ? (
+          <img src='/icons/public-icon.svg' alt='public' height={20} width={20} />
+        ) : (
+          <img src='/icons/private-icon.svg' alt='private' height={20} width={20} />
+        )}
+        <img src='/icons/down-arrow.svg' alt='drop-down' />
+        <div className={styles.dropdownContent}>
+          <div className={styles.dropDownItem} onClick={() => setisGlobalContext(true)}>
+            <img src='/icons/public-icon.svg' alt='public' height={14} width={14} />
+            <p>Genel</p>
+          </div>
+          <div className={styles.dropDownItem} onClick={() => setisGlobalContext(false)}>
+            <img src='/icons/private-icon.svg' alt='private' height={14} width={14} />
+            <p>Üye</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Posts() {
   const router = useRouter();
@@ -9,10 +35,17 @@ export default function Posts() {
   const [posts, setPosts] = useState();
   const [isManager, setIsManager] = useState();
   const [isNewPostOpen, setIsNewPostOpen] = useState(false);
+  const [isGlobalContext, setisGlobalContext] = useState(true);
 
   useEffect(() => {
     (async () => {
-      const postsData = await authContext.getCommunityPosts(router.query.id);
+      let postsData;
+      if (isGlobalContext) {
+        postsData = await authContext.getCommunityPosts(router.query.id);
+      } else {
+        postsData = await authContext.getPrivateCommunityPosts(router.query.id);
+      }
+
       if (postsData) {
         postsData.reverse();
         setPosts(
@@ -27,7 +60,7 @@ export default function Posts() {
         );
       }
     })();
-  }, [authContext, router.query.id]);
+  }, [authContext, isGlobalContext, router.query.id]);
 
   useEffect(() => {
     (async () => {
@@ -72,7 +105,16 @@ export default function Posts() {
           )}
         </>
       )}
-      {posts}
+      <>
+        {posts?.length > 0 && (
+          <VisibilityDropdown
+            isGlobalContext={isGlobalContext}
+            setisGlobalContext={setisGlobalContext}
+            isManager={isManager}
+          />
+        )}
+        {!posts || posts.length > 0 || isManager ? posts : <p className='noPosts'>Gönderi yok</p>}
+      </>
     </CommunityProfilePage>
   );
 }

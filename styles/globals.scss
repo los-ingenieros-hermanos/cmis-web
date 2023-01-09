@@ -122,3 +122,31 @@ li {
 .bold {
   font-weight: 500;
 }
+
+.noPosts,
+.noEvents,
+.noMembers,
+.noApplications {
+  position: absolute;
+  width: 100%;
+  font-weight: 500;
+  font-size: 28px;
+  left: 0;
+  text-align: center;
+}
+
+.noPosts {
+  top: 150px;
+}
+
+.noEvents {
+  top: 100px;
+}
+
+.noMembers {
+  top: 160px;
+}
+
+.noApplications {
+  top: 200px;
+}

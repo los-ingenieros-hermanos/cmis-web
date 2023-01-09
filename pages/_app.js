@@ -1,7 +1,7 @@
-import { Header } from 'components';
+import { Header, LeftMenu } from 'components';
 import Head from 'next/head';
-import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
+import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import '../styles/globals.scss';
 
 export function imageToBase64(file, callback) {
@@ -15,8 +15,8 @@ export function imageToBase64(file, callback) {
 }
 
 function api(path) {
-  return 'https://cmis.azurewebsites.net/api/' + path;
-  // return 'http://localhost:8070/api/' + path;
+  //return 'https://cmis.azurewebsites.net/api/' + path;
+  return 'http://localhost:8070/api/' + path;
 }
 
 export const AuthContext = createContext();
@@ -59,8 +59,6 @@ function MyApp({ Component, pageProps }) {
     setUserData(data);
     localStorage.setItem('userData', JSON.stringify(data));
     localStorage.setItem('token', data?.token);
-    console.log(data);
-    console.log(data?.token);
   }
 
   const getUser = useCallback(
@@ -195,7 +193,9 @@ function MyApp({ Component, pageProps }) {
 
   const applyToCommunity = useCallback(
     async (communityId, description) => {
-      const [_, data] = await request('POST', `cmis/communities/${communityId}/apply/${userData?.id}`, description);
+      const [_, data] = await request('POST', `cmis/communities/${communityId}/apply/${userData?.id}`, {
+        message: description,
+      });
       return data;
     },
     [request, userData],
@@ -507,7 +507,12 @@ function MyApp({ Component, pageProps }) {
   );
 
   const getEvents = useCallback(async () => {
-    const [_, data] = await request('GET', `cmis/students/${userData?.id}/allEventDetails`);
+    let _, data;
+    if (userData?.isCommunity) {
+      [_, data] = await request('GET', `cmis/communities/${userData?.id}/allEventDetails`);
+    } else {
+      [_, data] = await request('GET', `cmis/students/${userData?.id}/allEventDetails`);
+    }
     return data;
   }, [request, userData]);
 
@@ -667,7 +672,7 @@ function MyApp({ Component, pageProps }) {
       const [_, data] = await request('GET', `cmis/posts/communities/${communityId}/private`);
       return data;
     },
-    [request, userData],
+    [request],
   );
 
   const getMemberCommunityPosts = useCallback(async () => {
@@ -678,7 +683,7 @@ function MyApp({ Component, pageProps }) {
   const getStudentsHasProjectIdea = useCallback(async () => {
     const [_, data] = await request('GET', `cmis/students/withProjectIdea`);
     return data;
-  }, [request, userData]);
+  }, [request]);
 
   // ------------------ YUSUF ARSLAN API CALLS END--------------- //
 
@@ -809,6 +814,8 @@ function MyApp({ Component, pageProps }) {
       authorizeMember,
       removeMemberAuthorization,
       isAuthorizedMember,
+      getEvents,
+      getCommunityEvents,
       getUnverifiedCommunities,
       acceptCommunity,
       rejectCommunity,
@@ -836,9 +843,13 @@ function MyApp({ Component, pageProps }) {
       </Head>
       {
         // if page is not admin panel, show header
-        !router.asPath.includes("admin-paneli") && <Header />
+        !router.asPath.includes('admin-paneli') && <Header />
       }
       <main>
+        {(router.asPath === '/' ||
+          router.asPath === '/yaklasan-etkinlikler' ||
+          router.asPath === '/topluluklar' ||
+          router.asPath === '/askida-proje') && <LeftMenu />}
         <Component {...pageProps} />
       </main>
     </AuthContext.Provider>

@@ -11,12 +11,16 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBook
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   function isEventExpired() {
-    const date = new Date(data.event[0].date.year, data.event[0].date.month, data.event[0].date.day, 
-                          data.event[0].date.hour, data.event[0].date.minute);
+    const date = new Date(
+      data.event[0].date.year,
+      data.event[0].date.month,
+      data.event[0].date.day,
+      data.event[0].date.hour,
+      data.event[0].date.minute,
+    );
     const now = new Date();
     return now > date;
   }
-
 
   useEffect(() => {
     function onClick() {
@@ -98,7 +102,6 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBook
   }
 
   function onWillAttendClicked() {
-    console.log(isEventExpired());
     setData((oldData) => {
       if (!oldData.isAttended) {
         authContext.attendCommunityPost(eventId);
@@ -164,9 +167,18 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBook
 
   return (
     data && (
-      <div className={styles.post} style={isContentOverflown && !isBookmark ? { maxHeight: '400px'} : undefined || 
-                                         (isContentOverflown && isBookmark) ? {maxHeight: '400px', minWidth: 'calc(50% + 365px)'} : undefined ||
-                                         (!isContentOverflown && isBookmark) ? {minWidth: 'calc(50% + 365px)'} : undefined}>
+      <div
+        className={styles.post}
+        style={
+          isContentOverflown && !isBookmark
+            ? { maxHeight: '400px' }
+            : undefined || (isContentOverflown && isBookmark)
+            ? { maxHeight: '400px', minWidth: 'calc(50% + 365px)' }
+            : undefined || (!isContentOverflown && isBookmark)
+            ? { minWidth: 'calc(50% + 365px)' }
+            : undefined
+        }
+      >
         {isPoster && (
           <button className={styles.menuBtn} onClick={onMenuClicked}>
             <img src='/icons/three-dots-icon.svg' alt='üç nokta' />
@@ -224,8 +236,7 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBook
           <>
             <div className={styles.flex4}>
               <div className={styles.btnFlex}>
-                {!authContext.userData?.isCommunity && !isEventExpired() &&
-                (
+                {!authContext.userData?.isCommunity && !isEventExpired() && (
                   <>
                     <button className={styles.btnFlex} onClick={onWillAttendClicked}>
                       <img
@@ -242,18 +253,13 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBook
                   <span className={styles.bottomText}>{`${data.event[0].attendantsNum} Kişi Katıldı`}</span>
                 )}
               </div>
-              {isEventExpired() && (
-                <div className={styles.eventDate}>
-                  Etkinliğin Süresi Doldu
-                </div>
-              )}
+              {isEventExpired() && <div className={styles.eventDate}>Etkinliğin Süresi Doldu</div>}
               {!isEventExpired() && (
                 <div className={styles.eventDate}>
-                <img src='/icons/date-icon.svg' alt='etkinlik tarihi' />
-                {getDateAndTime(data.event[0].date)}
-              </div>
+                  <img src='/icons/date-icon.svg' alt='etkinlik tarihi' />
+                  {getDateAndTime(data.event[0].date)}
+                </div>
               )}
-              
             </div>
             <div className={styles.divider}></div>
           </>

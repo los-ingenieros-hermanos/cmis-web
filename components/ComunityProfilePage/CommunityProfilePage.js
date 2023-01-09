@@ -14,7 +14,7 @@ function Tag({ children }) {
   );
 }
 
-function ApplyModal({ setIsOpen, onApplied, onApplicationCancelled, isEditing }) {
+function ApplyModal({ data, setIsOpen, onApplied, onApplicationCancelled, isEditing }) {
   const authContext = useContext(AuthContext);
   const router = useRouter();
   const [info, setInfo] = useState('');
@@ -50,6 +50,14 @@ function ApplyModal({ setIsOpen, onApplied, onApplicationCancelled, isEditing })
 
   return (
     <div className={styles.applyModal}>
+      <h2>{data.hasApplied ? 'Başvuruyu düzenle' : 'Üyelik başvurusu'}</h2>
+      {data.applicationCriteria && (
+        <p>
+          <span>Başvuru gereksinimleri: </span>
+          {data.applicationCriteria}
+        </p>
+      )}
+
       <textarea
         className={styles.applyTextarea}
         placeholder='Başvuru bilgileri'
@@ -61,7 +69,7 @@ function ApplyModal({ setIsOpen, onApplied, onApplicationCancelled, isEditing })
           Vazgeç
         </button>
         <button className='mainButton' onClick={onSendClicked}>
-          Kaydet
+          {data.hasApplied ? 'Kaydet' : 'Gönder'}
         </button>
         {isEditing && (
           <button className={clsx('mainButton', 'mainButtonNegative')} onClick={onCancelApplicationClicked}>
@@ -344,6 +352,7 @@ export default function CommunityProfilePage({ children }) {
             <textarea
               style={{ height: descriptionHeight }}
               onChange={onDescriptionTextareaChanged}
+              placeholder='Topluluk açıklaması'
               value={editData.info || ''}
             ></textarea>
           )}
@@ -357,22 +366,22 @@ export default function CommunityProfilePage({ children }) {
             {!isEditing ? (
               <>
                 {data.instagram && (
-                  <a href={data.instagram} target='_blank' rel='noreferrer'>
+                  <a href={'https://www.instagram.com/' + data.instagram} target='_blank' rel='noreferrer'>
                     <img src='/icons/instagram-icon.svg' alt='instagram' />
                   </a>
                 )}
                 {data.twitter && (
-                  <a href={data.twitter} target='_blank' rel='noreferrer'>
+                  <a href={'https://twitter.com/' + data.twitter} target='_blank' rel='noreferrer'>
                     <img src='/icons/twitter-icon.svg' alt='twitter' />
                   </a>
                 )}
                 {data.github && (
-                  <a href={data.github} target='_blank' rel='noreferrer'>
+                  <a href={'https://github.com/' + data.github} target='_blank' rel='noreferrer'>
                     <img src='/icons/github-icon.svg' alt='github' />
                   </a>
                 )}
                 {data.linkedin && (
-                  <a href={data.linkedin} target='_blank' rel='noreferrer'>
+                  <a href={'https://www.linkedin.com/in/' + data.linkedin} target='_blank' rel='noreferrer'>
                     <img src='/icons/linkedin-icon.svg' alt='linkedin' />
                   </a>
                 )}
@@ -400,6 +409,7 @@ export default function CommunityProfilePage({ children }) {
           </div>
           <Modal isOpen={isApplyModalOpen} setIsOpen={setIsApplyModalOpen}>
             <ApplyModal
+              data={data}
               setIsOpen={setIsApplyModalOpen}
               onApplied={onApplied}
               onApplicationCancelled={onApplicationCancelled}
