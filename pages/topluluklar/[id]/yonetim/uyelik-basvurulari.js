@@ -108,9 +108,12 @@ export default function Applications() {
   const authContext = useContext(AuthContext);
   const [applications, setApplications] = useState([]);
   const [isApplicationReqOpen, setIsApplicationReqOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchApplications = useCallback(async () => {
+    setIsLoading(true);
     setApplications((await authContext.getMemberApplications(router.query.id)) || []);
+    setIsLoading(false);
   }, [authContext, router.query.id]);
 
   useEffect(() => {
@@ -135,7 +138,9 @@ export default function Applications() {
       <Modal isOpen={isApplicationReqOpen} setIsOpen={setIsApplicationReqOpen}>
         <ApplicationReqModal setIsApplicationReqOpen={setIsApplicationReqOpen} />
       </Modal>
-      {getApplicationListElements().length > 0 ? (
+      {isLoading ? (
+        <div className='applicationsLoader'></div>
+      ) : getApplicationListElements().length > 0 ? (
         <div className={styles.managementList}>{getApplicationListElements()}</div>
       ) : (
         <p className='noApplications'>Üyelik başvurusu yok</p>

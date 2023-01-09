@@ -14,9 +14,11 @@ function Banner() {
 function Posts() {
   const authContext = useContext(AuthContext);
   const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       const postsData = await authContext.getProjectIdeas();
       if (postsData) {
         // sort by likeNum
@@ -27,6 +29,7 @@ function Posts() {
           )),
         );
       }
+      setIsLoading(false);
     })();
   }, [authContext]);
 
@@ -34,7 +37,11 @@ function Posts() {
     setPosts((oldPosts) => oldPosts.filter((post) => post.key != postId));
   }
 
-  return <ul>{posts.length > 0 ? posts : <p className='noPosts'>Askıda proje yok</p>}</ul>;
+  return isLoading ? (
+    <div className='postsLoader mainLoader'></div>
+  ) : (
+    <ul>{posts.length > 0 ? posts : <p className='noPosts'>Askıda proje yok</p>}</ul>
+  );
 }
 
 function RightSide() {

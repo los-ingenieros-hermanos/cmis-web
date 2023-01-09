@@ -37,9 +37,11 @@ export default function PostsPage() {
   const [isNewPostOpen, setIsNewPostOpen] = useState(false);
   const [isGlobalContext, setisGlobalContext] = useState(true);
   const [isMember, setIsMember] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       const isMember_ = authContext.userData?.isCommunity
         ? true
         : await authContext.isMemberOfCommunity(router.query.id);
@@ -69,6 +71,7 @@ export default function PostsPage() {
           )),
         );
       }
+      setIsLoading(false);
     })();
   }, [authContext, isGlobalContext, router.query.id]);
 
@@ -116,14 +119,20 @@ export default function PostsPage() {
         </>
       )}
       <>
-        {posts?.length > 0 && isMember && (
-          <VisibilityDropdown
-            isGlobalContext={isGlobalContext}
-            setisGlobalContext={setisGlobalContext}
-            isManager={isManager}
-          />
+        {isLoading ? (
+          <div className='postsLoader'></div>
+        ) : (
+          <>
+            {posts?.length > 0 && isMember && (
+              <VisibilityDropdown
+                isGlobalContext={isGlobalContext}
+                setisGlobalContext={setisGlobalContext}
+                isManager={isManager}
+              />
+            )}
+            {!posts || posts.length > 0 || isManager ? posts : <p className='noPosts'>Gönderi yok</p>}
+          </>
         )}
-        {!posts || posts.length > 0 || isManager ? posts : <p className='noPosts'>Gönderi yok</p>}
       </>
     </CommunityProfilePage>
   );

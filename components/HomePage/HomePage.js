@@ -36,9 +36,11 @@ function Banner({ isGlobalContext, setisGlobalContext, authContext }) {
 function Posts({ isGlobalContext }) {
   const authContext = useContext(AuthContext);
   const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       let postsData = [];
       if (isGlobalContext) {
         postsData = await authContext.getGlobalPosts();
@@ -76,6 +78,7 @@ function Posts({ isGlobalContext }) {
       } else {
         setPosts([]);
       }
+      setIsLoading(false);
     })();
   }, [authContext, isGlobalContext]);
 
@@ -83,7 +86,11 @@ function Posts({ isGlobalContext }) {
     setPosts((oldPosts) => oldPosts.filter((post) => post.key != postId));
   }
 
-  return <ul>{posts.length > 0 ? posts : <p className='noPosts'>Gönderi yok</p>}</ul>;
+  return isLoading ? (
+    <div className='postsLoader mainLoader'></div>
+  ) : (
+    <ul>{posts.length > 0 ? posts : <p className='noPosts'>Gönderi yok</p>}</ul>
+  );
 }
 
 function RightSide({ authContext }) {
@@ -136,7 +143,6 @@ export default function HomePage() {
   return (
     <div className={styles.page}>
       <Banner isGlobalContext={isGlobalContext} setisGlobalContext={setisGlobalContext} authContext={authContext} />
-
       <Posts isGlobalContext={isGlobalContext} />
       <RightSide authContext={authContext} />
     </div>

@@ -217,13 +217,16 @@ export default function Members() {
   const router = useRouter();
   const authContext = useContext(AuthContext);
   const [members, setMembers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchMembers = useCallback(async () => {
+    setIsLoading(true);
     setMembers((await authContext.getMembers(router.query.id)) || []);
   }, [authContext, router.query.id]);
 
   useEffect(() => {
     fetchMembers();
+    setIsLoading(false);
   }, [fetchMembers]);
 
   const getMembersListElements = useCallback(() => {
@@ -235,7 +238,9 @@ export default function Members() {
 
   return (
     <ManagementPage>
-      {getMembersListElements().length > 0 ? (
+      {isLoading ? (
+        <div className='membersLoader'></div>
+      ) : getMembersListElements().length > 0 ? (
         <div className={styles.managementList}>{getMembersListElements()}</div>
       ) : (
         <p className='noMembers'>Üye yok</p>

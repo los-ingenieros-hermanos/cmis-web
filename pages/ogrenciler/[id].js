@@ -16,9 +16,11 @@ export default function StudentProfile() {
   const [isManager, setIsManager] = useState();
   const [isNewPostOpen, setIsNewPostOpen] = useState(false);
   const [posts, setPosts] = useState();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       const postsData = await authContext.getStudentPosts(router.query.id);
       if (postsData) {
         postsData.reverse();
@@ -28,6 +30,7 @@ export default function StudentProfile() {
           )),
         );
       }
+      setIsLoading(false);
     })();
   }, [authContext, router.query.id]);
 
@@ -174,7 +177,13 @@ export default function StudentProfile() {
             )}
           </>
         )}
-        {!posts || posts.length > 0 || isManager ? posts : <p className='noPosts'>Askıda proje yok</p>}
+        {isLoading ? (
+          <div className='postsLoader'></div>
+        ) : !posts || posts.length > 0 || isManager ? (
+          posts
+        ) : (
+          <p className='noPosts'>Askıda proje yok</p>
+        )}
         <div className={styles.infoPanel}>
           {isManager &&
             (!isEditing ? (

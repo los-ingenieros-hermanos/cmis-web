@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import Calendar from 'components/Calendar/Calendar';
 import { useRouter } from 'next/router';
 import { AuthContext } from 'pages/_app';
@@ -7,14 +8,17 @@ export default function UpcomingEvents() {
   const router = useRouter();
   const authContext = useContext(AuthContext);
   const [events, setEvents] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       if (router.asPath.includes('topluluklar')) {
         setEvents((await authContext.getCommunityEvents(router.query.id)) || []);
       } else {
         setEvents((await authContext.getEvents()) || []);
       }
+      setIsLoading(false);
     })();
   }, [authContext, router.asPath, router.query.id]);
 
@@ -32,7 +36,13 @@ export default function UpcomingEvents() {
       calendars.push(<Calendar key={i} date={new Date(date)} events={events} />);
       date.setMonth(date.getMonth() + 1);
     }
-    return lastEventMonth !== -1 ? calendars : <p className='noEvents'>Yaklaşan etkinlik yok</p>;
+    return isLoading ? (
+      <div className={clsx('eventsLoader', !router.asPath.includes('/topluluklar') && 'mainLoader')}></div>
+    ) : lastEventMonth !== -1 ? (
+      calendars
+    ) : (
+      <p className='noEvents'>Yaklaşan etkinlik yok</p>
+    );
   }
 
   return getCalendars();
