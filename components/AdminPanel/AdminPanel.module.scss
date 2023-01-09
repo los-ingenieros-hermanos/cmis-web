@@ -237,12 +237,12 @@
             // position: absolute;
             margin: 8px;
             overflow-y: scroll;
+            overflow-x: hidden;
             position: absolute;
             top: 48px;
             
             .element {
                 width: calc(100%);
-                min-height: 64px;
                 display: flex;
                 flex-direction: row;
                 align-items: center;
@@ -257,7 +257,6 @@
                     align-items: center;
                     justify-content: space-between;
                     // width: 60%;
-                    overflow: hidden;
                     margin-right: 40px;
                     gap: 8px;
                     
