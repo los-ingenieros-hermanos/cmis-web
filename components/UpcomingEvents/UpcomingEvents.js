@@ -1,12 +1,12 @@
 import clsx from 'clsx';
 import Calendar from 'components/Calendar/Calendar';
 import { useRouter } from 'next/router';
-import { AuthContext } from 'pages/_app';
+import { ApiContext } from 'pages/_app';
 import { useContext, useEffect, useState } from 'react';
 
 export default function UpcomingEvents() {
   const router = useRouter();
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -14,13 +14,13 @@ export default function UpcomingEvents() {
     (async () => {
       setIsLoading(true);
       if (router.asPath.includes('topluluklar')) {
-        setEvents((await authContext.getCommunityEvents(router.query.id)) || []);
+        setEvents((await apiContext.getCommunityEvents(router.query.id)) || []);
       } else {
-        setEvents((await authContext.getEvents()) || []);
+        setEvents((await apiContext.getEvents()) || []);
       }
       setIsLoading(false);
     })();
-  }, [authContext, router.asPath, router.query.id]);
+  }, [apiContext, router.asPath, router.query.id]);
 
   function getCalendars() {
     let calendars = [];

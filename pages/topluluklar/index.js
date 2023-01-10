@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { Link } from 'components';
 import TagSelector from 'components/TagSelector/TagSelector';
 import { useRouter } from 'next/router';
-import { AuthContext } from 'pages/_app';
+import { ApiContext } from 'pages/_app';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import styles from 'styles/Communities.module.scss';
 
@@ -12,27 +12,27 @@ function getHref(data) {
 
 function CommunitiesListElement({ data, addToFollowed, removeFromFollowed }) {
   const router = useRouter();
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [isFollowerOf, setIsFollowerOf] = useState(data.isFollowed);
 
   useEffect(() => {
     (async () => {
-      setIsFollowerOf(await authContext.isFollowerOfCommunity(data.id));
+      setIsFollowerOf(await apiContext.isFollowerOfCommunity(data.id));
     })();
-  }, [authContext, data.id]);
+  }, [apiContext, data.id]);
 
   function onFollowClicked() {
-    if (!authContext.userData) {
-      authContext.setIsLoginOpen(true);
+    if (!apiContext.userData) {
+      apiContext.setIsLoginOpen(true);
       return;
     }
 
     setIsFollowerOf((oldIsFollowerOf) => {
       if (!oldIsFollowerOf) {
-        authContext.followCommunity(data.id);
+        apiContext.followCommunity(data.id);
         addToFollowed(data);
       } else {
-        authContext.unfollowCommunity(data.id);
+        apiContext.unfollowCommunity(data.id);
         removeFromFollowed(data.id);
       }
       return !oldIsFollowerOf;
@@ -40,8 +40,8 @@ function CommunitiesListElement({ data, addToFollowed, removeFromFollowed }) {
   }
 
   function onGoToProfileClicked() {
-    if (!authContext.userData) {
-      authContext.setIsLoginOpen(true);
+    if (!apiContext.userData) {
+      apiContext.setIsLoginOpen(true);
     } else {
       router.push(getHref(data));
     }
@@ -68,7 +68,7 @@ function CommunitiesListElement({ data, addToFollowed, removeFromFollowed }) {
       <h2>{data.user.firstName}</h2>
       <p>{data.info}</p>
       <div className={styles.buttons}>
-        {!authContext.userData?.isCommunity && (
+        {!apiContext.userData?.isCommunity && (
           <button onClick={onFollowClicked} className={clsx('mainButton', isFollowerOf && 'mainButtonNegative')}>
             {isFollowerOf ? 'Takibi Bırak' : 'Takip Et'}
           </button>
@@ -100,7 +100,7 @@ function FollowedCommunitiesListElement({ data }) {
 
 export default function Communities() {
   const router = useRouter();
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [communitiesList, setCommunitiesList] = useState([]);
   const [followedCommunitiesList, setFollowedCommunitiesList] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -126,7 +126,7 @@ export default function Communities() {
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      let mainCommunities = await authContext.getCommunities(searchTerm);
+      let mainCommunities = await apiContext.getCommunities(searchTerm);
 
       mainCommunities = mainCommunities.filter((community) => {
         for (const searchTag of searchTags) {
@@ -149,17 +149,17 @@ export default function Communities() {
       );
       setIsLoading(false);
     })();
-  }, [addToFollowed, authContext, removeFromFollowed, searchTerm, searchTags]);
+  }, [addToFollowed, apiContext, removeFromFollowed, searchTerm, searchTags]);
 
   useEffect(() => {
     (async () => {
-      const followedCommunities = await authContext.getFollowedCommunities();
+      const followedCommunities = await apiContext.getFollowedCommunities();
 
       setFollowedCommunitiesList(
         followedCommunities?.map((community) => <FollowedCommunitiesListElement key={community.id} data={community} />),
       );
     })();
-  }, [addToFollowed, authContext, removeFromFollowed, router.query.communityType]);
+  }, [addToFollowed, apiContext, removeFromFollowed, router.query.communityType]);
 
   function onTagsSelected(tags) {
     setSearchTags(tags);
@@ -176,7 +176,7 @@ export default function Communities() {
         </div>
         <ul className={styles.mainList}>
           {isLoading ? <div className='eventsLoader'></div> : communitiesList}
-          {authContext.userData?.roles[0] === 'ROLE_STUDENT' && (
+          {apiContext.userData?.roles[0] === 'ROLE_STUDENT' && (
             <div className={styles.followedPanel}>
               <h2 className={styles.followedTitle}>Takip Ettiklerim</h2>
               {followedCommunitiesList}

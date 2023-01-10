@@ -1,13 +1,13 @@
 import { Link, Post } from 'components';
-import { AuthContext } from 'pages/_app';
+import { ApiContext } from 'pages/_app';
 import { useContext, useEffect, useState } from 'react';
 import styles from './HomePage.module.scss';
 
-function Banner({ isGlobalContext, setisGlobalContext, authContext }) {
+function Banner({ isGlobalContext, setisGlobalContext, apiContext }) {
   return (
     <div className={styles.banner}>
       <Link href={'/'}> Anasayfa </Link>
-      {authContext.userData && !authContext.userData?.isCommunity ? (
+      {apiContext.userData && !apiContext.userData?.isCommunity ? (
         <div className={styles.dropdown}>
           {isGlobalContext ? (
             <img src='/icons/public-icon.svg' alt='public' height={20} width={20} />
@@ -34,7 +34,7 @@ function Banner({ isGlobalContext, setisGlobalContext, authContext }) {
 }
 
 function Posts({ isGlobalContext }) {
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -43,16 +43,16 @@ function Posts({ isGlobalContext }) {
       setIsLoading(true);
       let postsData = [];
       if (isGlobalContext) {
-        postsData = await authContext.getGlobalPosts();
+        postsData = await apiContext.getGlobalPosts();
         //  if user is community
-        if (authContext.userData?.isCommunity) {
-          const privatePosts = await authContext.getPrivateCommunityPosts(authContext.userData.id);
+        if (apiContext.userData?.isCommunity) {
+          const privatePosts = await apiContext.getPrivateCommunityPosts(apiContext.userData.id);
           // append private posts to global posts if length is not 0
           if (privatePosts != null) {
             postsData = postsData.concat(privatePosts);
           }
         } else {
-          const memberCommunityPosts = await authContext.getMemberCommunityPosts();
+          const memberCommunityPosts = await apiContext.getMemberCommunityPosts();
           // append member community posts to global posts if length is not 0
           if (memberCommunityPosts != null) {
             postsData = postsData.concat(memberCommunityPosts);
@@ -60,7 +60,7 @@ function Posts({ isGlobalContext }) {
         }
       } else {
         //  remove posts that user not the member of the community
-        postsData = await authContext.getMemberCommunityPosts();
+        postsData = await apiContext.getMemberCommunityPosts();
       }
       if (postsData) {
         // sort by id
@@ -80,7 +80,7 @@ function Posts({ isGlobalContext }) {
       }
       setIsLoading(false);
     })();
-  }, [authContext, isGlobalContext]);
+  }, [apiContext, isGlobalContext]);
 
   function onPostDeleted(postId) {
     setPosts((oldPosts) => oldPosts.filter((post) => post.key != postId));
@@ -93,19 +93,19 @@ function Posts({ isGlobalContext }) {
   );
 }
 
-function RightSide({ authContext }) {
+function RightSide({ apiContext }) {
   const [followedCommunitiesList, setFollowedCommunitiesList] = useState([]);
   useEffect(() => {
     (async () => {
-      const followedCommunities = await authContext.getFollowedCommunities();
+      const followedCommunities = await apiContext.getFollowedCommunities();
 
       setFollowedCommunitiesList(
         followedCommunities?.map((community) => <FollowedCommunitiesListElement key={community.id} data={community} />),
       );
     })();
-  }, [authContext]);
+  }, [apiContext]);
 
-  return authContext.signIn ? (
+  return apiContext.signIn ? (
     <ul className={styles.right}>
       <h2 className={styles.followedTitle}>Takip Ettiklerim</h2>
       {followedCommunitiesList}
@@ -137,14 +137,14 @@ function getHref(data) {
 }
 
 export default function HomePage() {
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   // Is the context global or followed
   const [isGlobalContext, setisGlobalContext] = useState(true);
   return (
     <div className={styles.page}>
-      <Banner isGlobalContext={isGlobalContext} setisGlobalContext={setisGlobalContext} authContext={authContext} />
+      <Banner isGlobalContext={isGlobalContext} setisGlobalContext={setisGlobalContext} apiContext={apiContext} />
       <Posts isGlobalContext={isGlobalContext} />
-      <RightSide authContext={authContext} />
+      <RightSide apiContext={apiContext} />
     </div>
   );
 }

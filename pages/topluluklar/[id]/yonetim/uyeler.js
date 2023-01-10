@@ -3,7 +3,7 @@ import ManagementPage from 'components/ManagementPage/ManagementPage';
 import MemberListElement from 'components/MemberListElement/MemberListElement';
 import Modal from 'components/Modal/Modal';
 import { useRouter } from 'next/router';
-import { AuthContext } from 'pages/_app';
+import { ApiContext } from 'pages/_app';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import styles from 'styles/Management.module.scss';
 
@@ -104,7 +104,7 @@ function getMemberListElement(member) {
 
 function AuthorizeModal({ member, isOpen, setIsOpen, onChanged }) {
   const router = useRouter();
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
 
   function onCancelClicked() {
     setIsOpen(false);
@@ -112,9 +112,9 @@ function AuthorizeModal({ member, isOpen, setIsOpen, onChanged }) {
 
   async function onAuthorizeClicked() {
     if (member.authorizations[0] === 'NONE') {
-      await authContext.authorizeMember(router.query.id, member.student.id);
+      await apiContext.authorizeMember(router.query.id, member.student.id);
     } else {
-      await authContext.removeMemberAuthorization(router.query.id, member.student.id);
+      await apiContext.removeMemberAuthorization(router.query.id, member.student.id);
     }
     setIsOpen(false);
     onChanged();
@@ -146,14 +146,14 @@ function AuthorizeModal({ member, isOpen, setIsOpen, onChanged }) {
 }
 
 function RemoveMemberModal({ member, isOpen, setIsOpen, onChanged }) {
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
 
   function onCancelClicked() {
     setIsOpen(false);
   }
 
   async function onRemoveMemberClicked() {
-    await authContext.removeMember(authContext.userData?.id, member.student.id);
+    await apiContext.removeMember(apiContext.userData?.id, member.student.id);
     setIsOpen(false);
     onChanged();
   }
@@ -215,14 +215,14 @@ function MembersListElement({ member, onChanged }) {
 
 export default function Members() {
   const router = useRouter();
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [members, setMembers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchMembers = useCallback(async () => {
     setIsLoading(true);
-    setMembers((await authContext.getMembers(router.query.id)) || []);
-  }, [authContext, router.query.id]);
+    setMembers((await apiContext.getMembers(router.query.id)) || []);
+  }, [apiContext, router.query.id]);
 
   useEffect(() => {
     fetchMembers();

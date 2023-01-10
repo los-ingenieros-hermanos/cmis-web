@@ -19,7 +19,7 @@ function api(path) {
   //return 'http://localhost:8070/api/' + path;
 }
 
-export const AuthContext = createContext();
+export const ApiContext = createContext();
 
 function MyApp({ Component, pageProps }) {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -929,7 +929,7 @@ function MyApp({ Component, pageProps }) {
   );
 
   return (
-    <AuthContext.Provider value={value}>
+    <ApiContext.Provider value={value}>
       <Head>
         <title>GTU Community Management and Interaction System</title>
       </Head>
@@ -944,7 +944,7 @@ function MyApp({ Component, pageProps }) {
           router.asPath === '/askida-proje') && <LeftMenu />}
         <Component {...pageProps} />
       </main>
-    </AuthContext.Provider>
+    </ApiContext.Provider>
   );
 }
 

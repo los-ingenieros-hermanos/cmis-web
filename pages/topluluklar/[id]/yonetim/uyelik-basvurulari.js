@@ -3,12 +3,12 @@ import ManagementPage from 'components/ManagementPage/ManagementPage';
 import MemberListElement from 'components/MemberListElement/MemberListElement';
 import Modal from 'components/Modal/Modal';
 import { useRouter } from 'next/router';
-import { AuthContext } from 'pages/_app';
+import { ApiContext } from 'pages/_app';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import styles from 'styles/Management.module.scss';
 
 function ApplicationsListElement({ application, onChanged }) {
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const router = useRouter();
 
   const memberListElement = (
@@ -25,13 +25,13 @@ function ApplicationsListElement({ application, onChanged }) {
   }
 
   async function onRejectClicked() {
-    await authContext.rejectMemberApplication(router.query.id, application.student.id);
+    await apiContext.rejectMemberApplication(router.query.id, application.student.id);
     setIsModalOpen(false);
     onChanged();
   }
 
   async function onAcceptClicked() {
-    await authContext.acceptMemberApplication(router.query.id, application.student.id);
+    await apiContext.acceptMemberApplication(router.query.id, application.student.id);
     setIsModalOpen(false);
     onChanged();
   }
@@ -68,18 +68,18 @@ function ApplicationsListElement({ application, onChanged }) {
 
 function ApplicationReqModal({ setIsApplicationReqOpen }) {
   const router = useRouter();
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [applicationReq, setApplicationReq] = useState('');
 
   useEffect(() => {
     (async () => {
-      const data = await authContext.getCommunity(router.query.id);
+      const data = await apiContext.getCommunity(router.query.id);
       setApplicationReq(data.applicationCriteria);
     })();
-  }, [authContext, router.query.id]);
+  }, [apiContext, router.query.id]);
 
   function onApplicationReqSaved() {
-    authContext.updateCommunity({ id: router.query.id, applicationCriteria: applicationReq });
+    apiContext.updateCommunity({ id: router.query.id, applicationCriteria: applicationReq });
     setIsApplicationReqOpen(false);
   }
 
@@ -105,16 +105,16 @@ function ApplicationReqModal({ setIsApplicationReqOpen }) {
 
 export default function Applications() {
   const router = useRouter();
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [applications, setApplications] = useState([]);
   const [isApplicationReqOpen, setIsApplicationReqOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchApplications = useCallback(async () => {
     setIsLoading(true);
-    setApplications((await authContext.getMemberApplications(router.query.id)) || []);
+    setApplications((await apiContext.getMemberApplications(router.query.id)) || []);
     setIsLoading(false);
-  }, [authContext, router.query.id]);
+  }, [apiContext, router.query.id]);
 
   useEffect(() => {
     fetchApplications();
