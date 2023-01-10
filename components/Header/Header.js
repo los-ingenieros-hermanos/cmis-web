@@ -2,20 +2,20 @@ import clsx from 'clsx';
 import { HeaderTab, Link } from 'components';
 import Login from 'components/LoginRegister/Login/Login';
 import Register from 'components/LoginRegister/Register/Register';
-import { AuthContext } from 'pages/_app';
+import { ApiContext } from 'pages/_app';
 import { useContext, useEffect, useState } from 'react';
 import styles from './Header.module.scss';
 
 export default function Header() {
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [pfp, setPfp] = useState();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
-      setPfp(await authContext.getUserPfp());
+      setPfp(await apiContext.getUserPfp());
     })();
-  }, [authContext]);
+  }, [apiContext]);
 
   useEffect(() => {
     function onClick() {
@@ -27,11 +27,11 @@ export default function Header() {
   });
 
   function onLoginClicked() {
-    authContext.setIsLoginOpen(true);
+    apiContext.setIsLoginOpen(true);
   }
 
   function onSignUpClicked() {
-    authContext.setIsSignUpOpen(true);
+    apiContext.setIsSignUpOpen(true);
   }
 
   function onProfileClicked(e) {
@@ -40,7 +40,7 @@ export default function Header() {
   }
 
   function onSignOutClicked() {
-    authContext.signOut();
+    apiContext.signOut();
   }
 
   return (
@@ -79,7 +79,7 @@ export default function Header() {
         </Link>
       </h1>
       <div className={styles.rightFlex}>
-        {!authContext.userData ? (
+        {!apiContext.userData ? (
           <>
             <button className={styles.loginBtn} onClick={onLoginClicked}>
               Giriş
@@ -88,13 +88,13 @@ export default function Header() {
               Kayıt Ol
             </button>
 
-            {authContext.isLoginOpen && <Login />}
+            {apiContext.isLoginOpen && <Login />}
 
-            {authContext.isSignUpOpen && <Register />}
+            {apiContext.isSignUpOpen && <Register />}
           </>
         ) : (
           <>
-            {!authContext.userData.isCommunity && (
+            {!apiContext.userData.isCommunity && (
               <Link className={clsx(styles.bookmarksBtn, 'centerVertically')} href={'/kaydedilenler'}>
                 <img src='/icons/bookmarks-icon.svg' alt='bookmarks' />
               </Link>
@@ -112,7 +112,7 @@ export default function Header() {
               <div className={styles.menu}>
                 <Link
                   className={styles.menuItem}
-                  href={(authContext.userData.isCommunity ? '/topluluklar/' : '/ogrenciler/') + authContext.userData.id}
+                  href={(apiContext.userData.isCommunity ? '/topluluklar/' : '/ogrenciler/') + apiContext.userData.id}
                 >
                   Profil
                 </Link>

@@ -1,5 +1,5 @@
 import { Link, Post } from 'components';
-import { AuthContext } from 'pages/_app';
+import { ApiContext } from 'pages/_app';
 import { useContext, useEffect, useState } from 'react';
 import styles from './ProjectIdea.module.scss';
 
@@ -12,14 +12,14 @@ function Banner() {
 }
 
 function Posts() {
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      const postsData = await authContext.getProjectIdeas();
+      const postsData = await apiContext.getProjectIdeas();
       if (postsData) {
         // sort by likeNum
         postsData.sort((a, b) => b.likeNum - a.likeNum);
@@ -31,7 +31,7 @@ function Posts() {
       }
       setIsLoading(false);
     })();
-  }, [authContext]);
+  }, [apiContext]);
 
   function onPostDeleted(postId) {
     setPosts((oldPosts) => oldPosts.filter((post) => post.key != postId));
@@ -45,11 +45,11 @@ function Posts() {
 }
 
 function RightSide() {
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [userHasIdeaList, setUserHasIdeaList] = useState([]);
   useEffect(() => {
     (async () => {
-      const userHasIdeaListData = await authContext.getStudentsHasProjectIdea();
+      const userHasIdeaListData = await apiContext.getStudentsHasProjectIdea();
       // delete duplicated users
       const filteredList = userHasIdeaListData?.filter((data, index) => {
         return userHasIdeaListData.findIndex((d) => d.id === data.id) === index;
@@ -58,7 +58,7 @@ function RightSide() {
         setUserHasIdeaList(filteredList.map((data) => <UserHasIdeaListElement key={data.user.id} data={data} />));
       }
     })();
-  }, [authContext]);
+  }, [apiContext]);
 
   return (
     <ul className={styles.right}>

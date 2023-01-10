@@ -1,6 +1,6 @@
 import { CommunityProfilePage, NewPost, Post } from 'components';
 import { useRouter } from 'next/router';
-import { AuthContext } from 'pages/_app';
+import { ApiContext } from 'pages/_app';
 import { useContext, useEffect, useState } from 'react';
 import styles from 'styles/Management.module.scss';
 
@@ -31,7 +31,7 @@ function VisibilityDropdown({ isGlobalContext, setisGlobalContext, isManager }) 
 
 export default function PostsPage() {
   const router = useRouter();
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [posts, setPosts] = useState();
   const [isManager, setIsManager] = useState();
   const [isNewPostOpen, setIsNewPostOpen] = useState(false);
@@ -42,18 +42,16 @@ export default function PostsPage() {
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      const isMember_ = authContext.userData?.isCommunity
-        ? true
-        : await authContext.isMemberOfCommunity(router.query.id);
+      const isMember_ = apiContext.userData?.isCommunity ? true : await apiContext.isMemberOfCommunity(router.query.id);
       let postsData;
       if (isMember_) {
         if (isGlobalContext) {
-          postsData = await authContext.getCommunityPosts(router.query.id);
+          postsData = await apiContext.getCommunityPosts(router.query.id);
         } else {
-          postsData = await authContext.getPrivateCommunityPosts(router.query.id);
+          postsData = await apiContext.getPrivateCommunityPosts(router.query.id);
         }
       } else {
-        postsData = await authContext.getGlobalCommunityPosts(router.query.id);
+        postsData = await apiContext.getGlobalCommunityPosts(router.query.id);
       }
 
       setIsMember(isMember_);
@@ -73,17 +71,17 @@ export default function PostsPage() {
       }
       setIsLoading(false);
     })();
-  }, [authContext, isGlobalContext, router.query.id]);
+  }, [apiContext, isGlobalContext, router.query.id]);
 
   useEffect(() => {
     (async () => {
       let isAuthorizedMember = false;
-      if (!authContext.userData?.isCommunity) {
-        isAuthorizedMember = await authContext.isAuthorizedMember(router.query.id);
+      if (!apiContext.userData?.isCommunity) {
+        isAuthorizedMember = await apiContext.isAuthorizedMember(router.query.id);
       }
-      setIsManager(authContext.userData?.id == router.query.id || isAuthorizedMember);
+      setIsManager(apiContext.userData?.id == router.query.id || isAuthorizedMember);
     })();
-  }, [authContext, router.query.id]);
+  }, [apiContext, router.query.id]);
 
   function onPostDeleted(postId) {
     setPosts((oldPosts) => oldPosts.filter((post) => post.key != postId));

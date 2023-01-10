@@ -1,5 +1,5 @@
 import { Link } from 'components';
-import { AuthContext } from 'pages/_app';
+import { ApiContext } from 'pages/_app';
 import { useContext, useEffect, useState } from 'react';
 import styles from './AdminPanel.module.scss';
 
@@ -28,17 +28,17 @@ const Input = ({ type, className, placeholder, setSearch }) => {
 //  -------------- UTILS --------------
 
 function Login() {
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   async function login() {
     if (email === '' || password === '') return alert('Lütfen tüm alanları doldurun');
-    const data = await authContext.signIn(email, password);
+    const data = await apiContext.signIn(email, password);
     if (data) {
       if (data.roles[0] !== 'ROLE_ADMIN') {
         alert('Giriş Başarısız');
-        authContext.signOut();
+        apiContext.signOut();
       }
     } else {
       alert('Giriş Başarısız');
@@ -99,7 +99,7 @@ function Login() {
 }
 
 function LeftMenu({ setMenuOption, menuOption }) {
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
 
   return (
     <div className={styles.leftMenu}>
@@ -142,7 +142,7 @@ function LeftMenu({ setMenuOption, menuOption }) {
         >
           <h2> Topluluk Başvuruları </h2>
         </div>
-        <div className={styles.leftMenuOption} onClick={() => authContext.signOut()}>
+        <div className={styles.leftMenuOption} onClick={() => apiContext.signOut()}>
           <h2> Çıkış Yap </h2>
         </div>
       </div>
@@ -151,27 +151,27 @@ function LeftMenu({ setMenuOption, menuOption }) {
 }
 
 function ManageCommunities() {
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [communities, setCommunities] = useState([]);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
     if (communities.length > 0) return; // if there are already communities, do not fetch again
     (async () => {
-      const result = await authContext.getCommunities();
+      const result = await apiContext.getCommunities();
       if (result) {
         // sort result by id
         result.sort((a, b) => a.id - b.id);
         setCommunities(result);
       }
     })();
-  }, [authContext]);
+  }, [apiContext]);
 
   useEffect(() => {
     if (search === '') {
       // Fetch all communities
       (async () => {
-        const result = await authContext.getCommunities();
+        const result = await apiContext.getCommunities();
         if (result) {
           // sort result by id
           result.sort((a, b) => a.id - b.id);
@@ -181,7 +181,7 @@ function ManageCommunities() {
     } else {
       // Fetch communities that match the query
       (async () => {
-        const result = await authContext.getCommunities(search);
+        const result = await apiContext.getCommunities(search);
         if (result) {
           // sort result by id
           result.sort((a, b) => a.id - b.id);
@@ -203,7 +203,7 @@ function ManageCommunities() {
     if (checked.length === 0) return; // if there is no checked community, do not continue
 
     checked.forEach(async (id) => {
-      await authContext.deleteCommunity(id);
+      await apiContext.deleteCommunity(id);
     });
     setCommunities(communities.filter((community) => !checked.includes(community.id.toString())));
   }
@@ -212,7 +212,7 @@ function ManageCommunities() {
     const handleEsc = (event) => {
       if (event.keyCode === 27) {
         (async () => {
-          const result = await authContext.getCommunities();
+          const result = await apiContext.getCommunities();
           if (result) {
             // sort result by id
             result.sort((a, b) => a.id - b.id);
@@ -263,27 +263,27 @@ function ManageCommunities() {
 }
 
 function ManageStudents() {
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [students, setStudents] = useState([]);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
     if (students.length > 0) return; // if there are already students, do not fetch again
     (async () => {
-      const result = await authContext.getStudents();
+      const result = await apiContext.getStudents();
       if (result) {
         // sort result by id
         result.sort((a, b) => a.id - b.id);
         setStudents(result);
       }
     })();
-  }, [authContext]);
+  }, [apiContext]);
 
   useEffect(() => {
     if (search === '') {
       // Fetch all students
       (async () => {
-        const result = await authContext.getStudents();
+        const result = await apiContext.getStudents();
         if (result) {
           // sort result by id
           result.sort((a, b) => a.id - b.id);
@@ -293,7 +293,7 @@ function ManageStudents() {
     } else {
       // Fetch students that match the query
       (async () => {
-        const result = await authContext.getStudents(search);
+        const result = await apiContext.getStudents(search);
         if (result) {
           // sort result by id
           result.sort((a, b) => a.id - b.id);
@@ -315,7 +315,7 @@ function ManageStudents() {
     if (checked.length === 0) return; // if there is no checked student, do not continue
 
     checked.forEach(async (id) => {
-      await authContext.deleteStudent(id);
+      await apiContext.deleteStudent(id);
     });
     setStudents(students.filter((student) => !checked.includes(student.id.toString())));
   }
@@ -357,27 +357,27 @@ function ManageStudents() {
 }
 
 function ManagePosts() {
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [posts, setPosts] = useState([]);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
     if (posts.length > 0) return; // if there are already posts, do not fetch again
     (async () => {
-      const result = await authContext.getPosts();
+      const result = await apiContext.getPosts();
       if (result) {
         // sort result by id
         result.sort((a, b) => a.id - b.id);
         setPosts(result);
       }
     })();
-  }, [authContext]);
+  }, [apiContext]);
 
   useEffect(() => {
     if (search === '') {
       // Fetch all posts
       (async () => {
-        const result = await authContext.getPosts();
+        const result = await apiContext.getPosts();
         if (result) {
           // sort result by id
           result.sort((a, b) => a.id - b.id);
@@ -387,7 +387,7 @@ function ManagePosts() {
     } else {
       // Fetch posts that match the query
       (async () => {
-        const result = await authContext.getPosts(search);
+        const result = await apiContext.getPosts(search);
         if (result) {
           // sort result by id
           result.sort((a, b) => a.id - b.id);
@@ -409,7 +409,7 @@ function ManagePosts() {
     if (checked.length === 0) return; // if there is no checked post, do not continue
 
     checked.forEach(async (id) => {
-      authContext.deletePost(id);
+      apiContext.deletePost(id);
     });
     setPosts(posts.filter((post) => !checked.includes(post.id.toString())));
   }
@@ -449,27 +449,27 @@ function ManagePosts() {
 }
 
 function ManageProjectIdeas() {
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [projectIdeas, setProjectIdeas] = useState([]);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
     if (projectIdeas.length > 0) return; // if there are already projectIdeas, do not fetch again
     (async () => {
-      const result = await authContext.getProjectIdeas();
+      const result = await apiContext.getProjectIdeas();
       if (result) {
         // sort result by id
         result.sort((a, b) => a.id - b.id);
         setProjectIdeas(result);
       }
     })();
-  }, [authContext]);
+  }, [apiContext]);
 
   useEffect(() => {
     if (search === '') {
       // Fetch all projectIdeas
       (async () => {
-        const result = await authContext.getProjectIdeas();
+        const result = await apiContext.getProjectIdeas();
         if (result) {
           // sort result by id
           result.sort((a, b) => a.id - b.id);
@@ -479,7 +479,7 @@ function ManageProjectIdeas() {
     } else {
       // Fetch projectIdeas that match the query
       (async () => {
-        const result = await authContext.getProjectIdeas(search);
+        const result = await apiContext.getProjectIdeas(search);
         if (result) {
           // sort result by id
           result.sort((a, b) => a.id - b.id);
@@ -501,7 +501,7 @@ function ManageProjectIdeas() {
     if (checked.length === 0) return; // if there is no checked projectIdea, do not continue
 
     checked.forEach(async (value) => {
-      authContext.deleteProjectIdea(value);
+      apiContext.deleteProjectIdea(value);
     });
 
     setProjectIdeas(projectIdeas.filter((projectIdea) => !checked.includes(projectIdea.id.toString())));
@@ -542,27 +542,27 @@ function ManageProjectIdeas() {
 }
 
 function ManageApplications() {
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [unverifiedCommunities, setUnverifiedCommunities] = useState([]);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
     if (unverifiedCommunities.length > 0) return; // if there are already communities, do not fetch again
     (async () => {
-      const result = await authContext.getUnverifiedCommunities();
+      const result = await apiContext.getUnverifiedCommunities();
       if (result) {
         // sort result by id
         result.sort((a, b) => a.id - b.id);
         setUnverifiedCommunities(result);
       }
     })();
-  }, [authContext]);
+  }, [apiContext]);
 
   useEffect(() => {
     if (search === '') {
       // Fetch all communities
       (async () => {
-        const result = await authContext.getUnverifiedCommunities();
+        const result = await apiContext.getUnverifiedCommunities();
         if (result) {
           // sort result by id
           result.sort((a, b) => a.id - b.id);
@@ -572,7 +572,7 @@ function ManageApplications() {
     } else {
       // Fetch communities that match the query
       (async () => {
-        const result = await authContext.getUnverifiedCommunities(search);
+        const result = await apiContext.getUnverifiedCommunities(search);
         if (result) {
           // sort result by id
           result.sort((a, b) => a.id - b.id);
@@ -594,7 +594,7 @@ function ManageApplications() {
     if (checked.length === 0) return; // if there is no checked community, do not continue
 
     checked.forEach(async (id) => {
-      authContext.acceptCommunity(id);
+      apiContext.acceptCommunity(id);
     });
 
     setUnverifiedCommunities(unverifiedCommunities.filter((community) => !checked.includes(community.id.toString())));
@@ -612,7 +612,7 @@ function ManageApplications() {
     if (checked.length === 0) return; // if there is no checked community, do not continue
 
     checked.forEach(async (id) => {
-      await authContext.rejectCommunity(id);
+      await apiContext.rejectCommunity(id);
     });
     setUnverifiedCommunities(unverifiedCommunities.filter((community) => !checked.includes(community.id.toString())));
   }
@@ -622,7 +622,7 @@ function ManageApplications() {
     const handleEsc = (event) => {
       if (event.keyCode === 27) {
         (async () => {
-          const result = await authContext.getUnverifiedCommunities();
+          const result = await apiContext.getUnverifiedCommunities();
           if (result) {
             // sort result by id
             result.sort((a, b) => a.id - b.id);
@@ -677,7 +677,7 @@ function ManageApplications() {
 }
 
 export default function AdminPanel() {
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   // store menuOption in localStorage, so that it is not reset when the page is refreshed
   if (typeof window !== 'undefined') {
     var storedMenuOption = localStorage.getItem('menuOption');
@@ -690,7 +690,7 @@ export default function AdminPanel() {
 
   return (
     <div>
-      {!authContext.userData || authContext.userData?.roles[0] !== 'ROLE_ADMIN' ? (
+      {!apiContext.userData || apiContext.userData?.roles[0] !== 'ROLE_ADMIN' ? (
         <Login />
       ) : (
         <div className={styles.adminPanel}>

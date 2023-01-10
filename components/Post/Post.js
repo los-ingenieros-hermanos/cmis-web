@@ -1,10 +1,10 @@
 import { Link } from 'components';
-import { AuthContext } from 'pages/_app';
+import { ApiContext } from 'pages/_app';
 import { useContext, useEffect, useState } from 'react';
 import styles from './Post.module.scss';
 
 export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBookmark = false }) {
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [isContentOverflown, setIsContentOverflown] = useState(true);
   const [data, setData] = useState();
   const [isPoster, setIsPoster] = useState(false);
@@ -32,16 +32,16 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBook
   }, []);
 
   useEffect(() => {
-    setIsPoster(data?.student?.id == authContext.userData?.id || data?.community?.id == authContext.userData?.id);
-  }, [authContext.userData?.id, data?.community?.id, data?.student?.id]);
+    setIsPoster(data?.student?.id == apiContext.userData?.id || data?.community?.id == apiContext.userData?.id);
+  }, [apiContext.userData?.id, data?.community?.id, data?.student?.id]);
 
   useEffect(() => {
     (async () => {
       if (isProjectIdea) {
         const reqData = await Promise.all([
-          authContext.getStudentPost(id),
-          !authContext.userData?.isCommunity && authContext.isStudentPostLiked(id),
-          !authContext.userData?.isCommunity && authContext.isStudentPostBookmarked(id),
+          apiContext.getStudentPost(id),
+          !apiContext.userData?.isCommunity && apiContext.isStudentPostLiked(id),
+          !apiContext.userData?.isCommunity && apiContext.isStudentPostBookmarked(id),
         ]);
 
         if (reqData[0]) {
@@ -51,10 +51,10 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBook
         }
       } else {
         const reqData = await Promise.all([
-          authContext.getCommunityPost(id),
-          !authContext.userData?.isCommunity && authContext.isCommunityPostLiked(id),
-          !authContext.userData?.isCommunity && authContext.isCommunityPostBookmarked(id),
-          !authContext.userData?.isCommunity && authContext.isCommunityPostAttended(eventId),
+          apiContext.getCommunityPost(id),
+          !apiContext.userData?.isCommunity && apiContext.isCommunityPostLiked(id),
+          !apiContext.userData?.isCommunity && apiContext.isCommunityPostBookmarked(id),
+          !apiContext.userData?.isCommunity && apiContext.isCommunityPostAttended(eventId),
         ]);
 
         if (reqData[0]) {
@@ -64,7 +64,7 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBook
         }
       }
     })();
-  }, [authContext, eventId, id, isProjectIdea]);
+  }, [apiContext, eventId, id, isProjectIdea]);
 
   function onLikeClicked() {
     setData((oldData) => {
@@ -75,9 +75,9 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBook
     });
 
     if (isProjectIdea) {
-      authContext.likeStudentPost(id);
+      apiContext.likeStudentPost(id);
     } else {
-      authContext.likeCommunityPost(id);
+      apiContext.likeCommunityPost(id);
     }
   }
 
@@ -85,15 +85,15 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBook
     setData((oldData) => {
       if (!oldData.isBookmarked) {
         if (isProjectIdea) {
-          authContext.bookmarkStudentPost(id);
+          apiContext.bookmarkStudentPost(id);
         } else {
-          authContext.bookmarkCommunityPost(id);
+          apiContext.bookmarkCommunityPost(id);
         }
       } else {
         if (isProjectIdea) {
-          authContext.removeStudentPostBookmark(id);
+          apiContext.removeStudentPostBookmark(id);
         } else {
-          authContext.removeCommunityPostBookmark(id);
+          apiContext.removeCommunityPostBookmark(id);
         }
       }
 
@@ -104,9 +104,9 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBook
   function onWillAttendClicked() {
     setData((oldData) => {
       if (!oldData.isAttended) {
-        authContext.attendCommunityPost(eventId);
+        apiContext.attendCommunityPost(eventId);
       } else {
-        authContext.removeCommunityPostAttendance(eventId);
+        apiContext.removeCommunityPostAttendance(eventId);
       }
 
       const newData = { ...oldData };
@@ -157,9 +157,9 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBook
 
   function onDeletePostClicked() {
     if (isProjectIdea) {
-      authContext.deleteStudentPost(id);
+      apiContext.deleteStudentPost(id);
     } else {
-      authContext.deleteCommunityPost(id);
+      apiContext.deleteCommunityPost(id);
     }
 
     onPostDeleted(id);
@@ -236,7 +236,7 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBook
           <>
             <div className={styles.flex4}>
               <div className={styles.btnFlex}>
-                {!authContext.userData?.isCommunity && !isEventExpired() && (
+                {!apiContext.userData?.isCommunity && !isEventExpired() && (
                   <>
                     <button className={styles.btnFlex} onClick={onWillAttendClicked}>
                       <img
@@ -245,7 +245,7 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBook
                       />
                       <span className={styles.bottomText}>Katılacağını Belirt</span>
                     </button>
-                    {!authContext.userData?.isCommunity && <span className={styles.middot}>&middot;</span>}
+                    {!apiContext.userData?.isCommunity && <span className={styles.middot}>&middot;</span>}
                     <span className={styles.bottomText}>{`${data.event[0].attendantsNum} Katılımcı`}</span>
                   </>
                 )}
@@ -267,17 +267,17 @@ export default function Post({ id, eventId, isProjectIdea, onPostDeleted, isBook
         <div className={styles.flex4}>
           <div className={styles.btnFlex}>
             <>
-              {!isPoster && !authContext.userData?.isCommunity && (
+              {!isPoster && !apiContext.userData?.isCommunity && (
                 <button className={styles.btnFlex} onClick={onLikeClicked}>
                   <img src={data.isLiked ? '/icons/like-icon-active.svg' : '/icons/like-icon.svg'} alt='beğen' />
                   <span className={styles.bottomText}>Beğen</span>
                 </button>
               )}
-              {!isPoster && !authContext.userData?.isCommunity && <span className={styles.middot}>&middot;</span>}
+              {!isPoster && !apiContext.userData?.isCommunity && <span className={styles.middot}>&middot;</span>}
               <span className={styles.bottomText}>{`${data.likeNum} Beğeni`}</span>
             </>
           </div>
-          {!authContext.userData?.isCommunity && (
+          {!apiContext.userData?.isCommunity && (
             <button className={styles.btnFlex} onClick={onSaveClicked}>
               <img src={data.isBookmarked ? '/icons/save-icon-active.svg' : '/icons/save-icon.svg'} alt='kaydet' />
               <span className={styles.bottomText}>Kaydet</span>

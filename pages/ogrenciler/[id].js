@@ -2,13 +2,13 @@ import { NewPost, Post } from 'components';
 import TagSelector, { Tag } from 'components/TagSelector/TagSelector';
 import { useRouter } from 'next/router';
 import Custom404 from 'pages/404';
-import { AuthContext, imageToBase64 } from 'pages/_app';
+import { ApiContext, imageToBase64 } from 'pages/_app';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import styles from 'styles/StudentProfile.module.scss';
 
 export default function StudentProfile() {
   const router = useRouter();
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [data, setData] = useState();
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({});
@@ -21,7 +21,7 @@ export default function StudentProfile() {
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      const postsData = await authContext.getStudentPosts(router.query.id);
+      const postsData = await apiContext.getStudentPosts(router.query.id);
       if (postsData) {
         postsData.reverse();
         setPosts(
@@ -32,21 +32,21 @@ export default function StudentProfile() {
       }
       setIsLoading(false);
     })();
-  }, [authContext, router.query.id]);
+  }, [apiContext, router.query.id]);
 
   useEffect(() => {
     (async () => {
       if (router.query.id) {
-        setData(await authContext.getStudent(router.query.id));
+        setData(await apiContext.getStudent(router.query.id));
       }
     })();
-  }, [authContext, router.query.id]);
+  }, [apiContext, router.query.id]);
 
   useEffect(() => {
     (async () => {
-      setIsManager(authContext.userData?.id == router.query.id);
+      setIsManager(apiContext.userData?.id == router.query.id);
     })();
-  }, [authContext.userData?.id, router.query.id]);
+  }, [apiContext.userData?.id, router.query.id]);
 
   function onNewPostClicked() {
     setIsNewPostOpen(true);
@@ -86,14 +86,14 @@ export default function StudentProfile() {
   async function onSaveEditClicked() {
     setIsEditing(false);
     setData(editData);
-    authContext.updateStudent(editData);
+    apiContext.updateStudent(editData);
     const requests = [];
     for (let i = 1; i <= 19; i++) {
-      requests.push(authContext.removeStudentTag(router.query.id, i));
+      requests.push(apiContext.removeStudentTag(router.query.id, i));
     }
     await Promise.all(requests);
     for (const tag of editData.interests) {
-      authContext.addStudentTag(router.query.id, tag.id);
+      apiContext.addStudentTag(router.query.id, tag.id);
     }
   }
 

@@ -3,23 +3,23 @@ import { Modal, Tabs } from 'components';
 import TagSelector, { Tag } from 'components/TagSelector/TagSelector';
 import { useRouter } from 'next/router';
 import Custom404 from 'pages/404';
-import { AuthContext, imageToBase64 } from 'pages/_app';
+import { ApiContext, imageToBase64 } from 'pages/_app';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import styles from './CommunityProfilePage.module.scss';
 
 function ApplyModal({ data, setIsOpen, onApplied, onApplicationCancelled, isEditing }) {
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const router = useRouter();
   const [info, setInfo] = useState('');
 
   useEffect(() => {
     (async () => {
-      const application = await authContext.getMemberApplication(router.query.id, authContext.userData?.id);
+      const application = await apiContext.getMemberApplication(router.query.id, apiContext.userData?.id);
       if (application?.message) {
         setInfo(application.message);
       }
     })();
-  }, [authContext, router.query.id]);
+  }, [apiContext, router.query.id]);
 
   function onTextareaChanged(e) {
     setInfo(e.target.value);
@@ -30,13 +30,13 @@ function ApplyModal({ data, setIsOpen, onApplied, onApplicationCancelled, isEdit
   }
 
   function onSendClicked() {
-    authContext.applyToCommunity(router.query.id, info);
+    apiContext.applyToCommunity(router.query.id, info);
     onApplied();
     setIsOpen(false);
   }
 
   function onCancelApplicationClicked() {
-    authContext.cancelMemberApplication(router.query.id);
+    apiContext.cancelMemberApplication(router.query.id);
     onApplicationCancelled();
     setIsOpen(false);
   }
@@ -76,14 +76,14 @@ function ApplyModal({ data, setIsOpen, onApplied, onApplicationCancelled, isEdit
 
 function LeaveModal({ setIsOpen, onLeft }) {
   const router = useRouter();
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
 
   function onCancelClicked() {
     setIsOpen(false);
   }
 
   function onLeaveClicked() {
-    authContext.removeMember(router.query.id, authContext.userData?.id);
+    apiContext.removeMember(router.query.id, apiContext.userData?.id);
     onLeft();
     setIsOpen(false);
     router.reload();
@@ -106,7 +106,7 @@ function LeaveModal({ setIsOpen, onLeft }) {
 
 export default function CommunityProfilePage({ children }) {
   const router = useRouter();
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [data, setData] = useState();
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({});
@@ -119,10 +119,10 @@ export default function CommunityProfilePage({ children }) {
     (async () => {
       if (router.query.id) {
         const reqData = await Promise.all([
-          authContext.getCommunity(router.query.id),
-          !authContext.userData?.isCommunity && authContext.isFollowerOfCommunity(router.query.id),
-          !authContext.userData?.isCommunity && authContext.isMemberOfCommunity(router.query.id),
-          !authContext.userData?.isCommunity && authContext.hasAppliedToCommunity(router.query.id),
+          apiContext.getCommunity(router.query.id),
+          !apiContext.userData?.isCommunity && apiContext.isFollowerOfCommunity(router.query.id),
+          !apiContext.userData?.isCommunity && apiContext.isMemberOfCommunity(router.query.id),
+          !apiContext.userData?.isCommunity && apiContext.hasAppliedToCommunity(router.query.id),
         ]);
 
         if (reqData[0]) {
@@ -137,17 +137,17 @@ export default function CommunityProfilePage({ children }) {
         }
       }
     })();
-  }, [authContext, router.query.id]);
+  }, [apiContext, router.query.id]);
 
   useEffect(() => {
     (async () => {
       let isAuthorizedMember = false;
-      if (!authContext.userData?.isCommunity) {
-        isAuthorizedMember = await authContext.isAuthorizedMember(router.query.id);
+      if (!apiContext.userData?.isCommunity) {
+        isAuthorizedMember = await apiContext.isAuthorizedMember(router.query.id);
       }
-      setIsManager(authContext.userData?.id == router.query.id || isAuthorizedMember);
+      setIsManager(apiContext.userData?.id == router.query.id || isAuthorizedMember);
     })();
-  }, [authContext, router.query.id]);
+  }, [apiContext, router.query.id]);
 
   function onBannerChange(e) {
     imageToBase64(e.target.files[0], (base64) => setEditData((oldEditData) => ({ ...oldEditData, banner: base64 })));
@@ -158,18 +158,18 @@ export default function CommunityProfilePage({ children }) {
   }
 
   function onFollowClicked() {
-    if (!authContext.userData) {
-      authContext.setIsLoginOpen(true);
+    if (!apiContext.userData) {
+      apiContext.setIsLoginOpen(true);
       return;
     }
 
     setData((oldData) => {
       const newData = { ...oldData };
       if (!newData.isFollowerOf) {
-        authContext.followCommunity(router.query.id);
+        apiContext.followCommunity(router.query.id);
         newData.followerCount++;
       } else {
-        authContext.unfollowCommunity(router.query.id);
+        apiContext.unfollowCommunity(router.query.id);
         newData.followerCount--;
       }
       newData.isFollowerOf = !newData.isFollowerOf;
@@ -178,8 +178,8 @@ export default function CommunityProfilePage({ children }) {
   }
 
   function onApplyClicked() {
-    if (!authContext.userData) {
-      authContext.setIsLoginOpen(true);
+    if (!apiContext.userData) {
+      apiContext.setIsLoginOpen(true);
       return;
     }
 
@@ -218,7 +218,7 @@ export default function CommunityProfilePage({ children }) {
   function onSaveEditClicked() {
     setIsEditing(false);
     setData(editData);
-    authContext.updateCommunity(editData);
+    apiContext.updateCommunity(editData);
   }
 
   function onDescriptionTextareaChanged(e) {
@@ -310,7 +310,7 @@ export default function CommunityProfilePage({ children }) {
               </div>
             ))}
           <div className={styles.btnFlex}>
-            {!authContext.userData?.isCommunity && (
+            {!apiContext.userData?.isCommunity && (
               <button
                 className={clsx('mainButton', data.isFollowerOf && 'mainButtonNegative')}
                 onClick={onFollowClicked}
@@ -321,7 +321,7 @@ export default function CommunityProfilePage({ children }) {
             <p className='bold'>{data.followerCount} Takipçi</p>
           </div>
           <div className={styles.btnFlex}>
-            {!authContext.userData?.isCommunity && (
+            {!apiContext.userData?.isCommunity && (
               <button
                 className={clsx(
                   'mainButton',

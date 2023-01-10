@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { AuthContext } from 'pages/_app';
+import { ApiContext } from 'pages/_app';
 import { useContext, useEffect, useRef, useState } from 'react';
 import styles from './TagSelector.module.scss';
 
@@ -65,16 +65,16 @@ function TagSelect({ tags, onTagSelected }) {
 
 export default function TagSelector({ onTagsSelected, isSearching }) {
   const router = useRouter();
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [allTags, setAllTags] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [unselectedTags, setUnselectedTags] = useState([]);
 
   useEffect(() => {
     (async () => {
-      setAllTags(await authContext.getAllTags());
+      setAllTags(await apiContext.getAllTags());
     })();
-  }, [authContext]);
+  }, [apiContext]);
 
   useEffect(() => {
     onTagsSelected(selectedTags);
@@ -85,16 +85,16 @@ export default function TagSelector({ onTagsSelected, isSearching }) {
     (async () => {
       if (!isSearching) {
         let selectedTags_;
-        if (authContext.userData?.isCommunity) {
-          selectedTags_ = await authContext.getCommunityTags(router.query.id);
+        if (apiContext.userData?.isCommunity) {
+          selectedTags_ = await apiContext.getCommunityTags(router.query.id);
         } else {
-          selectedTags_ = await authContext.getStudentTags(router.query.id);
+          selectedTags_ = await apiContext.getStudentTags(router.query.id);
         }
 
         setSelectedTags(selectedTags_);
       }
     })();
-  }, [authContext, isSearching, router.query.id]);
+  }, [apiContext, isSearching, router.query.id]);
 
   function onTagSelected(e) {
     if (e.target.value) {
@@ -110,14 +110,14 @@ export default function TagSelector({ onTagsSelected, isSearching }) {
   }
 
   async function selectInterests() {
-    const interests = await authContext.getStudentTags(authContext.userData?.id);
+    const interests = await apiContext.getStudentTags(apiContext.userData?.id);
     setSelectedTags(interests);
   }
 
   return (
     <div className={styles.tags}>
       <span>Etiket arama: </span>
-      {isSearching && !authContext.userData?.isCommunity && (
+      {isSearching && !apiContext.userData?.isCommunity && (
         <>
           <button className='mainButton mainButtonNeutral' onClick={selectInterests}>
             İlgi alanlarını seç

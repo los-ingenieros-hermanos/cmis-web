@@ -1,4 +1,4 @@
-import { AuthContext } from 'pages/_app';
+import { ApiContext } from 'pages/_app';
 import { useContext, useEffect, useState } from 'react';
 import UserType from '../UserType/UserType';
 import styles from './Login.module.scss';
@@ -6,13 +6,13 @@ import styles from './Login.module.scss';
 function Login() {
   const [user, setUser] = useState({ email: '', password: '' });
   const [userType, setUserType] = useState('student');
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
 
   // Close modal with esc key
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27) {
-        authContext.setIsLoginOpen(false);
+        apiContext.setIsLoginOpen(false);
       }
     };
     window.addEventListener('keydown', handleEsc);
@@ -20,10 +20,10 @@ function Login() {
     return () => {
       window.removeEventListener('keydown', handleEsc);
     };
-  }, [authContext]);
+  }, [apiContext]);
 
   function onBackgroundClicked() {
-    authContext.setIsLoginOpen(false);
+    apiContext.setIsLoginOpen(false);
   }
 
   const handleChange = (e) => {
@@ -35,9 +35,9 @@ function Login() {
   };
 
   const login = async () => {
-    const data = await authContext.signIn(user.email, user.password);
+    const data = await apiContext.signIn(user.email, user.password);
     if (data) {
-      authContext.setIsLoginOpen(false);
+      apiContext.setIsLoginOpen(false);
     } else {
       alert('Giris Basarisiz');
     }
@@ -79,8 +79,8 @@ function Login() {
           <p className={styles.logo}>cmis</p> <p>hesabı oluşturmak için</p>{' '}
           <a
             onClick={() => {
-              authContext.setIsLoginOpen(false);
-              authContext.setIsSignUpOpen(true);
+              apiContext.setIsLoginOpen(false);
+              apiContext.setIsSignUpOpen(true);
             }}
           >
             tıklayın

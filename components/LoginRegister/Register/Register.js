@@ -1,4 +1,4 @@
-import { AuthContext } from 'pages/_app';
+import { ApiContext } from 'pages/_app';
 import { useContext, useEffect, useState } from 'react';
 import UserType from '../UserType/UserType';
 import styles from './Register.module.scss';
@@ -12,13 +12,13 @@ function Register({ setIsLoginOpen, setIsSignUpOpen }) {
     password: '',
     confirmPassword: '',
   });
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
 
   // Close modal with esc key
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27) {
-        authContext.setIsSignUpOpen(false);
+        apiContext.setIsSignUpOpen(false);
       }
     };
     window.addEventListener('keydown', handleEsc);
@@ -26,10 +26,10 @@ function Register({ setIsLoginOpen, setIsSignUpOpen }) {
     return () => {
       window.removeEventListener('keydown', handleEsc);
     };
-  }, [authContext]);
+  }, [apiContext]);
 
   function onBackgroundClicked() {
-    authContext.setIsSignUpOpen(false);
+    apiContext.setIsSignUpOpen(false);
   }
 
   const handleChange = (e) => {
@@ -55,9 +55,9 @@ function Register({ setIsLoginOpen, setIsSignUpOpen }) {
         alert('Şifreler uyuşmuyor.');
       } else {
         // If the passwords match, alert the user
-        const data = await authContext.signUp(user.firstName, user.lastName, user.email, user.password, userType);
+        const data = await apiContext.signUp(user.firstName, user.lastName, user.email, user.password, userType);
         if (data) {
-          authContext.setIsSignUpOpen(false);
+          apiContext.setIsSignUpOpen(false);
           // newline character
           alert(
             'Kayıt başarılı.' +
@@ -120,8 +120,8 @@ function Register({ setIsLoginOpen, setIsSignUpOpen }) {
           <p className={styles.logo}>cmis</p> <p>hesabınızla giris yapmak için</p>{' '}
           <a
             onClick={() => {
-              authContext.setIsLoginOpen(true);
-              authContext.setIsSignUpOpen(false);
+              apiContext.setIsLoginOpen(true);
+              apiContext.setIsSignUpOpen(false);
             }}
           >
             tıklayın

@@ -1,12 +1,12 @@
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
-import { AuthContext, imageToBase64 } from 'pages/_app';
+import { ApiContext, imageToBase64 } from 'pages/_app';
 import { useContext, useState } from 'react';
 import styles from './NewPost.module.scss';
 
 export default function NewPost({ setIsNewPostOpen, isProjectIdea, onPostSent }) {
   const router = useRouter();
-  const authContext = useContext(AuthContext);
+  const apiContext = useContext(ApiContext);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [isImageChecked, setIsImageChecked] = useState(false);
@@ -113,9 +113,9 @@ export default function NewPost({ setIsNewPostOpen, isProjectIdea, onPostSent })
 
     let newPostData;
     if (isProjectIdea) {
-      newPostData = await authContext.sendStudentPost(postData);
+      newPostData = await apiContext.sendStudentPost(postData);
     } else {
-      newPostData = await authContext.sendCommunityPost(router.query.id, postData);
+      newPostData = await apiContext.sendCommunityPost(router.query.id, postData);
     }
 
     onPostSent(newPostData);
